@@ -17,7 +17,91 @@ if(!isset($_POST["quick_view"])){
 }
 ?>
 <script src="js/claim_details_js.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 <style>
+        /* CSS to style the table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Style table header */
+.table th {
+    background-color: whitesmoke;
+    color: #333;
+    padding: 10px;
+    text-align: left;
+    border: 1px solid white;
+    font-family: "Roboto", sans-serif;
+  font-weight: 500;
+}
+
+/* Style table body */
+.table td {
+    text-align: left;
+    border: 1px solid whitesmoke;
+    font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Style alternating rows */
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Style hover effect on rows */
+.table tbody tr:hover {
+    background-color: #f2f2f2;
+}
+
+/* Style span with uk-badge class */
+.uk-badge {
+    background-color: #54bf99;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+/* Style spans with uk-icon class */
+.uk-icon {
+    color: #54bf99; /* or any color you prefer */
+    cursor: pointer;
+}
+
+
+/* Style text-info class */
+.text-info {
+    color: #17a2b8 !important;
+}
+
+/* Style text-success class */
+.text-success {
+    color: #28a745 !important;
+}
+
+/* Style uk-margin-small-right class */
+.uk-margin-small-right {
+    margin-right: 5px;
+}
+
+/* Style text-meta class */
+.uk-text-meta {
+    color: deepskyblue;
+    border-bottom: 1px solid whitesmoke;
+    padding: 10px;
+    font-weight: bolder;
+    text-align: center;
+}
+
+/* Style tooltip */
+/* You can add CSS for tooltip based on your tooltip library or implementation */
+
     .form-control{
         border: 1px solid green !important;
         padding-left: 2px !important;
