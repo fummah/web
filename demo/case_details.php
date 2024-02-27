@@ -217,13 +217,13 @@ savingsModal($control);
 <div class="row">
     <div class="col-md-6">
   <div class="uk-margin input-field">
-        <input id="percentageF" class="uk-input uk-form-width-medium uk-form-small" type="text" placeholder="" aria-label="Small">
-        <label for="percentageF">Percentage</label>
+        <input id="percentageF" class="uk-input uk-form-width-medium uk-form-small calc" type="text" placeholder="" aria-label="Small">
+        <label for="percentageF">Percentage (%)</label>
     </div>
 </div>
 <div class="col-md-6">
   <div class="uk-margin input-field">
-        <input class="uk-input uk-form-width-medium uk-form-small" id="gap_amountF" type="text" placeholder="" aria-label="Small">
+        <input class="uk-input uk-form-width-medium uk-form-small calc" id="gap_amountF" type="text" placeholder="" aria-label="Small">
         <label for="gap_amountF">Gap Amount</label>
     </div>
 </div>
@@ -342,8 +342,20 @@ if(!isset($_POST["quick_view"])) {
         $("#gapx").click();
         
     });
-    $(document).on('click','#calculator', function(){
-    let percentageF = ;
+
+    $(document).on('keyup','.calc', function(){
+const percentageF = $("#percentageF").val();
+const gap_amountF = $("#gap_amountF").val();    
+    resDisc(percentageF,gap_amountF);   
+  });
+
+  $(document).on('click','#calculator', function(){
+const percentageF = 8;
+const gap_amountF = $(this).attr("gap");
+    $("#dr_name").text($(this).attr("dr_name"));
+    $("#gap_amountF").val(gap_amountF);
+    $("#percentageF").val(percentageF);
+    resDisc(percentageF,gap_amountF);   
     document.getElementById('popup').style.display = 'block';
   });
   
@@ -351,6 +363,17 @@ if(!isset($_POST["quick_view"])) {
     document.getElementById('popup').style.display = 'none';
   });
   
+  const resDisc = (perc,gap) =>{
+    gap=gap.replace(" ", "");
+    let result = (perc/100)*gap;
+    result = fomata(result.toFixed(2));
+$("#savingsResult").text(result);
+  }
+
+  const fomata=(number)=>{
+    var nf = Intl.NumberFormat();
+    return nf.format(number);
+};
 </script>
 
 

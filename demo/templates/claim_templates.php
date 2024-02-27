@@ -369,7 +369,7 @@ function doctor_line($doctor_arr,$claim_id,$control)
             echo "<tr><th></th><th colspan=\"8\"></th><th>$total_claimline_charged</th><th>$total_claimline_scheme</th><th>$total_claimline_memberportion</th><th>$total_claimline_gap</th><th>$total_claimline_calc</th></tr>";
             echo "<tr class='text-info'><th></th><th colspan=\"7\"></th><th>[$doctor_chargedamnt]</th><th>[$doctor_schemeamnt]</th><th></th><th>[$doctor_gapamnt]</th>
             <th><a style='display:$docdis' claim_id='$claim_id' practice_number='$practice_number' gap='$doctor_gapamnt' charged='$doctor_chargedamnt' scheme='$doctor_schemeamnt' class='uk-margin-small-right text-info gapr' uk-icon='pencil'></a> 
-            </th><th><a  practice_number='$practice_number' gap='$doctor_gapamnt' class='uk-margin-small-right text-info uk-icon-button' id='calculator' uk-icon='settings'></a></th></tr>";
+            </th><th><a  dr_name='$doctor_fullname' gap='$doctor_gapamnt' class='uk-margin-small-right text-info uk-icon-button' id='calculator' uk-icon='settings'></a></th></tr>";
 
         }
         $header_calc=(double)$control->header_memberportion-(double)$control->header_gapamount;
