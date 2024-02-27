@@ -1,0 +1,65 @@
+﻿.mainBody {
+    max-width:1366px; 
+    margin:auto; 
+    overflow:hidden;
+}
+.navgrow {
+    -webkit-transition: -webkit-transform 0.1s ease;
+    -moz-transition: -moz-transform 0.1s ease;
+    transition: transform 0.1s ease;
+}
+
+.navgrow:hover {
+        -webkit-transform: scale(1.02);
+        -moz-transform: scale(1.02);
+        -o-transform: scale(1.02);
+        transform: scale(1.02);
+        -webkit-transform-origin: top;
+        -moz-transform-origin: top;
+        -o-transform-origin: top;
+        transform-origin: top;
+    }
+.grow {
+    -webkit-transition: -webkit-transform 0.2s ease;
+    -moz-transition: -moz-transform 0.2s ease;
+    transition: transform 0.2s ease;
+}
+    .grow:hover {
+        -webkit-transform: scale(1.05);
+        -moz-transform: scale(1.05);
+        -o-transform: scale(1.05);
+        transform: scale(1.05);
+        -webkit-transform-origin: top right;
+        -moz-transform-origin: top right;
+        -o-transform-origin: top right;
+        transform-origin: top right;
+    }
+.grow2 {
+    -webkit-transition: -webkit-transform 0.2s ease;
+    -moz-transition: -moz-transform 0.2s ease;
+    transition: transform 0.2s ease;
+}
+
+    .grow2:hover {
+        -webkit-transform: scale(1.05);
+        -moz-transform: scale(1.05);
+        -o-transform: scale(1.05);
+        transform: scale(1.05);
+        -webkit-transform-origin: top left;
+        -moz-transform-origin: top left;
+        -o-transform-origin: top left;
+        transform-origin: top left;
+    }
+
+.accessType{
+    display:none;
+}
+#googleMap {
+    width:100%;
+    height:300px;
+}
+@media screen and (max-width:320px) {
+    #googleMap {
+        height:100px;
+    }
+}

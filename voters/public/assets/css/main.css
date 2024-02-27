@@ -1,0 +1,117 @@
+     @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@100&family=Montserrat:wght@200&family=Barlow:wght@300&family=Roboto:wght@100&display=swap');
+     @font-face {
+        font-family: Amagro;
+        src: url(assets/fonts/Amagro.ttf);
+      }
+     @media only screen and (min-width: 950px) {
+            
+            .not_desktop {
+                display:none !important;
+				color:darkblue !important;
+            }
+           .top1{
+			   margin-bottom:10px !important;
+			   padding-bottom:10px !important;
+		   }
+.pad-desktop{
+	margin-top:100px;	
+}	
+        }
+		    @media only screen and (max-width: 950px) {
+         
+		   .pad{
+			   padding-top: 150px !important;
+		   }
+		   .desktop{
+			   display:none;
+		   }
+           .ucard{
+            margin-bottom: 14px;
+           }
+		 .head{
+			 margin-top:12px !important;
+		 }
+        }
+		
+		.text-blue {
+			color:blue;
+		}
+		.background-blue{
+			background-color:blue;			
+		}
+		.background-red{
+			background-color:red;			
+		}
+		.font-white{
+			color:white !important;
+		}
+		.border-rad{
+			border-radius:10px;
+		}
+		.pad-left{
+			padding-right:10px !important;
+		}
+		.pad-header{
+			padding:10px !important
+		}
+  .archivo{
+        font-family: 'Archivo', sans-serif !important;
+    }
+	  .roboto{
+        font-family: 'Roboto', sans-serif !important;
+    }
+    .barlow{
+        font-family: 'Barlow', sans-serif !important;
+        font-size: 16px !important;
+    }
+    .amagro{
+        font-family: Amagro
+    }
+	.et_pb_texta{
+            font-family: 'Montserrat',Helvetica,Arial,Lucida,sans-serif;
+            font-weight: 300;
+            line-height: 1.6em;
+            font-size: 20px;
+
+        }
+        #country-list{
+            float:left;
+            list-style:none;
+            width:190px;
+            z-index: 3;
+            padding: 2px;
+            position: absolute;
+            border:#eee 1px solid;
+        }
+        #country-list li{
+            padding: 10px;
+            background: #54bf99;
+            border-bottom: #E1E1E1 1px solid;
+            z-index: 3;
+        }
+        #country-list li:hover{
+            background:lightblue;
+            cursor: pointer;
+            -webkit-transition: background-color 300ms linear;
+            -ms-transition: background-color 300ms linear;
+            transition: background-color 300ms linear;
+            color: #54bf99;
+        }
+        .sectionheading{
+            background-color: white;
+            text-align: center;
+        }
+        .sectval{
+            border:10px solid blue;
+        }
+		.as{
+			margin-left:7px;
+		}
+		.btn-outline-blue {
+			color: blue;
+    border-color: blue;
+		}
+		
+		.pp{
+			display:none;
+			}

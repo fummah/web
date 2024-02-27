@@ -1,0 +1,74 @@
+/* YourComponent.css */
+
+.your-component {
+  position: relative;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* Ensure the overlay is on top of other elements */
+}
+
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.container-chat {
+  border: 1px solid rgb(255, 255, 255);
+  background-color: whitesmoke;
+  border-radius: 15px 15px 0 15px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.darker {
+  border-color: red;
+  background-color: white;
+}
+
+.container-chat::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.container-chat img {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+
+.container-chat img.right {
+  float: right;
+  margin-left: 20px;
+  margin-right:0;
+}
+
+.time-right {
+  float: right;
+  color: #aaa;
+}
+
+.time-left {
+  float: left;
+  color: #999;
+}

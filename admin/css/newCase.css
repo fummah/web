@@ -1,0 +1,35 @@
+ .tab { margin-left: 200px; }
+        .linkButton {
+            background: none;
+            border: none;
+            color: #0066ff;
+            text-decoration: underline;
+            cursor: pointer;
+       }
+        #details{
+            position: fixed;            
+            background-color: white;
+            width: 30%;
+            top:100px;           
+            right: 0px;
+            -webkit-box-shadow: -4px -8px 29px 9px rgba(0,0,0,0.75);
+            -moz-box-shadow: -4px -8px 29px 9px rgba(0,0,0,0.75);
+            box-shadow: -4px -8px 29px 9px rgba(0,0,0,0.75);
+        }
+
+#details3{
+     position: fixed;
+     background-color: white;
+     width: 30%;
+     top:100px;
+     right: 0px;
+     -webkit-box-shadow: -4px -8px 29px 9px rgba(0,0,0,0.75);
+     -moz-box-shadow: -4px -8px 29px 9px rgba(0,0,0,0.75);
+     box-shadow: -4px -8px 29px 9px rgba(0,0,0,0.75);
+ }
+
+        
+
+        
+
+       
