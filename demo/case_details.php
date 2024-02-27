@@ -213,18 +213,18 @@ savingsModal($control);
 </div>
 <div id="popup" class="popup">
   <span class="closeBtn" onclick="closePopup()">&times;</span>
-  <h3>Dr Tendai Fuma</h3>
+  <h3 id="dr_name"></h3>
 <div class="row">
     <div class="col-md-6">
   <div class="uk-margin input-field">
-        <input class="uk-input uk-form-width-medium uk-form-small" type="text" placeholder="" aria-label="Small">
-        <label for="member_surname">Percentage</label>
+        <input id="percentageF" class="uk-input uk-form-width-medium uk-form-small" type="text" placeholder="" aria-label="Small">
+        <label for="percentageF">Percentage</label>
     </div>
 </div>
 <div class="col-md-6">
   <div class="uk-margin input-field">
-        <input class="uk-input uk-form-width-medium uk-form-small" type="text" placeholder="" aria-label="Small">
-        <label for="member_surname">Gap Amount</label>
+        <input class="uk-input uk-form-width-medium uk-form-small" id="gap_amountF" type="text" placeholder="" aria-label="Small">
+        <label for="gap_amountF">Gap Amount</label>
     </div>
 </div>
 </div>
@@ -343,7 +343,7 @@ if(!isset($_POST["quick_view"])) {
         
     });
     $(document).on('click','#calculator', function(){
-    console.log("clicked");
+    let percentageF = ;
     document.getElementById('popup').style.display = 'block';
   });
   
