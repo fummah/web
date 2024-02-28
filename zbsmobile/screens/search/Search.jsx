@@ -32,8 +32,7 @@ const Search = () => {
   const handleSearch = (text) => {
     setSearchKey(text);
     if(text.length>2)
-    {    
-    console.log('Search key:', text);
+    {
     setPostData({"search_term":text}); 
     setSearchUp(true);
     }
