@@ -34,4 +34,5 @@ Route::get('/getadmins', [MemberController::class,'getAdmins'])->name('get_admin
 Route::get('/getprofile', [MemberController::class,'getProfile'])->name('get_profile');
 Route::get('/getregister/{member_id}', [MemberController::class,'getRegister'])->name('get_register');
 Route::get('/getdeceased/{funeral_id}', [MemberController::class,'getDeceased'])->name('get_deceased');
+Route::post('/search', [MemberController::class,'getSearch'])->name('get_search');
 });

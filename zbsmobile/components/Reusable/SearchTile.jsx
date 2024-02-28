@@ -2,12 +2,19 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import reusable from './reusable.style'
 import { COLORS, SIZES } from '../../constants/theme'
-import {HeightSpacer, Mark, NetworkImage, ReusableText, WidthSpacer} from '../../components'
+import {HeightSpacer, ReusableText, WidthSpacer} from '../../components'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native';
 
-const SearchTile = ({item,onPress}) => {
+const SearchTile = ({item}) => {
+    const navigation = useNavigation();
+
+    const onViewRegister = (member_id) => {
+        console.log("clicked")
+        navigation.navigate('Register', { member_id: member_id });
+      };
   return (
-   <TouchableOpacity style={styles.container} onPress={onPress}>
+   <TouchableOpacity style={styles.container} onPress={onViewRegister.bind(null, item.member_id)}>
     <View style={reusable.rowWidthSpace('flex-start')}>
 <MaterialCommunityIcons name='map-marker-account' size={50} color={COLORS.green}/>
 <WidthSpacer width={15}/>

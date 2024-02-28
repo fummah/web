@@ -8,48 +8,41 @@ import { COLORS } from '../../constants/theme';
 import AppBar from '../../components/Reusable/AppBar'
 import { HeightSpacer } from '../../components';
 import SearchTile from '../../components/Reusable/SearchTile';
+import useAxiosFetch from '../../hooks/use-axios';
 
 const Search = () => {
   const [searchKey,setSearchKey] = useState('');
-  const [searchResults,setSearchResults] = useState([]);
-  const search = [
-    {
-        "member_id": "1",
-        "member_name": "Gibson Sahwenje",
-        "location":"Fishoek (A)",
-        "contact_number":"+23 675 9870"
-    },
-    {
-      "member_id": "2",
-      "member_name": "Silverster Mairosi",
-      "location":"Danoon (B)",
-      "contact_number":"+23 675 9870"
-    },
-    {
-      "member_id": "3",
-      "member_name": "Rumbo Sahwenje",
-      "location":"Muzeinbery (B)",
-      "contact_number":"+23 675 9870"
-    },
-    {
-      "member_id": "4",
-      "member_name": "Gibson Sahwenje",
-      "location":"Picketburg (A)",
-      "contact_number":"+23 675 9870"
-    },
-    {
-      "member_id": "5",
-      "member_name": "Gibson Sahwenje",
-      "location":"Fishoek (A)",
-      "contact_number":"+23 675 9870"
-    },
-    {
-      "member_id": "6",
-      "member_name": "Gibson Sahwenje",
-      "location":"Nyanga (B)",
-      "contact_number":"+23 675 9870"
+  const [searchUp, setSearchUp] = useState(false);
+  const [search, setSearch] = useState([]);
+  const [postData, setPostData] = useState({});
+  
+  const { isLoading: isLoadingSearch, isError: isErrorSearch, data: dataSearch,statusCode: statusCodeSearch } = useAxiosFetch('search','POST',postData,searchUp);
+
+
+  useEffect(() => {
+  
+    if(dataSearch && statusCodeSearch===200)
+    {   
+      setSearchUp(false);  
+      setSearch(dataSearch.searched_members);
     }
-];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dataSearch]);
+    
+  const handleSearch = (text) => {
+    setSearchKey(text);
+    if(text.length>2)
+    {    
+    console.log('Search key:', text);
+    setPostData({"search_term":text}); 
+    setSearchUp(true);
+    }
+    else{
+      setSearch([]);
+    }
+  
+};
+  
   return (
    <SafeAreaView style={reusable.container}>
     <View style={{height:50}}>
@@ -60,7 +53,7 @@ const Search = () => {
     <TextInput
 style={styles.input}
 value={searchKey}
-onChangeText={setSearchKey}
+onChangeText={handleSearch}
 placeholder='Search Member'
     />
   </View>
@@ -73,8 +66,9 @@ color={COLORS.white}
 />
   </TouchableOpacity>
 </View>
-
-{search.length === 0 ? (
+{isLoadingSearch && <Text style={{color:COLORS.red,marginBottom:10,textAlign:'center'}}>Searching ...</Text>}
+{isErrorSearch && <Text style={{color:COLORS.red,marginBottom:10,textAlign:'center'}}>dataSearch.message</Text>}
+{search.length < 1 ? (
   <View>
     <HeightSpacer height={'20%'}/>
      <Image
@@ -95,6 +89,7 @@ renderItem={({item}) => (
 )}
  />
 )}
+<HeightSpacer height={'10%'}/>
    </SafeAreaView>
   )
 }

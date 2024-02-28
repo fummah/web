@@ -282,6 +282,39 @@ return $data;
   
   return $results;
    }
+   public function getSearch(Request $request)
+   {
+      try{
+      $searchTerm = $request->search_term;
+
+      $members = ZbsMembers::select('members.member_id', 'members.first_name', 'members.last_name', 'locations.location_name', 'groups.group_name', 'members.contact_number')
+          ->join('locations', 'members.location_id', '=', 'locations.location_id')
+          ->join('groups', 'locations.group_id', '=', 'groups.group_id')
+          ->where(function ($query) use ($searchTerm) {
+              $query->where('members.first_name', 'like', "%{$searchTerm}%")
+                  ->orWhere('members.last_name', 'like', "%{$searchTerm}%")
+                  ->orWhereRaw('CONCAT(members.first_name, " ", members.last_name) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhereRaw('CONCAT(members.last_name, " ", members.first_name) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhere('members.contact_number', 'like', "%{$searchTerm}%");
+          })
+          ->limit(5)
+          ->get();
+      
+      // Renaming the concatenated fields
+      $members->transform(function ($member) {
+          $member->member_name = $member->first_name . ' ' . $member->last_name;
+          $member->location = $member->location_name . ' - ' . $member->group_name;
+          unset($member->first_name, $member->last_name, $member->location_name, $member->group_name);
+          return $member;
+      });;
+      return response()->json(['message'=> 'Success','searched_members'=>$members],200);
+
+   }
+   catch(\Exception $e)
+   {
+      return response()->json(['message'=> 'There is an error. Please try again later.'],500);
+   }
+   }
    private function getGraphProcess($groupId)
    {
       $months = [];

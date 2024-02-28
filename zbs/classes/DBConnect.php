@@ -761,7 +761,7 @@ function addDeceased($funeral_id,$member_id,$_type,$date_of_death,$contact_perso
     }
     public function insertLogs($member_id,$entered_by)
     {
-        $stmt = $this->conn2->prepare("INSERT INTO `members_logs`(`member_id`, `first_name`, `last_name`, `contact_number`, `id_number`, `email_number`, `status`, `entered_by`, `date_entered`, `location_id`, `new_entered_by`) 
+        $stmt = $this->conn2->prepare("INSERT INTO `members_logs`(`member_id`, `first_name`, `last_name`, `contact_number`, `id_number`, `email_number`, `status`, `entered_by`, `date_entered`, `location_id`,`account_balance`, `new_entered_by`) 
 SELECT *,:entered_by FROM members WHERE member_id=:member_id");
         $stmt->bindParam(':member_id', $member_id, PDO::PARAM_STR);
         $stmt->bindParam(':entered_by', $entered_by, PDO::PARAM_STR);

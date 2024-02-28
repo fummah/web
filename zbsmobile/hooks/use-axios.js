@@ -31,10 +31,8 @@ export default function useAxiosFetch(url,request_method="GET",postData={}){
 			try {
 			  const value = await AsyncStorage.getItem(key);
 			  if (value !== null) {
-				console.log(`Value for key "${key}":`, value);
 				return value;
 			  } else {
-				console.log(`No value found for key "${key}".`);
 				return null;
 			  }
 			} catch (error) {
@@ -60,8 +58,6 @@ const fetch = async () =>{
 	dispatch({type:'INIT'});
 try{
 	const token = await getStorageItem('ACCEESS_GRANTED');
-	console.log("This is a test");
-	console.log(`This is tduma ${token}`); 
 	const result = await axios(`${main_url}/${url}`, {
         method: request_method,
          data: postData,
@@ -70,7 +66,7 @@ try{
         headers: {
 			'Authorization': `Bearer ${token}`
           }});
-		      
+		      console.log("dzziva",result);
 dispatch({type:'SUCCESS',payload:result.data,code:200});
 }
 catch(error)
