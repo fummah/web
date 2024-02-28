@@ -22,52 +22,52 @@ const validationSchema = Yup.object().shape({
 
 const setItemStorage = async (key, value) => {
     try {
-      await AsyncStorage.setItem(key, value);
+      await AsyncStorage.setItem(key, value);     
       return true;
     } catch (error) {
       return false;
     }
   };
-
-
-
+ 
 const Signin = () => {
     const navigation = useNavigation();
     const [loginBtnClicked, setLoginBtnClicked] = useState(false);
     const [postData, setPostData] = useState({});
     const [obsecureText,setObsecureText] = useState(false)
   
-    const { isLoading: isLoadingLogin, isError: isErrorLogin, data: dataLogin,statusCode: statusCodeLogin } = useAxiosFetch('login','POST',postData,loginBtnClicked);
-  
-  
-    useEffect(() => {
-      if(loginBtnClicked)
-      {   
-           
-          console.log(dataLogin);
-          setLoginBtnClicked(false);       
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [loginBtnClicked]);
+    const { isLoading: isLoadingLogin, isError: isErrorLogin, data: dataLogin, statusCode: statusCodeLogin } = useAxiosFetch('login', 'POST', postData, loginBtnClicked);
 
+    useEffect(() => {
+        if (loginBtnClicked) {
+            setLoginBtnClicked(false);
+        }
+    }, [loginBtnClicked, dataLogin]); // Include dataLogin in the dependency array
+    
     const handleSubmitValues = (values) => {
-        setPostData(values); 
-        console.log(values);
+        setPostData(values);
         setLoginBtnClicked(true);
     };
- 
-
-    if(dataLogin && statusCodeLogin===200)
-    {
-        const isset = setItemStorage('ACCEESS_GRANTED', dataLogin.token);
-        if(isset)
-        {
-navigation.navigate("Bottom");
-        }
-        else{
-return (<ErrorAlert message={'There is an error, try again.'}/>)
-        }
-    }
+    
+    useEffect(() => {
+        const handleLoginResponse = async () => {
+            try {
+                if (dataLogin && statusCodeLogin === 200) {
+                    const isset = await setItemStorage('ACCEESS_GRANTED', dataLogin.token);
+                    if (isset) {
+                        navigation.navigate("Bottom");
+                                                
+                    } else {
+                        throw new Error('Storage setting failed');
+                    }
+                }
+            } catch (error) {
+                console.error('Login response handling error:', error);
+                // Handle error (e.g., display error message)
+            }
+        };
+    
+        handleLoginResponse();
+    }, [dataLogin, statusCodeLogin, navigation]);
   
     return (
     <View style={styles.container}>
@@ -75,7 +75,6 @@ return (<ErrorAlert message={'There is an error, try again.'}/>)
         initialValues={{member_id:"",contactact_number:""}}
         validationSchema={validationSchema}
         onSubmit={(value) =>{
-            console.log(value);
         }}
         >
 {({

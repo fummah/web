@@ -61,7 +61,7 @@ navigation.navigate('FuneralDetails',{funeral_id:funeral_id});
     <View style={{flexDirection:"row"}}>
     <MaterialCommunityIcons name='cash' color={COLORS.gray} size={20}/>
     <ReusableText text=" Amount Charged : " family={'medium'} size={SIZES.medium} color={COLORS.gray}/>
-    <ReusableText text={item.amount_paid} family={'medium'} size={SIZES.medium} color={COLORS.dark}/>
+    <ReusableText text={`R${item.amount_paid}`} family={'medium'} size={SIZES.medium} color={COLORS.dark}/>
     </View>
 </View>
     </View>

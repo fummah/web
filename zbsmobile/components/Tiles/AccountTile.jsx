@@ -5,12 +5,14 @@ import { COLORS, TEXT } from '../../constants/theme'
 import { AntDesign } from '@expo/vector-icons'
 import WidthSpacer from '../Reusable/WidthSpacer'
 import ReusableText from '../Reusable/ReusableText'
+import HeightSpacer from '../Reusable/HeightSpacer'
 
 const AccountTile = ({item,onPress}) => {
   return (
   <TouchableOpacity onPress={onPress} style={[reusable.rowWidthSpace('space-between'),styles.container]}>
     <View>
     <ReusableText text={item.date_entered} family={"regular"} size={TEXT.small} color={COLORS.gray}/>
+    <HeightSpacer height={7}/>
 <ReusableText text={item.transaction_name} family={"regular"} size={TEXT.medium} color={COLORS.dark}/>
 
 </View>

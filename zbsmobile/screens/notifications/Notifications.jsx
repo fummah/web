@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
+import { View, Text, FlatList, RefreshControl } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import reusable from '../../components/Reusable/reusable.style';
@@ -12,14 +12,17 @@ import MyActivityIndicator from '../../components/Reusable/MyActivityIndicator';
 
 const Notifications = () => {
   const [notifications,setNotifications] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+const [refreshKey, setRefreshKey] = useState(0);
 
-  const {isLoading:isLoadingNotifications,isError:isErrorNotifications,data:dataNotifications,statusCode:statusCodeNotifications} = useAxiosFetch('getnotifications');
+  const {isLoading:isLoadingNotifications,isError:isErrorNotifications,data:dataNotifications,statusCode:statusCodeNotifications} = useAxiosFetch(`getnotifications?refreshKey=${refreshKey}`);
 
   useEffect(() => {
  
     if(dataNotifications && statusCodeNotifications===200)
     {
-      setNotifications(dataNotifications.notifications);   
+      setNotifications(dataNotifications.notifications);  
+      setRefreshing(false); 
     }
  },[dataNotifications]);
 
@@ -29,12 +32,18 @@ const Notifications = () => {
  }
  if(isErrorNotifications)
  {
-    return (<ErrorAlert message={`${dataAccounts.message}`} onClose={()=>{}}/>)
+    return (<ErrorAlert message={`${dataNotifications.message}`} onClose={()=>{}}/>)
  }
-
+ const onRefresh = () => {
+  setRefreshing(true); 
+  setRefreshKey(prevKey => prevKey + 1);
+};
 
   return (
-   <SafeAreaView style={reusable.container}>
+   <SafeAreaView style={reusable.container}
+   
+    >
+    
     <View style={{height:50}}>
     <AppBar title={'Notifications'} color={COLORS.white}  icon={'home'} color1={COLORS.white}/>
     </View>
@@ -47,7 +56,10 @@ size={SIZES.large}
 color={COLORS.green}
 />
 <HeightSpacer height={20}/>
+
 </View>
+
+       
 {notifications.length<1 &&
 <Text style={{color:COLORS.green}}>No Notifications</Text>
 }
@@ -55,13 +67,20 @@ color={COLORS.green}
 data={notifications}
 keyExtractor={(item) => item.notification_id}
 showsVerticalScrollIndicator={false}
+refreshControl={
+  <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={['#449282', '#449282']}
+  />
+}
 renderItem={({item}) => (
   <View style={styles.tile}>
   <NotificationTile item={item} />
   </View>
 )}
  />
-
+<HeightSpacer height={"10%"}/>
    </SafeAreaView>
   )
 }

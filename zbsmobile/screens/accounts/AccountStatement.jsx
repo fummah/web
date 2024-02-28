@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, Image, FlatList, ImageBackground } from 'react-native'
+import { View, Text,RefreshControl,FlatList, ImageBackground } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import reusable from '../../components/Reusable/reusable.style';
@@ -13,15 +13,18 @@ import MyActivityIndicator from '../../components/Reusable/MyActivityIndicator';
 const AccountStatement = () => {
   const [balance,setBalance] = useState('0.00');
   const [accounts,setAccounts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const {isLoading:isLoadingAccounts,isError:isErrorAccounts,data:dataAccounts,statusCode:statusCodeAccounts} = useAxiosFetch('getaccounts');
+  const {isLoading:isLoadingAccounts,isError:isErrorAccounts,data:dataAccounts,statusCode:statusCodeAccounts} = useAxiosFetch(`getaccounts?refreshKey=${refreshKey}`);
 
   useEffect(() => {
  
     if(dataAccounts && statusCodeAccounts===200)
     {
        setAccounts(dataAccounts.accounts);
-       setBalance(dataAccounts.balance);       
+       setBalance(dataAccounts.balance);   
+       setRefreshing(false);     
     }
  },[dataAccounts]);
 
@@ -33,7 +36,10 @@ const AccountStatement = () => {
  {
     return (<ErrorAlert message={`${dataAccounts.message}`} onClose={()=>{}}/>)
  }
-
+ const onRefresh = () => {
+   setRefreshing(true); 
+   setRefreshKey(prevKey => prevKey + 1);
+ };
   const renderHeader = () =>{
     return(
        <View 
@@ -96,6 +102,13 @@ style={{
 data={accounts}
 keyExtractor={(item) => item.id}
 showsVerticalScrollIndicator={false}
+refreshControl={
+   <RefreshControl
+       refreshing={refreshing}
+       onRefresh={onRefresh}
+       colors={['#449282', '#449282']}
+   />
+ }
 renderItem={({item}) => (
   <View style={styles.tile}>
   <AccountTile item={item} />
@@ -103,7 +116,7 @@ renderItem={({item}) => (
 )}
  />
 </View>
- <HeightSpacer height={49}/>
+<HeightSpacer height={"10%"}/>
    </SafeAreaView>
   )
 }

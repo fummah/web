@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ScrollView, ImageBackground,Text } from 'react-native'
+import { View, TouchableOpacity, ScrollView, ImageBackground,Text, RefreshControl } from 'react-native'
 import React,{useEffect,useState} from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import reusable from '../../components/Reusable/reusable.style';
@@ -19,7 +19,10 @@ const [latest,setLatest] = useState({});
 const [mydate,setMydat] = useState('');
 const [graph1,setGraph1] = useState(['u']);
 const [graph2,setGraph2] = useState([0]);
-const {isLoading:isLoadingDetails,isError:isErrorDetails,data:dataDetails,statusCode:statusCodeDetails} = useAxiosFetch('getdetails');
+const [refreshing, setRefreshing] = useState(false);
+const [refreshKey, setRefreshKey] = useState(0);
+
+const {isLoading:isLoadingDetails,isError:isErrorDetails,data:dataDetails,statusCode:statusCodeDetails} = useAxiosFetch(`getdetails?refreshKey=${refreshKey}`);
 useEffect(() => {
  
    if(dataDetails && statusCodeDetails===200)
@@ -31,11 +34,15 @@ useEffect(() => {
       setGraph1(dataDetails.graph.months);
       setGraph2(dataDetails.graph.values);
       setMydat(dataDetails.mydate);
+      setRefreshing(false);
    }
 },[dataDetails]);
+const onRefresh = () => {
+   setRefreshing(true); 
+   setRefreshKey(prevKey => prevKey + 1);
+ };
 
 const onViewRegister = (member_id) => {
-   console.log("clicked")
    navigation.navigate('Register', { member_id: member_id });
  };
 
@@ -104,7 +111,16 @@ style={{
    
       
      <SafeAreaView >
-      <ScrollView>
+      <ScrollView
+      contentContainerStyle={{ flex: 1 }}
+         refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#449282', '#449282']}
+            />
+          }
+      >
      <View style={reusable.rowWidthSpace('space-between')}>
      
       <Text style={{color:COLORS.green,...FONTS.h2, padding:10,paddingLeft:15}}>{details.first_name} {details.last_name}</Text>

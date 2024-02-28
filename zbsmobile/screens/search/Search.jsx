@@ -67,7 +67,7 @@ color={COLORS.white}
   </TouchableOpacity>
 </View>
 {isLoadingSearch && <Text style={{color:COLORS.red,marginBottom:10,textAlign:'center'}}>Searching ...</Text>}
-{isErrorSearch && <Text style={{color:COLORS.red,marginBottom:10,textAlign:'center'}}>dataSearch.message</Text>}
+{isErrorSearch && <Text style={{color:COLORS.red,marginBottom:10,textAlign:'center'}}>{dataSearch.message}</Text>}
 {search.length < 1 ? (
   <View>
     <HeightSpacer height={'20%'}/>

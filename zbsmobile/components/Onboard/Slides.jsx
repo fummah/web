@@ -10,10 +10,18 @@ const Slides = ({item}) => {
 const navigation = useNavigation();
 
 const handleLogin = async() =>{
+    const access = await AsyncStorage.getItem('ACCEESS_GRANTED');
+if(access===null)
+{
     await AsyncStorage.removeItem("ACCEESS_GRANTED");
     navigation.navigate('Auth', {
         screen: 'Signin',
       });
+}
+else{
+    navigation.navigate('Bottom');
+}
+  
 }
 
 const handleRegister = async() =>{

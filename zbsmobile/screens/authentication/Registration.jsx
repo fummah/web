@@ -45,8 +45,6 @@ const Registration = () => {
 
 if(dataAddButton && statusCodeSignup===200)
     {
-        console.log("Tendai Fuma");
-        console.log(dataAddButton);
         return (<><TouchableOpacity style={styles.container1}><HeightSpacer height={20}/><ReusableText text={`ZBS Account was successfully created, you may SIGNIN into your account.`} align={"center"} family={'medium'} size={SIZES.medium} color={COLORS.green}/></TouchableOpacity><SuccessRegistrationAlert message={dataAddButton.message}/></>);
     }
 

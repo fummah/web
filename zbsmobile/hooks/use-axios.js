@@ -66,7 +66,6 @@ try{
         headers: {
 			'Authorization': `Bearer ${token}`
           }});
-		      console.log("dzziva",result);
 dispatch({type:'SUCCESS',payload:result.data,code:200});
 }
 catch(error)

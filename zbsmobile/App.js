@@ -2,16 +2,18 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as Splashscreen from 'expo-splash-screen';
-import { useCallback } from 'react';
+import { useCallback,useState,useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Onboarding, Search,FuneralDetails, Register } from './screens';
 import BottomTabNavigation from './navigation/BottomTabNavigation';
 import AuthTopTab from './navigation/AuthTopTab';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [home,setHome] = useState(null);
   const [fontsLoaded] = useFonts({
 regular:require('./assets/fonts/regular.otf'),
 medium:require('./assets/fonts/medium.otf'),
@@ -22,20 +24,38 @@ xtrabold:require('./assets/fonts/xtrabold.otf'),
 
   const onLayoutRootView = useCallback(async () => {
     if(fontsLoaded){
+      console.log("Dziiiava");
+      const access = await AsyncStorage.getItem('ACCEESS_GRANTED');
+      setHome(access); 
+      console.log(access);
       await Splashscreen.hideAsync();
     }
   }, [fontsLoaded]);
 
   if(!fontsLoaded)
   {
+    const handleHome = async() =>{
+      const access = await AsyncStorage.getItem('ACCEESS_GRANTED');
+      setHome(access); 
+    }
+    handleHome();
     return null;
   }
+  
 
   return (
   <NavigationContainer>
 <Stack.Navigator>
-  <Stack.Screen name='Onboard' component={Onboarding} options={{headerShown:false}}/>
+  {home===null ? 
+  <><Stack.Screen name='Onboard' component={Onboarding} options={{headerShown:false}}/>
   <Stack.Screen name='Bottom' component={BottomTabNavigation} options={{headerShown:false}}/>
+  </>
+  :
+  <>
+  <Stack.Screen name='Bottom' component={BottomTabNavigation} options={{headerShown:false}}/>
+  <Stack.Screen name='Onboard' component={Onboarding} options={{headerShown:false}}/>
+  </>
+} 
   <Stack.Screen name='Search' component={Search} options={{headerShown:false}}/>
   <Stack.Screen name='FuneralDetails' component={FuneralDetails} options={{headerShown:false}}/>
   <Stack.Screen name='Register' component={Register} options={{headerShown:false}}/>

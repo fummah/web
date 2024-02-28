@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../../constants/theme';
+import HeightSpacer from './HeightSpacer';
 
 const SuccessRegistrationAlert = ({message}) => {
 const navigation = useNavigation();
@@ -12,12 +13,18 @@ const navigation = useNavigation();
       screen: 'Signin',
     });
   }
+  const onClose = () =>{
+    
+  }
   return (
     <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {}}
+    animationType="fade"
+    transparent={true}
+    visible={modalVisible}
+    onRequestClose={() => {
+      setModalVisible(false);
+      onClose();
+    }}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
@@ -29,7 +36,19 @@ const navigation = useNavigation();
           >
             <Text style={styles.closeButtonText}>Go to Login</Text>
           </TouchableOpacity>
-      
+          
+          <HeightSpacer height={10}/>
+          {
+          <TouchableOpacity
+            style={styles.closeButton1}
+            onPress={() => {
+              setModalVisible(false);
+              onClose();
+            }}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        }
         </View>
       </View>
     </Modal>
@@ -59,6 +78,12 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     backgroundColor: COLORS.green,
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20
+  },
+  closeButton1: {
+    backgroundColor: COLORS.red,
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 20
