@@ -37,6 +37,14 @@ useEffect(() => {
       setRefreshing(false);
    }
 },[dataDetails]);
+useEffect(() => {
+   const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+     // Prevent default navigation action
+     e.preventDefault();
+   });
+
+   return unsubscribe;
+ }, [navigation]);
 const onRefresh = () => {
    setRefreshing(true); 
    setRefreshKey(prevKey => prevKey + 1);
