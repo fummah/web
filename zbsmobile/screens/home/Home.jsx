@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ScrollView, ImageBackground,Text, RefreshControl } from 'react-native'
+import { View, TouchableOpacity, ScrollView, ImageBackground,Text, RefreshControl,StatusBar } from 'react-native'
 import React,{useEffect,useState} from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import reusable from '../../components/Reusable/reusable.style';
@@ -116,8 +116,8 @@ style={{
    }
   return (
    
-   
-      
+   <>
+   <StatusBar barStyle="light-content" backgroundColor="#449282" />
      <SafeAreaView >
       <ScrollView
       contentContainerStyle={{ flex: 1 }}
@@ -167,7 +167,7 @@ source={"https://zbsburial.com/wp-content/uploads/2023/03/logo-120x63.jpg"} heig
         </View>
         </ScrollView>
      </SafeAreaView>
-     
+     </>
   
   )
 }

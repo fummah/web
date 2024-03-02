@@ -17,7 +17,7 @@ const AccountTile = ({item,onPress}) => {
 
 </View>
 <View style={reusable.rowWidthSpace("flex-start")}>
-<ReusableText text={item.amount} family={"regular"} size={TEXT.small} color={COLORS.gray}/>
+<ReusableText text={`${item.amount}`} family={"regular"} size={TEXT.small} color={COLORS.gray}/>
 <WidthSpacer width={5}/>
 <AntDesign name='right' size={15} color={COLORS.green}/>
 </View>

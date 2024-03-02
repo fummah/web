@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StatusBar, FlatList } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import reusable from '../../components/Reusable/reusable.style';
@@ -43,6 +43,8 @@ const Search = () => {
 };
   
   return (
+    <>
+    <StatusBar barStyle="light-content" backgroundColor="#449282" />
    <SafeAreaView style={reusable.container}>
     <View style={{height:50}}>
     <AppBar title={'Search'} color={COLORS.white}  icon={'home'} color1={COLORS.white}/>
@@ -53,7 +55,7 @@ const Search = () => {
 style={styles.input}
 value={searchKey}
 onChangeText={handleSearch}
-placeholder='Search Member'
+placeholder='Search Member...'
     />
   </View>
 
@@ -70,10 +72,7 @@ color={COLORS.white}
 {search.length < 1 ? (
   <View>
     <HeightSpacer height={'20%'}/>
-     <Image
-source={require('../../assets/images/zbssearch.png')}
-style={styles.searchImage}
-  />
+
   </View>
  
 ):(
@@ -90,6 +89,7 @@ renderItem={({item}) => (
 )}
 <HeightSpacer height={'10%'}/>
    </SafeAreaView>
+   </>
   )
 }
 

@@ -1,4 +1,4 @@
-import { View,FlatList } from 'react-native'
+import { View,FlatList,StatusBar } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import reusable from '../../components/Reusable/reusable.style';
@@ -38,6 +38,8 @@ if(isErrorDeceased)
 }
 
   return (
+    <>
+    <StatusBar barStyle="light-content" backgroundColor="#449282" />
    <SafeAreaView style={reusable.container}>
     <View style={{height:50}}>
     <AppBar title={'Search'} color={COLORS.white}  icon={'home'} color1={COLORS.white}/>
@@ -62,6 +64,7 @@ renderItem={({item}) => (
 )}
  />
    </SafeAreaView>
+   </>
   )
 }
 

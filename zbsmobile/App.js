@@ -24,7 +24,6 @@ xtrabold:require('./assets/fonts/xtrabold.otf'),
 
   const onLayoutRootView = useCallback(async () => {
     if(fontsLoaded){
-      console.log("Dziiiava");
       const access = await AsyncStorage.getItem('ACCEESS_GRANTED');
       setHome(access); 
       console.log(access);

@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StatusBar, FlatList } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import reusable from '../../components/Reusable/reusable.style';
@@ -39,6 +39,8 @@ if(isErrorRegister)
   
   
   return (
+    <>
+    <StatusBar barStyle="light-content" backgroundColor="#449282" />
    <SafeAreaView style={reusable.container}>
     <View style={{height:50}}>
     <AppBar title={'Notifications'} color={COLORS.white}  icon={'home'} color1={COLORS.white}/>
@@ -69,6 +71,7 @@ renderItem={({item}) => (
  />
 
    </SafeAreaView>
+   </>
   )
 }
 

@@ -1,4 +1,4 @@
-import { View, Text, FlatList, RefreshControl } from 'react-native'
+import { View, Text, FlatList, RefreshControl,StatusBar } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import reusable from '../../components/Reusable/reusable.style';
@@ -40,6 +40,8 @@ const [refreshKey, setRefreshKey] = useState(0);
 };
 
   return (
+    <>
+    <StatusBar barStyle="light-content" backgroundColor="#449282" />
    <SafeAreaView style={reusable.container}
    
     >
@@ -82,6 +84,7 @@ renderItem={({item}) => (
  />
 <HeightSpacer height={"10%"}/>
    </SafeAreaView>
+   </>
   )
 }
 
