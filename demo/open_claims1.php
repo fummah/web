@@ -1,5 +1,6 @@
 <?php
 session_start();
+error_reporting(0);
 define("access",true);
 require "classes/controls.php";
 include ("templates/claim_templates.php");
@@ -17,6 +18,8 @@ $arr_red_client=array();
 $arr_orange_client=array();
 $arr_green_client=array();
 $sla_req=isset($_GET["sla"])?$_GET["sla"]:"";
+
+$r_clients = ["Western","Kaelo"]
 ?>
 <title>
     MCA | Open Claims
@@ -99,7 +102,7 @@ $sla_req=isset($_GET["sla"])?$_GET["sla"]:"";
             <tr>
                 <th>Name</th>
                 <th>Claim Number</th>
-                <th>SLA Days</th>
+                <th>SLA Days/Hrs</th>
                 <th>Note Date</th>
                 <th>Days Open</th>
                 <th>Owner</th>
@@ -148,40 +151,44 @@ $sla_req=isset($_GET["sla"])?$_GET["sla"]:"";
                 $date_closed=$row["date_closed"];
                 $date_reopened=$row["date_reopened"];
                 $descr=$row["descr"];
+                $days=0;
+                $hours=0;
 
                 if(strlen($date_reopened)<2 && strlen($date_closed)>10)
                 {
                     $dat0=$control->viewClaimDate($claim_id,$date_reopened,$date_entered);
                     $date_entered=$date_entered>$dat0?$date_entered:$dat0;
                 }
-                //$from_date1 = date('Y-m-d', strtotime($date_entered));
-                $days=round($control->getWorkingDays($date_entered,$control->todayDate(),$control->holidays()));
-                $hours=round($control->getWorkingHours($date_entered,date("Y-m-d H:i:s"),$control->holidays()));
+                if(in_array($client,$r_clients))
+                {
+                    $hours=round($control->getWorkingHours($date_entered,date("Y-m-d H:i:s"),$control->holidays()));
+                    $days=$hours;
+                    
+                }
+                else
+                {
+                    $from_date1 = date('Y-m-d', strtotime($date_entered));
+                    $days=round($control->getWorkingDays($from_date1,$control->todayDate(),$control->holidays()));
+                }
+               
+                
                 $arr=array("date_entered"=>$date_entered,"claim_id"=>$claim_id,"days"=>$days,"notes"=>$status_type,"descr"=>$descr);
                 $sla=0;
-                if(($days>2 || $hours> 8 ) && $status_type == "No_Notes")
+                if(($days>2 || $hours>= 8 ) && $status_type == "No_Notes")
                 {
                     array_push($purple_arr,$arr);
                     array_push($arr_purple_username,$user);
                     array_push($arr_purple_client,$client);
                     $sla=1;
                 }
-                elseif($days>2 || $hours> 7)
+                elseif($days>2 || (($days==2 || $hours<8) && $status_type == "No_Notes") || $hours>=8)
                 {
                     array_push($red_arr,$arr);
                     array_push($arr_red_username,$user);
                     array_push($arr_red_client,$client);
                     $sla=1;
                 }
-                elseif($days==2 && $status_type == "No_Notes")
-                {
-                    array_push($red_arr,$arr);
-                    array_push($arr_red_username,$user);
-                    array_push($arr_red_client,$client);
-                    $sla=1;
-                }
-
-                elseif ($days==2)
+                elseif ($days==2 || $hours>=4)
                 {
                     array_push($orange_arr,$arr);
                     array_push($arr_orange_username,$user);
