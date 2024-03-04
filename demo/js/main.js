@@ -1,10 +1,13 @@
 $(document).ready(function (){
     let f1=loadDetails();
     f1.then(function(value){
+        
 let f2=getTotals(value);
 f2.then((value)=>{
+    
 let f3=getOtherTotals(value);
 f3.then((value)=>{
+    console.log(value);
     let f4= claimDetails(value);  
     f4.then((value)=>{
         let f5=getNotes(value);
@@ -22,7 +25,8 @@ async function loadDetails()
         type:"POST",
         data:obj,
         success:function(data){
-            console.log(data);
+            //console.log(data);
+            console.log(JSON.parse(data));
             var json=JSON.parse(data);
             var purple=json["purple_total"];
             var red=json["red_total"];
@@ -93,6 +97,7 @@ async function claimDetails(claim_id)
             $("#policy_number").text(json["policy_number"]);
             $("#incident_date").text(json["Service_Date"]);
             $(".claim_id").attr("value",claim_id);
+            
             resolve(claim_id);
         },
         error:function(jqXHR, exception)
@@ -149,7 +154,7 @@ reject(0);
     });
 });
 }
-async function getOtherTotals(claim_id)
+async function getOtherTotals(claim_idx)
 {
     return new Promise((resolve,reject)=>{
     var obj={identity_number:17};
@@ -197,7 +202,7 @@ async function getOtherTotals(claim_id)
                 var claim_number=zero_arr[k]["claim_number"];
                 $("#zero_append").append("<form action='case_details.php' method='post'><input type='hidden' name='claim_id' value='"+claim_id+"'/><input type='submit' class='linkbutton' name='btn' value='"+claim_number+"'>");
             }
-            resolve(claim_id);
+            resolve(claim_idx);
         },
         error:function(jqXHR, exception)
         {

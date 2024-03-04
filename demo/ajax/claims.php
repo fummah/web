@@ -393,11 +393,14 @@ elseif($identity==14)
     }
     try {
         $val=1;
+        $r_clients = ["Western","Kaelo"];
         $condition=":username";
+        
         if($control->isClaimsSpecialist())
         {
             $condition="username=:username";
             $val=$control->loggedAs();
+            
         }
         elseif ($control->isGapCover())
         {
@@ -414,6 +417,8 @@ elseif($identity==14)
         $all_array_sort=asort($all_array);
         foreach ($all_array as $row)
         {
+            $days=0;
+        $hours=0;
             $claim_id=$row["claim_id"];
             $date_entered=$row["date_entered"];
             $status_type=$row["status_type"];
@@ -421,27 +426,34 @@ elseif($identity==14)
             $date_reopened=$row["date_reopened"];
             $date_closed=$row["date_closed"]!== null?$row["date_closed"]:"-";
             $date_reopened=$row["date_reopened"]!== null?$row["date_reopened"]:"-";
+            $client=$row["client_name"];
             if(strlen($date_reopened)<2 && strlen($date_closed)>10)
             {
                 $dat0=$control->viewClaimDate($claim_id,$date_reopened,$date_entered);
                 $date_entered=$date_entered>$dat0?$date_entered:$dat0;
             }
-            $from_date1 = date('Y-m-d', strtotime($date_entered));
-            $days=round($control->getWorkingDays($from_date1,$control->todayDate(),$control->holidays()));
-            $arr=array("date_entered"=>$date_entered,"claim_id"=>$claim_id,"days"=>$days);
-            if($days>2 && $status_type == "No_Notes")
+            
+            if(in_array($client,$r_clients))
+                {
+                    $hours=(double)$control->getWorkingHours($date_entered,date("Y-m-d H:i:s"),$control->holidays());                                        
+                }
+                else
+                {
+                    $from_date1 = date('Y-m-d', strtotime($date_entered));
+                    $days=round($control->getWorkingDays($from_date1,$control->todayDate(),$control->holidays()));
+                }
+               
+            $arr=array("date_entered"=>$date_entered,"claim_id"=>$claim_id,"hours"=>$hours);
+            if(($days>2 || $hours>= 8 ) && $status_type == "No_Notes")
             {
                 array_push($purple_arr,$arr);
             }
-            elseif($days>2)
+            elseif($days>2 || (($days==2 || $hours<8) && $status_type == "No_Notes") || $hours>=8)
             {
                 array_push($red_arr,$arr);
             }
-            elseif($days==2 && $status_type == "No_Notes")
-            {
-                array_push($red_arr,$arr);
-            }
-            elseif ($days==2)
+            
+            elseif ($days==2 || $hours>=4)
             {
                 array_push($orange_arr,$arr);
             }
@@ -459,21 +471,25 @@ elseif($identity==14)
         $next_claim_id=0;
         if($count_purple>0)
         {
+            usort($purple_arr, function($a, $b) { return $b["hours"] - $a["hours"];});
             $next_claim_id=$purple_arr[0]["claim_id"];
         }
         elseif($count_red>0)
         {
+            usort($red_arr, function($a, $b) { return $b["hours"] - $a["hours"];});
             $next_claim_id=$red_arr[0]["claim_id"];
         }
         elseif($count_orange>0)
         {
+            usort($orange_arr, function($a, $b) { return $b["hours"] - $a["hours"];});
             $next_claim_id=$orange_arr[0]["claim_id"];
         }
         else
         {
+            usort($green_arr, function($a, $b) { return $b["hours"] - $a["hours"];});
             $next_claim_id=$green_arr[0]["claim_id"];
         }
-        $json_arr=array("purple_total"=>$count_purple,"red_total"=>$count_red,"orange_total"=>$count_orange,"green_total"=>$count_green,"next_claim_id"=>$next_claim_id);
+        $json_arr=array("purple_total"=>$count_purple,"red_total"=>$count_red,"orange_total"=>$count_orange,"green_total"=>$count_green,"next_claim_id"=>$next_claim_id,"myarr"=>$red_arr);
         echo json_encode($json_arr);
     }
     catch (Exception $e)

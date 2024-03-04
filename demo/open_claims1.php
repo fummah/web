@@ -19,7 +19,7 @@ $arr_orange_client=array();
 $arr_green_client=array();
 $sla_req=isset($_GET["sla"])?$_GET["sla"]:"";
 
-$r_clients = ["Western","Kaelo"]
+$r_clients = ["Western","Kaelo"];
 ?>
 <title>
     MCA | Open Claims
@@ -153,6 +153,7 @@ $r_clients = ["Western","Kaelo"]
                 $descr=$row["descr"];
                 $days=0;
                 $hours=0;
+                $ssl = 0;
 
                 if(strlen($date_reopened)<2 && strlen($date_closed)>10)
                 {
@@ -161,18 +162,18 @@ $r_clients = ["Western","Kaelo"]
                 }
                 if(in_array($client,$r_clients))
                 {
-                    $hours=round($control->getWorkingHours($date_entered,date("Y-m-d H:i:s"),$control->holidays()));
-                    $days=$hours;
-                    
+                    $hours=(double)$control->getWorkingHours($date_entered,date("Y-m-d H:i:s"),$control->holidays());
+                    $ssl=round($hours);
                 }
                 else
                 {
                     $from_date1 = date('Y-m-d', strtotime($date_entered));
                     $days=round($control->getWorkingDays($from_date1,$control->todayDate(),$control->holidays()));
+                    $ssl=$days;
                 }
                
                 
-                $arr=array("date_entered"=>$date_entered,"claim_id"=>$claim_id,"days"=>$days,"notes"=>$status_type,"descr"=>$descr);
+                $arr=array("date_entered"=>$date_entered,"claim_id"=>$claim_id,"days"=>$ssl,"notes"=>$status_type,"descr"=>$descr);
                 $sla=0;
                 if(($days>2 || $hours>= 8 ) && $status_type == "No_Notes")
                 {
@@ -204,6 +205,7 @@ $r_clients = ["Western","Kaelo"]
                 {
                     $control->callUpdateClaimKey($claim_id,"sla",2," AND sla<>1");
                 }
+               
 
             }
             $count_purple=count($purple_arr);

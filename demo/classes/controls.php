@@ -1091,6 +1091,13 @@ public function callSFTPNegative()
         }
         return $workingDays;
       }
+
+      function arrDesc($arr)
+      {
+        usort($arr, function($a, $b) {
+            return $b["hours"] - $a["hours"]; // Compare hours in descending order
+        });
+      }
     function checkDisciplineCodes($discipline_id)
     {
         global $conn;
