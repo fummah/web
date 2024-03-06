@@ -448,10 +448,14 @@ elseif($identity==14)
             {
                 array_push($purple_arr,$arr);
             }
-            elseif($days>2 || (($days==2 || $hours<8) && $status_type == "No_Notes") || $hours>=8)
+            elseif(($hours>0 && $hours<8 && $status_type == "No_Notes") || $hours>=8)
             {
                 array_push($red_arr,$arr);
             }
+            elseif($days>2 || ($days==2  && $status_type == "No_Notes"))
+            {
+                array_push($red_arr,$arr);
+            }           
             
             elseif ($days==2 || $hours>=4)
             {

@@ -90,7 +90,7 @@ require_once ("header.php");
            
         </div>
         <div class="col-md-2">
-        <a href="accounts_paid.php">Total Balance : </a><span class="uk-badge" style="background-color: cadetblue !important;"><?php echo $db->moneyformat($total_sum);?></span>
+            Total Balance : <span class="uk-badge" style="background-color: cadetblue !important;">R<?php echo $db->moneyformat($total_sum);?></span>
         </div>
         <div class="col-md-2">
             Subscribing Members : <span class="uk-badge" style="background-color: cadetblue !important;"><?php echo $total_number;?></span>
@@ -127,7 +127,7 @@ require_once ("header.php");
                 </thead><tbody>
                 <?php
 
-                foreach ($db->subscribedMembers($start_from ,$limit,$search_value,0) as $row) {
+                foreach ($db->subscribedMembers($start_from ,$limit,$search_value,0,"paid") as $row) {
                     $member_id = $row["member_id"];                    
                     $full_name = $row["first_name"]." ".$row["last_name"];                    
                     $location = $row["location_name"];
@@ -145,7 +145,7 @@ require_once ("header.php");
                 </tbody>
             </table>
             <?php
-            $total_records=$db->subscribedMembers(1 ,10,$search_value,1);
+            $total_records=$db->subscribedMembers(1 ,10,$search_value,1,"paid");
             $total_pages = ceil($total_records / $limit);
             $pagLink = "<ul class='pagination'>";
             for ($i=1; $i<=$total_pages; $i++) {

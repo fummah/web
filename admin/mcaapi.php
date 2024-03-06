@@ -1,10 +1,6 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:3030");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-
 error_reporting(0);
-include ("../../mca/link2.php");
+include ("../../mca/link3.php");
 $conn=connection("mca","MCA_admin");
 $conn1=connection("doc","doctors");
 $conn2=connection("cod","Coding");
@@ -85,6 +81,36 @@ class jv_import_export
         }
         return $try;
     }
+    function updateClaimKey($claim_id,$key,$value,$condition="")
+    {
+        global $conn;
+        try
+        {
+        $stmt=$conn->prepare('UPDATE claim SET '.$key.'=:val WHERE claim_id=:claim_id'.$condition);
+        $stmt->bindParam(':claim_id', $claim_id, PDO::PARAM_STR);
+        $stmt->bindParam(':val', $value, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+    catch(Exception $ex)
+    {
+
+    }
+    }
+    function getValidationsInd($id)
+    {
+        global $conn;
+        try
+        {
+        $stmt =$conn->prepare("SELECT vals FROM internal_rules WHERE id=:id"); 
+        $stmt->bindParam(':id', $id, PDO::PARAM_STR);       
+        $stmt->execute();
+        return $stmt->fetchColumn();
+        }
+    catch(Exception $ex)
+    {
+return "";
+    }
+    }
     function updateClaim($claim_id)
     {
         global $conn;
@@ -92,19 +118,50 @@ class jv_import_export
         $checkM->bindParam(':claim_id', $claim_id, PDO::PARAM_STR);
         $checkM->execute();
         $checkM->rowCount();
-
     }
-    function getUsername()
+
+        function configs()
+        {
+            global $conn;
+            $config=$conn->prepare('SELECT *FROM configs');
+            $config->execute();
+            return $config->fetch();
+        }
+        function getRUsers($limit,$clients)
+        {
+            global $conn;
+            $s=$conn->prepare('SELECT username,email FROM users_information WHERE r_status=1 AND username NOT IN
+            (SELECT username FROM (SELECT a.username,COUNT(a.claim_id) as total FROM `claim` as a INNER JOIN member as b 
+            ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE DATE(a.date_entered) = CURDATE() 
+            AND c.client_name IN ('.$clients.') GROUP BY a.username HAVING total>=:limitx) as f) ORDER BY datetime ASC LIMIT 1');
+            $s->bindParam(':limitx', $limit, PDO::PARAM_STR);
+            $s->execute();
+            return $s->fetch();
+        }
+        function getNUsers()
+        {
+            global $conn;
+            $s=$conn->prepare('SELECT username,email FROM users_information WHERE status=1 ORDER BY datetime ASC LIMIT 1');
+            $s->execute();
+            return $s->fetch();
+        }
+    function getUsername($isR=false,$limit=1,$clients="")
     {
-        global $conn;
-
-
-        $stmt=$conn->prepare('SELECT username,email FROM users_information WHERE status=1 ORDER BY datetime ASC LIMIT 1');
-        $stmt->execute();
-        $row=$stmt->fetch();
-        $details['username']=$row['0'];
-        $details['email']=$row['1'];
-
+        $r_users = array();
+        if($isR)
+        {
+            $r_users = $this->getRUsers($limit,$clients);
+            if($r_users===false)
+            {
+                $r_users = $this->getNUsers();
+            }            
+        }
+        else
+        {
+            $r_users = $this->getNUsers();
+        }
+        $details['username']=$r_users['0'];
+        $details['email']=$r_users['1'];
         return $details;
     }
     function updateUsername($username)
@@ -357,7 +414,7 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,patient_i
                 $incident_date_end = empty($r[$i]["incident_date_end"])?null:$r[$i]["incident_date_end"];
                 $claimChargedAmnt = (double)$r[$i]["charged_amount"];
                 $schemePaidAmnt = (double)$r[$i]["schemepaid_amount"];
-
+                $emergencyarr=explode(",",$this->getValidationsInd(5));
                 $owner="Western";
                 $claimCalcAmnt=$claimChargedAmnt-$schemePaidAmnt;
                 $c_amount=0;
@@ -373,9 +430,7 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,patient_i
                 $memberLiability=0.0;
                 $patient_number="";
                 $switchReference="";
-                $client_claim_number ="";
-                $details=$this->getUsername();
-                $username=$details['username'];
+                $client_claim_number ="";               
                 $client_gap =(double)$r[$i]["gap_amount"];
                 $note_arr=$r[$i]["notes"];
                 //print_r($note_arr);
@@ -406,6 +461,18 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,patient_i
                     $client_id = 15;
                     $owner="Sanlam";
                 }
+                $r_clients = $this->configs();
+                $r_sclients = $r_clients["r_clients"];
+                $r_limit = (int)$r_clients["r_limit"];
+                $xquotes = str_replace('"', '', $r_sclients);
+                $clients_arr = explode(",", $xquotes);
+                $r_s = false;
+                if(in_array($owner,$clients_arr))
+                {
+                    $r_s = true;
+                }
+                $details=$this->getUsername($r_s,$r_limit,$r_sclients);
+                $username=$details['username'];
                 $xopen=1;
                 $xclosed_date="";
                 $xscheme_savings="";
@@ -505,10 +572,11 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,patient_i
                             //echo $practiceNo;
                             if (!$this->checkDoctor($practiceNo)) {
 
-                                $insertDoctor1 = $conn->prepare('INSERT INTO doctor_details(name_initials,practice_number,discipline) VALUES(:firstname,:practiceno,:service)');
+                                $insertDoctor1 = $conn->prepare('INSERT INTO doctor_details(name_initials,practice_number,discipline,entered_by) VALUES(:firstname,:practiceno,:service,:entered_by)');
                                 $insertDoctor1->bindParam(':firstname', $practiceName, PDO::PARAM_STR);
                                 $insertDoctor1->bindParam(':practiceno',  $pracno_1, PDO::PARAM_STR);
                                 $insertDoctor1->bindParam(':service', $providertypedesc, PDO::PARAM_STR);
+                                $insertDoctor1->bindParam(':entered_by', $owner, PDO::PARAM_STR);
                                 $kk=$insertDoctor1->execute();
                                 if ($kk==1)
                                 {
@@ -533,12 +601,13 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,patient_i
                                 //$doc_gap+=(double)$doc_gaparr[2];
                             }
                             if(!$chhh) {
-                                $insertDoctor = $conn->prepare('INSERT INTO doctors(claim_id,practice_number,claimedline_id,doc_gap,provider_invoicenumber) VALUES(:claim_id,:practice_number,:claimedline_id,:doc_gap,:provider_invoicenumber)');
+                                $insertDoctor = $conn->prepare('INSERT INTO doctors(claim_id,practice_number,claimedline_id,doc_gap,provider_invoicenumber,entered_by) VALUES(:claim_id,:practice_number,:claimedline_id,:doc_gap,:provider_invoicenumber,:entered_by)');
                                 $insertDoctor->bindParam(':claim_id', $claim_id, PDO::PARAM_STR);
                                 $insertDoctor->bindParam(':practice_number', $practiceNo, PDO::PARAM_STR);
                                 $insertDoctor->bindParam(':claimedline_id', $claimedline_id, PDO::PARAM_STR);
                                 $insertDoctor->bindParam(':doc_gap', $doc_gap, PDO::PARAM_STR);
                                 $insertDoctor->bindParam(':provider_invoicenumber', $provider_invoicenumber, PDO::PARAM_STR);
+                                $insertDoctor->bindParam(':entered_by', $owner, PDO::PARAM_STR);
                                 $cc2 = $insertDoctor->execute();
                                 if ($cc2 == 1) {
                                     $this->mess2="Claim Successfully added";
@@ -572,7 +641,6 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,patient_i
                                     $clmlineCalcAmnt=$clmnlineChargedAmnt-$clmlineSchemePaidAmnt;
                                     //$clmlineCalcAmnt=$gap_amount_line;
                                     $memberLiability = 0.0;
-                                    $benefitDescription =$benefitDescription;
                                     $treatmentType = $claimLine[$j]["treatment_type"];
                                     $treatmentDate = $claimLine[$j]["treatment_date"];
                                     $treatmentDate=strlen($treatmentDate)>1?$treatmentDate:$eventDateFrom;
@@ -679,6 +747,10 @@ msg_dscr,lng_msg_dscr,treatmentType,secondaryICDCode,secondaryICDDescr,cptCode,n
                                                 $xopen=1;
                                             }
                                             $this->updateClaim($claim_id);
+                                             if(in_array($tariffCode, $emergencyarr))
+                                            {
+                                                $this->updateClaimKey($claim_id,"emergency","1");
+                                            }
 
                                         } else {
                                             $mess = "There is an error";

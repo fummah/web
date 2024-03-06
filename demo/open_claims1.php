@@ -182,13 +182,21 @@ $r_clients = ["Western","Kaelo"];
                     array_push($arr_purple_client,$client);
                     $sla=1;
                 }
-                elseif($days>2 || (($days==2 || $hours<8) && $status_type == "No_Notes") || $hours>=8)
+                elseif(($hours>0 && $hours<8 && $status_type == "No_Notes") || $hours>=8)
                 {
                     array_push($red_arr,$arr);
                     array_push($arr_red_username,$user);
                     array_push($arr_red_client,$client);
                     $sla=1;
                 }
+                elseif($days>2 || ($days==2  && $status_type == "No_Notes"))
+                {
+                    array_push($red_arr,$arr);
+                    array_push($arr_red_username,$user);
+                    array_push($arr_red_client,$client);
+                    $sla=1;
+                }           
+             
                 elseif ($days==2 || $hours>=4)
                 {
                     array_push($orange_arr,$arr);

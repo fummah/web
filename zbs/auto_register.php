@@ -1,8 +1,13 @@
 <?php
 session_start();
 define("access",true);
+$_SESSION["logxged"] = true;
+$_SESSION['start_db']=true;
+$_SESSION['role']="ordinary";
+$_SESSION['group_id']=1;
 include ("classes/DBConnect.php");
 $db=new DBConnect();
+/*
 foreach($db->getOpenFunerals() as $row)
 {
     $funeral_id = (int)$row["funeral_id"];
@@ -19,5 +24,5 @@ foreach($db->getOpenFunerals() as $row)
         $db->insertTranctions($member_id,-1*$amount_paid,"System",$transaction_name,$funeral_id);
     }
 }
-
+*/
 echo "Done!!";

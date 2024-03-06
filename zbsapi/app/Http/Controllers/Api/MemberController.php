@@ -262,7 +262,10 @@ return $data;
    }
    private function notifications($memberId)
    {
-      $notifications = NotificationsModel::where('member_id', '=', $memberId)->get();  
+      $notifications = NotificationsModel::where('member_id', '=', $memberId)
+      ->orderBy('notification_id', 'DESC')
+      ->limit(50)
+      ->get();  
     return $notifications;
    }
    private function funeral($funeral_id)
