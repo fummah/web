@@ -28,6 +28,19 @@ const setItemStorage = async (key, value) => {
       return false;
     }
   };
+  const getStorageItem = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        return value;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error getting item:', error);
+      return null;
+    }
+  };
  
 const Signin = () => {
     const navigation = useNavigation();
@@ -43,7 +56,10 @@ const Signin = () => {
         }
     }, [loginBtnClicked, dataLogin]); // Include dataLogin in the dependency array
     
-    const handleSubmitValues = (values) => {
+    const handleSubmitValues = async (values) => {
+        const mtoken = await getStorageItem('EXPOTOKEN');        
+        values.expotoken=mtoken;
+        console.log(values);
         setPostData(values);
         setLoginBtnClicked(true);
     };
@@ -52,6 +68,7 @@ const Signin = () => {
         const handleLoginResponse = async () => {
             try {
                 if (dataLogin && statusCodeLogin === 200) {
+                    
                     const isset = await setItemStorage('ACCEESS_GRANTED', dataLogin.token);
                     if (isset) {
                         navigation.navigate("Bottom");
@@ -59,6 +76,7 @@ const Signin = () => {
                     } else {
                         throw new Error('Storage setting failed');
                     }
+                   
                 }
             } catch (error) {
                 console.error('Login response handling error:', error);
@@ -72,7 +90,7 @@ const Signin = () => {
     return (
     <View style={styles.container}>
         <Formik
-        initialValues={{member_id:"",contactact_number:""}}
+        initialValues={{member_id:"",contact_number:"",expotoken:""}}
         validationSchema={validationSchema}
         onSubmit={(value) =>{
         }}

@@ -11,6 +11,7 @@ import AlertTile from './Reusable/AlertTile';
 import HomeChart from './Charts/HomeChart';
 import ErrorAlert from './Reusable/ErrorAlert';
 import SuccessRegistrationAlert from './Reusable/SuccessRegistrationAlert';
+import BadgeIcon from './Reusable/BadgeIcon';
 
 export {
     ReusableText,
@@ -25,5 +26,6 @@ export {
     AlertTile,
     HomeChart,
     ErrorAlert,
-    SuccessRegistrationAlert
+    SuccessRegistrationAlert,
+    BadgeIcon
 }

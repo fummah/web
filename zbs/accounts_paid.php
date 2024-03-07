@@ -180,6 +180,9 @@ const full_name = $(this).attr("full_name");
         );
 
         $(document).on("click","#save_deposit",function(){
+            const result = confirm("Are you sure you want to update deposit for this member?");
+            if(result)
+            {
             $("#deposit_msg").empty();
 const member_id = $("#member_id").val();
 const deposit_amount = $("#deposit_amount").val();
@@ -203,7 +206,7 @@ $.ajax({
             console.log("There is an error : "+jqXHR.responseText);
         }
         });
-
+    }
         }
         );
 

@@ -785,6 +785,7 @@ $xx=$db->insertDependencyLogs($dep_id,$db->loggedAs());
         $deposit_limit=(double)$configs["deposit_limit"];
         $details =$db->getSingleMember($member_id);
         $current_balance = (double)$details["account_balance"];
+        $expotoken = $details["expo_token"];
         if($current_balance>= $account_limit)
         {
             echo "<div class='uk-alert-danger' uk-alert><a href class='uk-alert-close'uk-close></a><p>The member acount has reached the limit.</p></div>";
@@ -803,7 +804,13 @@ $xx=$db->insertDependencyLogs($dep_id,$db->loggedAs());
         {
             $total_amount =$current_balance+$deposit_amount;
             $db->editDiff("account_balance",$total_amount,"member_id",$member_id,"members");
-            $db->insertNotification($member_id,"Your deposit has been received. Thank you.","System","Amount Deposit");
+            $txtmsge = "Your deposit has been received. Amount deposited is R".$deposit_amount.". Thank you for trusting ZBS.";
+            $title ="ZBS Amount Deposit";
+            if (strpos($expotoken, "Expo") !== false) {
+                $expo = array("to"=>[$expotoken],"title"=>$title,"body"=>$txtmsge);
+                $db->pushNotifications($expo);
+            }
+            $db->insertNotification($member_id,$txtmsge,"System",$title);
             $db->insertTranctions($member_id,$deposit_amount,$db->loggedAs(),"Amount Deposit",0);
             echo "<div class='uk-alert-success' uk-alert><a href class='uk-alert-close'uk-close></a><p>Deposit Successful</p></div>";
       

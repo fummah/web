@@ -1,11 +1,10 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, Chat, Profile,Location, Search, Details, Notifications, AccountStatement } from '../screens';
+import { Home,Search, Notifications, AccountStatement } from '../screens';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants/theme';
 import TopTab from './TopTab';
-import AuthTopTab from './AuthTopTab';
 
 const Tab = createBottomTabNavigator();
 

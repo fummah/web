@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\RegistrationRequest;
 use App\Models\ZbsMembers;
 use App\Models\UsersMemberModel;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +58,7 @@ class AuthController extends Controller
     $member_id = (int)$request->member_id;
     $contact_number = "+27".$request->contact_number;
     $contact_number = str_replace('+270','+27', $contact_number);
+    $expotoken = $request->expotoken ?? "--";
 
     $credentials = [
         'id'=> $member_id,
@@ -70,6 +72,7 @@ class AuthController extends Controller
         $user = Auth::user();       
             $user->last_logged = date("Y-m-d H:i:s");
             $user->save();
+            ZbsMembers::where('member_id', $user->id)->update(["expo_token"=>$expotoken]);
             $token = $user->createToken('api')->plainTextToken;
         return response()->json(['message' => 'Successfully Logged in','token'=>$token, 'user' => $user], 200);
        

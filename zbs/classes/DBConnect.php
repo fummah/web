@@ -304,7 +304,7 @@ class DBConnect extends Validate
     }
     function getSingleMember($member_id)
     {
-        $stmt=$this->conn->prepare("SELECT `member_id`,`first_name`,`last_name`,`contact_number`,`id_number`,`email_number`,a.status,a.entered_by,a.date_entered,b.location_name,a.location_id,g.group_name,a.account_balance FROM `members` as a INNER JOIN locations as b ON a.location_id=b.location_id INNER JOIN `groups` as g ON b.group_id=g.group_id WHERE member_id=:member_id");
+        $stmt=$this->conn->prepare("SELECT `member_id`,`first_name`,`last_name`,`contact_number`,`id_number`,`email_number`,a.status,a.entered_by,a.date_entered,b.location_name,a.location_id,g.group_name,a.account_balance,a.expo_token FROM `members` as a INNER JOIN locations as b ON a.location_id=b.location_id INNER JOIN `groups` as g ON b.group_id=g.group_id WHERE member_id=:member_id");
         $stmt->bindParam(':member_id', $member_id, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetch();
@@ -1373,5 +1373,36 @@ SELECT `dependency_id`, `member_id`, `first_name`, `surname`, `status`,:entered_
         {
             echo "There is an error : ".$e->getMessage();
         }
+    }
+
+    function pushNotifications($array)
+    {
+        $url = 'https://exp.host/--/api/v2/push/send';
+
+// Data to be sent in the POST request body
+$data = json_encode($array);
+// Initialize cURL session
+$ch = curl_init($url);
+// Set cURL options
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);	
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Content-Length: ' . strlen($data)
+]);
+// Execute cURL request and get response
+$response = curl_exec($ch);
+// Check for cURL errors
+if ($response === false) {
+    echo 'cURL Error: ' . curl_error($ch);
+} else {
+    // Print response
+    //echo $response;
+}
+
+// Close cURL session
+curl_close($ch);
     }
 }
