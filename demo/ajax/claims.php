@@ -1088,11 +1088,13 @@ else if($identity==37) {
     $error_id = (int)$_POST["error_id"];
     $sender_id = (int)$_POST["sender_id"];
     $claim_number = $_POST["claim_number"];
-    $url = $control->viewAPIURL($sender_id);
+    $api_data = $control->viewAPIURL($sender_id);
+    $url = $api_data["api_url"];
+    $auth_key = $api_data["auth_key"];
 
     $data_string=$control->viewOwlsById($error_id);
     $status="Resend - $error_id - ".$control->loggedAs();
- $tt=$control->generalSendAPI($url, $data_string, $claim_number, $status);
+ $tt=$control->generalSendAPI($url, $data_string, $claim_number, $status,$auth_key);
     if ($tt=="Success")
     {
         $control->callUpdateErrorOwls($error_id,"failed",2);

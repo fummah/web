@@ -64,6 +64,7 @@ $data.="</body></table>";
 //echo $data;
 $mpdf->SetHTMLHeader('<p style="text-align: right;font-size:10px">Date Created : '.$date.'</p>');
 $mpdf->SetHTMLFooter('<p style="text-align: center; vertical-align: middle;color:brown;font-size:10px">Powered By <i><b>TF Solutions</b></i></p>');
+$data = mb_convert_encoding($data, 'UTF-8', 'UTF-8');
 $mpdf->WriteHTML($data);
 $mpdf->Output('ZBS.pdf','D');
 

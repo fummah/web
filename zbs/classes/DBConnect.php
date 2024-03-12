@@ -1341,7 +1341,7 @@ SELECT `dependency_id`, `member_id`, `first_name`, `surname`, `status`,:entered_
     function getWithBal($amount_paid,$group_id,$funeral_id)
     {
               try {
-            $stmt = $this->conn->prepare("SELECT m.member_id,m.account_balance FROM `members` as m INNER JOIN locations as l ON m.location_id=l.location_id WHERE m.account_balance>=:amount_paid AND l.group_id=:group_id AND m.status='Active' AND m.member_id NOT IN (SELECT member_id FROM register WHERE funeral_id=:funeral_id)");
+            $stmt = $this->conn->prepare("SELECT m.member_id,m.account_balance,m.expo_token FROM `members` as m INNER JOIN locations as l ON m.location_id=l.location_id WHERE m.account_balance>=:amount_paid AND l.group_id=:group_id AND m.status='Active' AND m.member_id NOT IN (SELECT member_id FROM register WHERE funeral_id=:funeral_id)");
             $stmt->bindParam(':amount_paid', $amount_paid, PDO::PARAM_STR);
             $stmt->bindParam(':group_id', $group_id, PDO::PARAM_STR);
             $stmt->bindParam(':funeral_id', $funeral_id, PDO::PARAM_STR);

@@ -918,7 +918,7 @@ public function callSFTPNegative()
     }
 
 
-    function sendOwlAPI($claim_number,$status,$date_entered,$intervention_description,$scheme_savings,$discount_savings,$pay_provider,$practice_number,$claimid,$url)
+    function sendOwlAPI($claim_number,$status,$date_entered,$intervention_description,$scheme_savings,$discount_savings,$pay_provider,$practice_number,$claimid,$url,$auth_key="")
     {
         $messg="";
         $status=$status==1?"open":"closed";
@@ -933,10 +933,12 @@ public function callSFTPNegative()
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Authorization: Bearer ' . $auth_key,
                 'authKey:e15c4c44-2ea3-4bc7-bc5d-5b7555bb9c63',
                 'Content-Type", "application/raw',
                 'Content-Type: application/json')
         );
+        
         $result = curl_exec($ch);
         $err = curl_error($ch);
         curl_close($ch);
@@ -948,8 +950,9 @@ public function callSFTPNegative()
             $pos8 = strpos($result, "success");
             $pos9 = strpos($result, "Claimline ID");
             $pos10 = strpos($result, "Status");
+            $pos11 = strpos($result, "accepted for processing");
             $jres=false;
-            if($pos8 > 0 || ($pos9 > 0 && $pos10 > 0))
+            if($pos8 > 0 || ($pos9 > 0 && $pos10 > 0) || $pos11>0)
             {
             $jres=true;
             }
@@ -1219,7 +1222,7 @@ public function callSFTPNegative()
         }
     }
 
-    function generalSendAPI($url,$data_string,$claim_number,$status)
+    function generalSendAPI($url,$data_string,$claim_number,$status,$auth_key="")
     {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// where to post
@@ -1227,6 +1230,7 @@ public function callSFTPNegative()
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Authorization: Bearer ' . $auth_key,
                 'authKey:e15c4c44-2ea3-4bc7-bc5d-5b7555bb9c63',
                 'Content-Type", "application/raw',
                 'Content-Type: application/json')

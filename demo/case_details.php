@@ -146,7 +146,14 @@ if(!isset($_POST["quick_view"])){
   border-radius: 5px;
   cursor: pointer;
 }
-
+#savingsBalance {
+  padding: 10px 20px;
+  background-color: darkcyan;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
 </style>
 <?php
@@ -298,22 +305,32 @@ savingsModal($control);
 <div id="popup" class="popup">
   <span class="closeBtn" onclick="closePopup()">&times;</span>
   <h3 id="dr_name"></h3>
+  <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid uk-placeholder" style="display: flex; justify-content: space-between; padding-right:15px;padding-top:9px;padding-bottom:9px">
+    <label><input class="uk-radio" type="radio" value="1" name="radioCalc" checked> <span>Percentage (%)</span></label>
+    <label style="margin-left: auto;"><input class="uk-radio" value="0" type="radio" name="radioCalc"> <span>Fixed Amount</span></label>
+</div>
 <div class="row">
     <div class="col-md-6">
-  <div class="uk-margin input-field">
-        <input id="percentageF" class="uk-input uk-form-width-medium uk-form-small calc" type="text" placeholder="" aria-label="Small">
-        <label for="percentageF">Percentage (%)</label>
+  <div class="uk-margin input-field" id="f1">
+           <input id="percentageF" class="uk-input uk-form-width-medium uk-form-small calc" type="text" placeholder="" aria-label="Small">
+        <label for="percentageF" class="xf">Percentage (%)</label>
+        
+    </div>
+    <div class="uk-margin input-field" id="f2" style="display:none">
+    <input id="fixedAmountF" class="uk-input uk-form-width-medium uk-form-small calc" type="text" placeholder="" aria-label="Small">
+        <label for="fixedAmountF" class="xf">Fixed Amount</label>
     </div>
 </div>
 <div class="col-md-6">
   <div class="uk-margin input-field">
         <input class="uk-input uk-form-width-medium uk-form-small calc" id="gap_amountF" type="text" placeholder="" aria-label="Small">
-        <label for="gap_amountF">Gap Amount</label>
+        <label for="gap_amountF" class="xf">Gap Amount</label>
     </div>
 </div>
 </div>
 
-<p align="center"><span id="savingsResult">0.00</span></p>
+<p align="center" title="Discount"><span id="savingsResult">0.00</span></p>
+<p align="center" title="Balance" style="padding-top:10px"><span id="savingsBalance">0.00</span></p>
 </div>
 <span class="not"  style="bottom: 0px; position: fixed;left: 0px;"></span>
 <?php
@@ -329,6 +346,7 @@ if(!isset($_POST["quick_view"])) {
         chekconfirm('<?php echo $claim_id;?>');
         addReasons();
         $('select').formSelect();
+       
     });
     function openTab(tabname) {
         var i;
@@ -388,6 +406,12 @@ if(!isset($_POST["quick_view"])) {
             }
         });
     };
+    const getClc = (percentageF,fixedAmountF,gap_amountF) =>{    
+    $("#gap_amountF").val(gap_amountF);
+    $("#percentageF").val(percentageF);
+    $("#fixedAmountF").val(fixedAmountF);
+    resDisc(percentageF,gap_amountF,fixedAmountF);   
+  };
     $(document).on('change','input[name="scheme_declined"]',function(e){
         let isreason=$('input[name="scheme_declined"]:checked').val();
         if(isreason=="yes")
@@ -428,30 +452,50 @@ if(!isset($_POST["quick_view"])) {
     });
 
     $(document).on('keyup','.calc', function(){
+const gap_amountF = $("#gap_amountF").val(); 
 const percentageF = $("#percentageF").val();
-const gap_amountF = $("#gap_amountF").val();    
-    resDisc(percentageF,gap_amountF);   
+const fixedAmountF = $("#fixedAmountF").val();
+resDisc(percentageF,gap_amountF,fixedAmountF);   
   });
 
   $(document).on('click','#calculator', function(){
-const percentageF = 8;
-const gap_amountF = $(this).attr("gap");
+    $(".xf").addClass("active");
+    console.log("clfx")
+    const gap_amountF = $(this).attr("gap");
     $("#dr_name").text($(this).attr("dr_name"));
-    $("#gap_amountF").val(gap_amountF);
-    $("#percentageF").val(percentageF);
-    resDisc(percentageF,gap_amountF);   
+getClc(8,0,gap_amountF);    
     document.getElementById('popup').style.display = 'block';
   });
   
   $(document).on('click','.closeBtn', function(){
     document.getElementById('popup').style.display = 'none';
   });
+  $(document).on('change','input[name="radioCalc"]',function(){
+    const gap_amountF = $("#gap_amountF").val();
+    getClc(8,0,gap_amountF);  
+  });
   
-  const resDisc = (perc,gap) =>{
+  const resDisc = (perc,gap,fixedAmount) =>{
+    const selectCalc = document.querySelector('input[name="radioCalc"]:checked').value;
     gap=gap.replace(" ", "");
-    let result = (perc/100)*gap;
+    let result=0;
+    if(selectCalc==="1")
+    {
+    $("#f1").show();
+    $("#f2").hide();
+        result = (perc/100)*gap;
+    }   
+    else{
+    $("#f2").show();
+    $("#f1").hide();
+        result = parseFloat(fixedAmount);
+    }
+    
+    let rem = gap-result;
     result = fomata(result.toFixed(2));
+    rem = fomata(rem.toFixed(2));
 $("#savingsResult").text(result);
+$("#savingsBalance").text(rem);
   }
 
   const fomata=(number)=>{

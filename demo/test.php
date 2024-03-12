@@ -1,71 +1,137 @@
 <?php
-function getWorkingDays($startDate,$endDate,$holidays){
-    // do strtotime calculations just once
-    $endDate = strtotime($endDate);
-    $startDate = strtotime($startDate);
+session_start();
+define("access",true);
+if(!isset($_POST['claim_id']))
+{
+    die("Invalid access");
+}
+include ("classes/controls.php");
+include ("templates/claim_templates.php");
+$control=new controls();
+try{
+    $_SESSION['LAST_ACTIVITY'] = time();
+    $username=$control->loggedAs();
+    $open=(int)$_POST['open'];
+    $claim_id=(int)$_POST['claim_id'];
+    $data=$control->viewSingleClaim($claim_id);
+    $claim_status = $data["Open"];
+    $sys_username = $data["username"];
+    if($username==$sys_username || $control->isTopLevel())
+    {
 
-    //The total number of days between the two dates. We compute the no. of seconds and divide it to 60*60*24
-    //We add one to inlude both dates in the interval.
-    $days = ($endDate - $startDate) / 86400 + 1;
-
-    $no_full_weeks = floor($days / 7);
-    $no_remaining_days = fmod($days, 7);
-
-    //It will return 1 if it's Monday,.. ,7 for Sunday
-    $the_first_day_of_week = date("N", $startDate);
-    $the_last_day_of_week = date("N", $endDate);
-
-    //---->The two can be equal in leap years when february has 29 days, the equal sign is added here
-    //In the first case the whole interval is within a week, in the second case the interval falls in two weeks.
-    if ($the_first_day_of_week <= $the_last_day_of_week) {
-        if ($the_first_day_of_week <= 6 && 6 <= $the_last_day_of_week) $no_remaining_days--;
-        if ($the_first_day_of_week <= 7 && 7 <= $the_last_day_of_week) $no_remaining_days--;
     }
-    else {
-        // (edit by Tokes to fix an edge case where the start day was a Sunday
-        // and the end day was NOT a Saturday)
+    else{
+        die("Invalid access");
+    }
+    $current_claim_id=$claim_id;
+    $date_entered = date("Y-m-d H:i:s");
+    $consent_dest=$_POST['consent_dest'];
+$isreason=$_POST['isreason'];
+    $reason_id=(int)$_POST['reason_id'];
+    if(strlen($consent_dest)<2 && $open==1)
+    {
+        die("Please update the destination");
+    }
+  
+    //echo $_POST['notes'];
+    $notes=filter_var($_POST['notes'], FILTER_UNSAFE_RAW);
+    $notes = str_replace('|', '', $notes);
+    $current_practice_number=validateXss($_POST['practice_number']);
+    $current_savings_scheme=(double)$_POST['schemesavings'];
+    $current_savings_discount=(double)$_POST['discountsavings'];
+    $vas=(double)$_POST['vas'];
+    $cpt4="";
+    $doc_name=validateXss($_POST['doc_name']);
+    $xjson=isset($_POST['xjson'])?validateXss($_POST['xjson']):"";
+    $sla=isset($_POST['sla'])?(int)$_POST['sla']:0;
+    if(strlen($xjson)>4 && $open != 1)
+    {
+        $rs=$control->viewClaimValidations($claim_id,$xjson);
+        if (in_array("0", $rs)) {
+            die("Please make sure you tick all boxes on Validation Section before you close the case");
+        }
+    }
+    $pay=validateXss($_POST['pay_doctor']);
 
-        // the day of the week for start is later than the day of the week for end
-        if ($the_first_day_of_week == 7) {
-            // if the start date is a Sunday, then we definitely subtract 1 day
-            $no_remaining_days--;
+    $status="open";
+    $claim_id1=0;
 
-            if ($the_last_day_of_week == 6) {
-                // if the end date is a Saturday, then we subtract another day
-                $no_remaining_days--;
+    $senderId=$data["senderId"];
+    $claim_number=$data["claim_number"];
+    $client_id=(int)$data["client_id"];
+    $reminder_time="0000-00-00 00:00:00";
+    $reminder_status=0;
+    if(($client_id==20 || $client_id==21 || $client_id==3 || $client_id==16 || $client_id==15 || $client_id==1 || $client_id==6) && strlen($current_practice_number)<3)
+    {
+        die("Please select the provider");
+    }
+     if($isreason=="no" || $isreason=="yes")
+    {
+if($isreason=="yes" && $reason_id==0)
+{
+    die("Please select decline reason.");
+}
+    }
+    else{
+        if($client_id!=4)
+        {
+            die("Please confirm Scheme Decline.");
+        }        
+    }
+    $insert_notes=$control->callInsertNotes($claim_id,$notes,$username,$reminder_time,$reminder_status,$claim_id1,$current_practice_number,$doc_name,$consent_dest,$open);
+    if ($open == 1 && $insert_notes) {
+        echo "Your notes have been added to the system";
+    } else {
+        if($open == 0)
+        {
+            $control->callUpdateClaimKey($claim_id,"Open",0);
+            $control->callUpdateClaimKey($claim_id,"date_closed",$date_entered);
+        }
+        $status="closed";
+        echo "Closed";
+    }
+    $arr=array("savings_scheme"=>$current_savings_scheme,"savings_discount"=>$current_savings_discount,"value_added_savings"=>$vas,"cpt_code"=>$cpt4,"pay_doctor"=>$pay,"isreason"=>$isreason,"decline_reason_id"=>$reason_id);
+    foreach ($arr as $key => $value) {
+        $c=$control->callUpdateDoctor($claim_id,$current_practice_number,$key,$value);
+    }
+    if($sla==1 && $insert_notes)
+    {
+        $sll=$control->viewNoteId($claim_id,$username);
+    }
+    if((int)$senderId>0)
+    {
+        
+        $api_data = $control->viewAPIURL($senderId);
+        $url = $api_data["api_url"];
+        $auth_key = $api_data["auth_key"];
+        $doctor_data=$control->viewSpecific($claim_id,$current_practice_number);
+        $claimid=$doctor_data["claimedline_id"];
+        $open=$claim_status==0?$claim_status:$open;
+        $api=$control->sendOwlAPI($claim_number,$open,$date_entered,$notes,$current_savings_scheme,$current_savings_discount,$pay,$current_practice_number,$claimid,$url,$auth_key);
+        if ($status=="closed")
+        {
+            foreach($control->viewOtherDoctors($claim_id,$current_practice_number) as $rrow)
+            {
+                $current_practice_number=$rrow["practice_number"];
+                $claimid=$rrow["claimedline_id"];
+                if(strlen($rrow["pay_doctor"])<2 || strlen($rrow["pay_doctor"]>3))
+                {
+                    $pay=$pay=="yes" || $pay=="no"?$pay:"no";
+                }
+                else{
+                    $pay=$rrow["pay_doctor"];
+                }
+                $current_savings_scheme=(double)$rrow["savings_scheme"];
+                $current_savings_discount=(double)$rrow["savings_discount"];
+                $notes="Case Closed";
+                $api=$control->sendOwlAPI($claim_number,$open,$date_entered,$notes,$current_savings_scheme,$current_savings_discount,$pay,$current_practice_number,$claimid,$url);
             }
         }
-        else {
-            // the start date was a Saturday (or earlier), and the end date was (Mon..Fri)
-            // so we skip an entire weekend and subtract 2 days
-            $no_remaining_days -= 2;
-        }
+        echo $api;
     }
 
-    //The no. of business days is: (number of weeks between the two dates) * (5 working days) + the remainder
-//---->february in none leap years gave a remainder of 0 but still calculated weekends between first and last day, this is one way to fix it
-    $workingDays = $no_full_weeks * 5;
-    if ($no_remaining_days > 0 )
-    {
-        $workingDays += $no_remaining_days;
-    }
-
-    //We subtract the holidays
-    foreach($holidays as $holiday){
-        $myholiday=date("Y")."-";
-        $time_stamp=strtotime($myholiday.$holiday);
-        //If the holiday doesn't fall in weekend
-        if ($startDate <= $time_stamp && $time_stamp <= $endDate && date("N",$time_stamp) != 6 && date("N",$time_stamp) != 7)
-            $workingDays--;
-    }
-
-    return $workingDays;
 }
-
-$holidays = ["01-01","02-03"];
-$startDate = "2023-12-28 8:00:00";
-$endDate = date("2024-02-29 7:00:00");
-
-$total_hours = getWorkingDays($startDate,$endDate,$holidays);
-
-echo "Total Number : ".$total_hours*24;
+catch(Exception $e)
+{
+    echo("There is an error ".$e->getMessage());
+}

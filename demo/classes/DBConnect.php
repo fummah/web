@@ -913,10 +913,10 @@ sub_disciplinecode_description,disciplinecode_id,email,dr_value,days_number,sign
     }
 function getAPIURL($sender_id)
     {
-        $stmt =$this->conn->prepare("SELECT api_url FROM external_apis WHERE sender_id=:sender_id");
+        $stmt =$this->conn->prepare("SELECT api_url,auth_key FROM external_apis WHERE sender_id=:sender_id");
         $stmt->bindParam(':sender_id', $sender_id, \PDO::PARAM_STR);
         $stmt->execute();
-        return $stmt->fetchColumn();
+        return $stmt->fetch();
     }
     public function insertDocuments($claim_id,$description,$size,$type,$random_number,$uploaded_by)
     {
