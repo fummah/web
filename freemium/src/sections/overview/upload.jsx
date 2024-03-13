@@ -20,6 +20,7 @@ const normFile = (e) => {
   return e?.fileList;
 };
 const beforeUpload = (file) => {
+console.log("Testing");
   const isPDF = file.type === 'application/pdf';
   if (!isPDF) {
     message.error('You can only upload PDF files!');
