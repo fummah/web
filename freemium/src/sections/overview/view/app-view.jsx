@@ -131,7 +131,7 @@ useEffect(() => {
           <AppConversionRates
             title="Benefit Usage"
             subheader="where Benefits are paid from"
-            count={0}
+            count={totalqueries}
             chart={{
               series: [
                 { label: 'Correct', value: 1 },

@@ -98,7 +98,7 @@ if($isreason=="yes" && $reason_id==0)
     {
         $sll=$control->viewNoteId($claim_id,$username);
     }
-    if((int)$senderId>0 && (int)$senderId!=13)
+    if((int)$senderId>0)
     {
         
         $url = $control->viewAPIURL($senderId);

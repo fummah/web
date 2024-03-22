@@ -1,10 +1,9 @@
-import { Upload, message } from 'antd';
+import { Form,Card,Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import React, { useRef, useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Select from '@mui/material/Select';
 import Divider from '@mui/material/Divider';
@@ -22,29 +21,26 @@ import { account } from 'src/_mock/account';
 import Error from 'src/components/response/error';
 import Success from 'src/components/response/success';
 
-const { Dragger } = Upload;
-
-// ----------------------------------------------------------------------
-
-const props = {
-  name: 'file',
-  multiple: true,
-  action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
+const formItemLayout = {
+  labelCol: {
+    span: 6,
   },
-  onDrop(e) {
-    console.log('Dropped files', e.dataTransfer.files);
+  wrapperCol: {
+    span: 14,
   },
 };
+
+const beforeUpload = (file) => {
+  const isPDF = file.type === 'application/pdf';
+  if (!isPDF) {
+    message.error('You can only upload PDF files!');
+  }
+  return isPDF;
+};
+const onFinish = (values) => {
+  console.log('Received values of form: ', values);
+};
+
 
 const AddQueryForm = React.memo(() => {
   const [category, setCategory] = useState('');
@@ -53,6 +49,8 @@ const AddQueryForm = React.memo(() => {
   const [enable] = useState(false);
   const [disable] = useState(true);
   const valueDescription = useRef('');
+  const [document_name,setDocumentName] = useState("");
+  
 
    const { isLoading, isError, data,statusCode } = useAxiosFetch('addquery','POST',postData,fetchBtnClicked);
 
@@ -60,8 +58,8 @@ const AddQueryForm = React.memo(() => {
     if(fetchBtnClicked)
     {
       setPostData(getFormValues());   
-      setFetchBtnClicked(false);    
-    }
+      setFetchBtnClicked(false);  
+      }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchBtnClicked]);   
  
@@ -82,14 +80,28 @@ const AddQueryForm = React.memo(() => {
     const getFormValues = () =>{
       const obj = {
         "id":account.user.id,
+        "document":document_name,
         "category":category,
-        "description":valueDescription.current.value
+        "description":valueDescription.current.value,
+        "lines":JSON.stringify([])
       };
       return obj;
     }
+    const normFile = (e) => {
+      console.log('Upload event:', e);
+      if (Array.isArray(e)) {
+        return e;
+      }
+      if(e.fileList[0].status==="done")
+      {
+            setDocumentName(e.file.name);
+      }  
+      return e?.fileList;
+    };
 
-  const renderForm = (
- 
+    console.log(getFormValues()); 
+
+  const renderForm = ( 
       <Stack spacing={3}>
 <Box component="form">
 <Typography variant="h5">Add Query</Typography>
@@ -106,7 +118,7 @@ const AddQueryForm = React.memo(() => {
         onChange={handleChange}
       >
          <MenuItem value="">
-          <em>None</em>
+          <em>None</em> 
         </MenuItem>
         <MenuItem value="Chronic">Chronic</MenuItem>
         <MenuItem value="Benefit Help">Benefit Help</MenuItem>
@@ -130,14 +142,33 @@ const AddQueryForm = React.memo(() => {
                 />
                    
               </Grid>
-                        <Grid item xs={12}>              
-
-      <Dragger {...props}>
-    <p className="ant-upload-drag-icon">
-      <InboxOutlined />
-    </p>
-    <p className="ant-upload-text">Click or drag file to this area to upload</p>   
-  </Dragger>
+                                    <Grid item xs={12} >              
+                        <Form
+    name="validate_other"
+    {...formItemLayout}
+    onFinish={onFinish}
+    initialValues={{
+      'input-number': 3,
+      'checkbox-group': ['A', 'B'],
+      rate: 3.5,
+      'color-picker': null,
+    }}
+    style={{
+      maxWidth: '100%',
+      marginTop:20,
+    }}    
+  >
+                        <Form.Item>
+      <Form.Item name="dragger" valuePropName="fileList" getValueFromEvent={normFile} noStyle>
+        <Upload.Dragger accept=".pdf" name="file" action="https://medclaimassist.co.za/testing/freemium_upload.php" beforeUpload={beforeUpload}>
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>          
+          <p className="ant-upload-hint">Click or drag file to this area to upload</p>
+        </Upload.Dragger>
+      </Form.Item>
+    </Form.Item>
+  </Form>
 
               </Grid>
               <Grid item xs={12}>

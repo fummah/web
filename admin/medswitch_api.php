@@ -251,7 +251,9 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,Open,clai
                 $pos10 = strpos($productName, "Kaelo");
                 $pos11 = strpos($productName, "Sanlam");
                 $pos12 = strpos($productName, "Western");
-                if($pos10>-1) {
+                $pos13 = strpos($productName, "MedExpense");
+                $pos14 = strpos($productName, "Dis-Chem");
+                if($pos10>-1 || $pos13>-1 || $pos14>-1) {
                     $client="Kaelo";
                     $this->conn=$this->conn3;
                 }
@@ -263,6 +265,11 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,Open,clai
                 elseif ($pos12>-1)
                 {
                     $client="Western";
+                    $this->conn=$this->conn3;
+                }
+                  else
+                {
+                    $client="Individual";
                     $this->conn=$this->conn3;
                 }
                 $this->addObj($this->conn,$file);

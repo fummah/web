@@ -9,5 +9,15 @@ class DocumentsModel extends Model
 {
     use HasFactory;
      protected $table = "documents";
-    public $timestamps = false;
+     public $timestamps = false;
+
+    protected $fillable = [
+         'associated_id', 
+            '_type',
+            'document_name',
+            'document_type',  
+            'document_size', 
+            'random_number', 
+            'entered_by', 
+    ];
 }

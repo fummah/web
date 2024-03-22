@@ -17,6 +17,7 @@ import useAxiosFetch from 'src/hooks/use-axios';
 
 import ChatBox from 'src/components/response/chat';
 import Loader from 'src/components/response/loader';
+import QueryLines from 'src/components/others/query-lines';
 
 const Demo = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -26,6 +27,7 @@ export default function QueryDetails()
 {
   const { query_id } = useParams();
   const [dense, setDense] = React.useState(false);
+  const [query_lines, setQueryLines] = React.useState([]);
   const [documents, setDocuments] = React.useState([]);
   const [notes, setNotes] = React.useState([]);
   const [items, setItems] = React.useState([]);
@@ -37,7 +39,8 @@ export default function QueryDetails()
    {
     setDocuments(dataQuery.documents);   
     setNotes(dataQuery.notes);  
-    setItems(myitems(dataQuery.query));  
+    setItems(myitems(dataQuery.query)); 
+    setQueryLines(dataQuery.lines); 
     setDense(false);
     }   
    // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,6 +64,7 @@ export default function QueryDetails()
   {isLoadingQuery?<Loader/>:null}
         {isErrorQuery?<Typography variant="h6">There is an error</Typography>:null}
   <Stack spacing={3}>
+  <QueryLines query_lines={query_lines}/>
 <Box component="form">
 
       <Grid container spacing={2}>

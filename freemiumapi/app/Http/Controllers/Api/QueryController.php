@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\QueryModel;
 use App\Models\FreemiumDocumentsModel;
 use App\Models\QueryNotesModel;
+use App\Models\QueryLineModel;
 
 class QueryController extends Controller
 {
@@ -14,19 +15,48 @@ class QueryController extends Controller
     {
         try
         {
-            $authuser = $request->user();
-            $data = $request->validate([ 
+            $data = $request->validate([          
+            
             'category' => 'required|string|min:2',
             'description' => 'required|string|min:4',
             ]);
+            $user = $request->user();           
 
         $query = QueryModel::create([
-            'user_id' => $authuser->id, 
+            'user_id' => $user->id, 
             'category' => $data['category'],
             'description' => $data['description'],
-            'entered_by' => $authuser->id,          
+            'entered_by' => $user->id,          
         ]);
-         return response()->json(['message' => 'New Query Successfully Added','query' => $query], 200);
+        $lines = json_decode($request->lines,true);
+        if(count($lines)>0)
+        {
+            foreach($lines as $line)
+            {
+            QueryLineModel::create([
+            'query_id' => $query->id, 
+            'treatment_date' => $line['treatment_date'],
+            'paid_from' => $line['paid_from'],
+            'amount_charged' => (double)$line['amount_charged'],
+            'amount_paid' => (double)$line['amount_paid'],
+            'entered_by' => $user->id,          
+        ]);
+            }
+        } 
+        if($request->document!="")
+        {
+            FreemiumDocumentsModel::create([
+                'associated_id' => $query->id, 
+                '_type' => "query",               
+                'document_name' => $request->document,     
+                'document_type' => "pdf", 
+                'document_size' => 0, 
+                'random_number' => rand(1,100), 
+                'entered_by' => $user->id,      
+            ]);
+        }
+         return response()->json(['message' => 'New Query Successfully Added','query' => $query,"lines"=>$lines,"document"=>$request->document], 200);
+        
         }
     catch(\Exception $e){
         return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
@@ -37,10 +67,10 @@ class QueryController extends Controller
     {
         try
         {
-            $authuser = $request->user();           
+           $user = $request->user();
 
-        $queries = QueryModel::where('user_id','=',$authuser->id)->get();
-         return response()->json(['message' => 'Records Successfully Retrieved','queries' => $queries,'user'=>$authuser], 200);
+        $queries = QueryModel::where('user_id','=',$user->id)->get();
+         return response()->json(['message' => 'Records Successfully Retrieved','queries' => $queries,"user"=>$user], 200);
         }
     catch(\Exception $e){
         return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
@@ -58,7 +88,8 @@ class QueryController extends Controller
         $query = QueryModel::find($data['query_id']);
         $documents = FreemiumDocumentsModel::where('associated_id','=',$data['query_id'])->where('_type','=','query')->get();
         $notes = QueryNotesModel::where('query_id','=',$data['query_id'])->get();
-         return response()->json(['message' => 'Records Successfully Retrieved','query' => $query,'documents'=>$documents,'notes'=>$notes], 200);
+        $lines = QueryLineModel::where('query_id','=',$data['query_id'])->get();
+         return response()->json(['message' => 'Records Successfully Retrieved','query' => $query,'documents'=>$documents,'notes'=>$notes,'lines'=>$lines], 200);
         }
     catch(\Exception $e){
         return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
