@@ -180,14 +180,30 @@ return $member;
    {
     $totalFunerals = RegisterModel::where('register.member_id', $memberId)
     ->join('funerals as f', 'register.funeral_id', '=', 'f.funeral_id')
-    ->selectRaw('COUNT(*) as total_funerals')
     ->selectRaw('SUM(CASE WHEN register.status = "paid" THEN f.amount_paid ELSE 0 END) as total_paid')
     ->first();
 
 // Access the results
-$data["total_funerals"] = $totalFunerals->total_funerals;
+$data["total_funerals"] = $this->xDeceased($memberId);
 $data["total_paid"] = number_format($totalFunerals->total_paid,2,"."," ");
 return $data;
+   }
+
+   private function xDeceased($memberId)
+   {
+
+    $count = DB::table('deceased')
+    ->whereIn('funeral_id', function($query) use ($memberId) {
+      echo "uuuu".$memberId;
+        $query->select('funeral_id')
+            ->distinct()
+            ->from('register')
+            ->where('status', 'paid')
+            ->where('member_id', $memberId);
+    })
+    ->count();
+
+    return $count;
    }
 
    private function combineRegister($memberId,$groupId,$limit=9)
