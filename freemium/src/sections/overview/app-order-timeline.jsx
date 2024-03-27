@@ -29,7 +29,7 @@ export default function AnalyticsOrderTimeline({ title, subheader, list, ...othe
           },
         }}
       >
-        {list.map((item, index) => (
+        {list.slice(0, 4).map((item, index) => (
           <OrderItem key={item.id} trail_name={item.trail_name} lastTimeline={index === list.length - 1} time={item.date_entered}/>
         ))}
       </Timeline>

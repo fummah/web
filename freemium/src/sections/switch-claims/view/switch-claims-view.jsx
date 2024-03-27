@@ -1,4 +1,4 @@
-import { Modal } from 'antd';
+import { Modal,Divider } from 'antd';
 import { useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
@@ -32,23 +32,15 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 export default function ClaimsPage() {
 
   const router = useRouter();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [claims, setClaims] = useState([]);
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [tips,setTips]=useState([]);
   const { isLoading: isLoadingClaims, isError: isErrorClaims, data: dataClaims,statusCode:statusCodeClaims } = useAxiosFetch('getclaims','GET', {'id':account.user.id,'email':account.user.email,"claim_id":0,'type':'external','scheme_number':account.user.scheme_number,'id_number':account.user.id_number});
 
   useEffect(() => {
@@ -73,8 +65,8 @@ export default function ClaimsPage() {
     router.push(`/claim-details/${id}/external`);
   }
 
-  const handleTipClick = (e,id) =>{
-    console.log(id);
+  const handleTipClick = (e,tips1) =>{
+    setTips(tips1);
     setIsModalOpen(true);
   }
 
@@ -180,12 +172,13 @@ export default function ClaimsPage() {
                       service_date={row.claim_header.Service_Date}                     
                       charged_amnt={row.claim_header.charged_amnt}
                       scheme_paid={row.claim_header.scheme_paid}
+                      tips={row.tips}
                       gap={row.claim_header.gap}
                       plan={account.user.plan}
                       selected={selected.indexOf(row.claim_header.claim_number) !== -1}
                       handleClick={(event) => handleClick(event, row.claim_header.claim_number)}
                       handleViewClick={(event) => handleViewClick(event, row.claim_header.claim_id)}
-                      handleTipClick={(event) => handleTipClick(event, row.claim_header.claim_id)}
+                      handleTipClick={(event) => handleTipClick(event, row.tips)}
                     />
                   ))}
 
@@ -212,7 +205,14 @@ export default function ClaimsPage() {
         />
       </Card>
       <Modal title="Claim tips" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>No Tips</p>        
+       
+        {
+          tips.map(item => (
+<><p>{item}</p><Divider/></>
+          ))
+        }
+       
+                
       </Modal>
     </Container>
   );

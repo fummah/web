@@ -39,17 +39,31 @@ useEffect(() => {
       setTotalqueries(dataDashboard.total_query);
       setTotalclaims(dataDashboard.total_claims);
       setTotalswitchclaims(dataDashboard.total_switch_claims.original.length);
-      setTrail(dataDashboard.trail);
+      setTrail([...dataDashboard.trail, ...switchTrail(dataDashboard.total_switch_claims.original)]);
       setSwitchclaims([dataDashboard.total_switch_claims.original]); 
       setUser(dataDashboard.user)
       const ccsGrouperDescArray = dataDashboard.total_switch_claims.original.flatMap(item => item.claim_lines.map(line => line.ccs_grouper_desc));
-
       setGraph2(getGraph2(ccsGrouperDescArray)); 
-      console.log(dataDashboard);
+      // Set cookie for the subdomain
+     document.cookie = `first_name=${dataDashboard.user.first_name}; Domain=.freemium.meclaimassist.co.za; path=/`;
+     document.cookie = `last_name=${dataDashboard.user.last_name}; Domain=.freemium.meclaimassist.co.za; path=/`;
+     document.cookie = `email=${dataDashboard.user.email}; Domain=.freemium.meclaimassist.co.za; path=/`;
+
+      
     }   
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataDashboard]); 
 
+    const switchTrail = (arr) =>{      
+const newTrail = arr.map(item => ({
+  date_entered: item.claim_header.date_entered,
+  id: item.claim_header.claim_number,
+  entered_by : "System",
+  trail_name : "Claim Identified"
+}));
+return newTrail;
+    }
+    console.log(trail);
     const getGraph2 = (ccsGrouperDescArray=[]) =>{    
       const groupedArray = ccsGrouperDescArray.reduce((acc, curr) => {
         const existingGroup = acc.find(item => item.label === curr);

@@ -34,7 +34,7 @@ function generatePassword()
     $password = $random . ucfirst($arr1[$random]) . $random1 . $arr2[$random1] . $random2;
     return $password;
 }
-function sendMail($mymail,$name,$password){
+function sendMail($mymail,$name,$password):void{
     $mail = new PHPMailer(true);
     // Passing `true` enables exceptions
     try {

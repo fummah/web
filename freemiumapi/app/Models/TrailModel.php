@@ -14,5 +14,6 @@ class TrailModel extends Model
         'user_id',
         'trail_name',
         'entered_by',
+        'date_entered',
     ];
 }

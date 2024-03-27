@@ -171,7 +171,7 @@ class DBConnect extends Validate
         if(strlen($search_value)>0)
         {
             $search_value="%".$search_value."%";
-      $sql='SELECT '.$fields.' FROM `members` as m INNER JOIN locations as l ON m.location_id=l.location_id WHERE '.$where.' AND (first_name LIKE :keyword OR last_name LIKE :keyword OR CONCAT(first_name," ", last_name) LIKE :keyword OR CONCAT(last_name," ", first_name)) '.$limits;        
+      $sql='SELECT '.$fields.' FROM `members` as m INNER JOIN locations as l ON m.location_id=l.location_id WHERE '.$where.' AND m.status="Active" AND (first_name LIKE :keyword OR last_name LIKE :keyword OR CONCAT(first_name," ", last_name) LIKE :keyword OR CONCAT(last_name," ", first_name)) '.$limits;        
    
       $stmt=$this->conn->prepare($sql);
         $stmt->bindParam(':keyword', $search_value, PDO::PARAM_STR);

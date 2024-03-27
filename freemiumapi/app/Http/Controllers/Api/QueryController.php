@@ -8,6 +8,7 @@ use App\Models\QueryModel;
 use App\Models\FreemiumDocumentsModel;
 use App\Models\QueryNotesModel;
 use App\Models\QueryLineModel;
+use App\Models\TrailModel;
 
 class QueryController extends Controller
 {
@@ -54,6 +55,7 @@ class QueryController extends Controller
                 'random_number' => rand(1,100), 
                 'entered_by' => $user->id,      
             ]);
+            $this->saveTrail($user->id,"Document Uploaded",$user->id);
         }
          return response()->json(['message' => 'New Query Successfully Added','query' => $query,"lines"=>$lines,"document"=>$request->document], 200);
         
@@ -95,4 +97,14 @@ class QueryController extends Controller
         return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
     }
     }
+    private function saveTrail($user_id,$trail_name,$entered_by,$date_entered=date('Y-m-d H:i:s')):void
+    {
+     TrailModel::create([
+             'user_id' => $user_id,
+             'trail_name' => $trail_name,
+             'entered_by' => $entered_by,
+             'date_entered' => $date_entered,
+         ]);
+    }
+   
 }

@@ -19,7 +19,7 @@ import Iconify from 'src/components/iconify';
 export default function UserTableRow({
   selected,
   doctors,
-  claim_number,
+  tips,
   service_date,
   charged_amnt,
   scheme_paid,
@@ -51,9 +51,14 @@ export default function UserTableRow({
         <TableCell align="center">{scheme_paid}</TableCell>
         <TableCell>{gap}</TableCell>
         <TableCell>
+          {
+            tips.length>0 && (
+          
         <Button variant="outlined" onClick={handleTipClick}>
        <InfoIcon/> Tip
       </Button>
+            )
+}
       </TableCell>
       
         <TableCell>
@@ -96,7 +101,7 @@ export default function UserTableRow({
 
 UserTableRow.propTypes = {
   doctors: PropTypes.any,
-  claim_number: PropTypes.any,
+  tips: PropTypes.any,
   handleClick: PropTypes.func,
   handleViewClick: PropTypes.func,
   handleTipClick: PropTypes.func,
