@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-include ("../../mca/link3.php");
+include ("../../mca/link2.php");
 $conn=connection("mca","MCA_admin");
 $conn1=connection("doc","doctors");
 $conn2=connection("cod","Coding");
@@ -12,7 +12,7 @@ class jv_import_export
     public $username;
     public $password;
 
-    function checkMember($policy_number,$client_id)
+     function checkMember($policy_number,$client_id)
     {
         global $conn;
         $member_id="";
@@ -129,7 +129,9 @@ return "";
         }
         function getRUsers($limit,$clients)
         {
+
             global $conn;
+         
             $s=$conn->prepare('SELECT username,email FROM users_information WHERE r_status=1 AND username NOT IN
             (SELECT username FROM (SELECT a.username,COUNT(a.claim_id) as total FROM `claim` as a INNER JOIN member as b 
             ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE DATE(a.date_entered) = CURDATE() 
@@ -150,7 +152,9 @@ return "";
         $r_users = array();
         if($isR)
         {
+            
             $r_users = $this->getRUsers($limit,$clients);
+           
             if($r_users===false)
             {
                 $r_users = $this->getNUsers();
@@ -430,7 +434,7 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,patient_i
                 $memberLiability=0.0;
                 $patient_number="";
                 $switchReference="";
-                $client_claim_number ="";               
+                $client_claim_number ="";
                 $client_gap =(double)$r[$i]["gap_amount"];
                 $note_arr=$r[$i]["notes"];
                 //print_r($note_arr);
@@ -461,17 +465,20 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,patient_i
                     $client_id = 15;
                     $owner="Sanlam";
                 }
-                $r_clients = $this->configs();
+                    $r_clients = $this->configs();
                 $r_sclients = $r_clients["r_clients"];
                 $r_limit = (int)$r_clients["r_limit"];
                 $xquotes = str_replace('"', '', $r_sclients);
                 $clients_arr = explode(",", $xquotes);
                 $r_s = false;
+               
                 if(in_array($owner,$clients_arr))
                 {
                     $r_s = true;
                 }
+                //echo $r_s."==".$r_limit."--".$r_sclients;
                 $details=$this->getUsername($r_s,$r_limit,$r_sclients);
+               
                 $username=$details['username'];
                 $xopen=1;
                 $xclosed_date="";
@@ -641,6 +648,7 @@ createdBy,patient_number,client_gap,pmb,icd10,icd10_desc,claim_number1,patient_i
                                     $clmlineCalcAmnt=$clmnlineChargedAmnt-$clmlineSchemePaidAmnt;
                                     //$clmlineCalcAmnt=$gap_amount_line;
                                     $memberLiability = 0.0;
+                                    $benefitDescription =$benefitDescription;
                                     $treatmentType = $claimLine[$j]["treatment_type"];
                                     $treatmentDate = $claimLine[$j]["treatment_date"];
                                     $treatmentDate=strlen($treatmentDate)>1?$treatmentDate:$eventDateFrom;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -10,7 +10,11 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 
+import useAxiosFetch from 'src/hooks/use-axios';
+
 import Scrollbar from 'src/components/scrollbar';
+import Error from 'src/components/response/error';
+import Loader from 'src/components/response/loader';
 
 // ----------------------------------------------------------------------
 const Accordion = styled((props) => (
@@ -51,12 +55,26 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 export default function FaqPage() {
  const [expanded, setExpanded] = useState('panel1');
- const [run] = useState(false);
+ const [faqs,setFaqs] = useState([]);
+ const { isLoading,isError, data,statusCode } = useAxiosFetch('getfaqs','GET', {});
+
+ useEffect(() => {
+ 
+  if(data && statusCode===200)
+  {    
+    setFaqs(data.faqs);
+    
+  }   
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]); 
+
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
   return (
     <Container>
+        {isLoading?<Loader/>:null}
+      {isError?<Error mymessage={data.message}/>:null}
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Frequent Asked Questions</Typography>
 
@@ -66,38 +84,21 @@ export default function FaqPage() {
       
 
         <Scrollbar>
-        {run?
+        {faqs.length>0?
           <div>
-      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+            {
+            faqs.map((faq,index) =>
+      <Accordion expanded={expanded === 'panel1'} key={index} onChange={handleChange('panel1')}>
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography>Question #1</Typography>
+          <Typography>{faq.title}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            This is the Question #1
+          {faq.description}
           </Typography>
         </AccordionDetails>
       </Accordion>
-      <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-          <Typography>Question #2</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            This is the Question #2
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-          <Typography>Question #3</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-          This is the Question #3
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
+      )}
     </div>:<Typography align='center' style={{color:"red",width:"100%"}}>No Frequently Asked Questions</Typography>}
         </Scrollbar>
 

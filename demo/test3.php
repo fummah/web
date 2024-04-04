@@ -1,1000 +1,1329 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Laravel</title>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-
-    <!-- Styles -->
-    <style>
-        /* ! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com */
-        *,
-        ::after,
-        ::before {
-            box-sizing: border-box;
-            border-width: 0;
-            border-style: solid;
-            border-color: #e5e7eb
-        }
-
-        ::after,
-        ::before {
-            --tw-content: ''
-        }
-
-        html {
-            line-height: 1.5;
-            -webkit-text-size-adjust: 100%;
-            -moz-tab-size: 4;
-            tab-size: 4;
-            font-family: Figtree, sans-serif;
-            font-feature-settings: normal
-        }
-
-        body {
-            margin: 0;
-            line-height: inherit
-        }
-
-        hr {
-            height: 0;
-            color: inherit;
-            border-top-width: 1px
-        }
-
-        abbr:where([title]) {
-            -webkit-text-decoration: underline dotted;
-            text-decoration: underline dotted
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-size: inherit;
-            font-weight: inherit
-        }
-
-        a {
-            color: inherit;
-            text-decoration: inherit
-        }
-
-        b,
-        strong {
-            font-weight: bolder
-        }
-
-        code,
-        kbd,
-        pre,
-        samp {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            font-size: 1em
-        }
-
-        small {
-            font-size: 80%
-        }
-
-        sub,
-        sup {
-            font-size: 75%;
-            line-height: 0;
-            position: relative;
-            vertical-align: baseline
-        }
-
-        sub {
-            bottom: -.25em
-        }
-
-        sup {
-            top: -.5em
-        }
-
-        table {
-            text-indent: 0;
-            border-color: inherit;
-            border-collapse: collapse
-        }
-
-        button,
-        input,
-        optgroup,
-        select,
-        textarea {
-            font-family: inherit;
-            font-size: 100%;
-            font-weight: inherit;
-            line-height: inherit;
-            color: inherit;
-            margin: 0;
-            padding: 0
-        }
-
-        button,
-        select {
-            text-transform: none
-        }
-
-        [type=button],
-        [type=reset],
-        [type=submit],
-        button {
-            -webkit-appearance: button;
-            background-color: transparent;
-            background-image: none
-        }
-
-        :-moz-focusring {
-            outline: auto
-        }
-
-        :-moz-ui-invalid {
-            box-shadow: none
-        }
-
-        progress {
-            vertical-align: baseline
-        }
-
-        ::-webkit-inner-spin-button,
-        ::-webkit-outer-spin-button {
-            height: auto
-        }
-
-        [type=search] {
-            -webkit-appearance: textfield;
-            outline-offset: -2px
-        }
-
-        ::-webkit-search-decoration {
-            -webkit-appearance: none
-        }
-
-        ::-webkit-file-upload-button {
-            -webkit-appearance: button;
-            font: inherit
-        }
-
-        summary {
-            display: list-item
-        }
-
-        blockquote,
-        dd,
-        dl,
-        figure,
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        hr,
-        p,
-        pre {
-            margin: 0
-        }
-
-        fieldset {
-            margin: 0;
-            padding: 0
-        }
-
-        legend {
-            padding: 0
-        }
-
-        menu,
-        ol,
-        ul {
-            list-style: none;
-            margin: 0;
-            padding: 0
-        }
-
-        textarea {
-            resize: vertical
-        }
-
-        input::placeholder,
-        textarea::placeholder {
-            opacity: 1;
-            color: #9ca3af
-        }
-
-        [role=button],
-        button {
-            cursor: pointer
-        }
-
-        :disabled {
-            cursor: default
-        }
-
-        audio,
-        canvas,
-        embed,
-        iframe,
-        img,
-        object,
-        svg,
-        video {
-            display: block;
-            vertical-align: middle
-        }
-
-        img,
-        video {
-            max-width: 100%;
-            height: auto
-        }
-
-        [hidden] {
-            display: none
-        }
-
-        *,
-        ::before,
-        ::after {
-            --tw-border-spacing-x: 0;
-            --tw-border-spacing-y: 0;
-            --tw-translate-x: 0;
-            --tw-translate-y: 0;
-            --tw-rotate: 0;
-            --tw-skew-x: 0;
-            --tw-skew-y: 0;
-            --tw-scale-x: 1;
-            --tw-scale-y: 1;
-            --tw-pan-x: ;
-            --tw-pan-y: ;
-            --tw-pinch-zoom: ;
-            --tw-scroll-snap-strictness: proximity;
-            --tw-ordinal: ;
-            --tw-slashed-zero: ;
-            --tw-numeric-figure: ;
-            --tw-numeric-spacing: ;
-            --tw-numeric-fraction: ;
-            --tw-ring-inset: ;
-            --tw-ring-offset-width: 0px;
-            --tw-ring-offset-color: #fff;
-            --tw-ring-color: rgb(59 130 246 / 0.5);
-            --tw-ring-offset-shadow: 0 0 #0000;
-            --tw-ring-shadow: 0 0 #0000;
-            --tw-shadow: 0 0 #0000;
-            --tw-shadow-colored: 0 0 #0000;
-            --tw-blur: ;
-            --tw-brightness: ;
-            --tw-contrast: ;
-            --tw-grayscale: ;
-            --tw-hue-rotate: ;
-            --tw-invert: ;
-            --tw-saturate: ;
-            --tw-sepia: ;
-            --tw-drop-shadow: ;
-            --tw-backdrop-blur: ;
-            --tw-backdrop-brightness: ;
-            --tw-backdrop-contrast: ;
-            --tw-backdrop-grayscale: ;
-            --tw-backdrop-hue-rotate: ;
-            --tw-backdrop-invert: ;
-            --tw-backdrop-opacity: ;
-            --tw-backdrop-saturate: ;
-            --tw-backdrop-sepia:
-        }
-
-        ::-webkit-backdrop {
-            --tw-border-spacing-x: 0;
-            --tw-border-spacing-y: 0;
-            --tw-translate-x: 0;
-            --tw-translate-y: 0;
-            --tw-rotate: 0;
-            --tw-skew-x: 0;
-            --tw-skew-y: 0;
-            --tw-scale-x: 1;
-            --tw-scale-y: 1;
-            --tw-pan-x: ;
-            --tw-pan-y: ;
-            --tw-pinch-zoom: ;
-            --tw-scroll-snap-strictness: proximity;
-            --tw-ordinal: ;
-            --tw-slashed-zero: ;
-            --tw-numeric-figure: ;
-            --tw-numeric-spacing: ;
-            --tw-numeric-fraction: ;
-            --tw-ring-inset: ;
-            --tw-ring-offset-width: 0px;
-            --tw-ring-offset-color: #fff;
-            --tw-ring-color: rgb(59 130 246 / 0.5);
-            --tw-ring-offset-shadow: 0 0 #0000;
-            --tw-ring-shadow: 0 0 #0000;
-            --tw-shadow: 0 0 #0000;
-            --tw-shadow-colored: 0 0 #0000;
-            --tw-blur: ;
-            --tw-brightness: ;
-            --tw-contrast: ;
-            --tw-grayscale: ;
-            --tw-hue-rotate: ;
-            --tw-invert: ;
-            --tw-saturate: ;
-            --tw-sepia: ;
-            --tw-drop-shadow: ;
-            --tw-backdrop-blur: ;
-            --tw-backdrop-brightness: ;
-            --tw-backdrop-contrast: ;
-            --tw-backdrop-grayscale: ;
-            --tw-backdrop-hue-rotate: ;
-            --tw-backdrop-invert: ;
-            --tw-backdrop-opacity: ;
-            --tw-backdrop-saturate: ;
-            --tw-backdrop-sepia:
-        }
-
-        ::backdrop {
-            --tw-border-spacing-x: 0;
-            --tw-border-spacing-y: 0;
-            --tw-translate-x: 0;
-            --tw-translate-y: 0;
-            --tw-rotate: 0;
-            --tw-skew-x: 0;
-            --tw-skew-y: 0;
-            --tw-scale-x: 1;
-            --tw-scale-y: 1;
-            --tw-pan-x: ;
-            --tw-pan-y: ;
-            --tw-pinch-zoom: ;
-            --tw-scroll-snap-strictness: proximity;
-            --tw-ordinal: ;
-            --tw-slashed-zero: ;
-            --tw-numeric-figure: ;
-            --tw-numeric-spacing: ;
-            --tw-numeric-fraction: ;
-            --tw-ring-inset: ;
-            --tw-ring-offset-width: 0px;
-            --tw-ring-offset-color: #fff;
-            --tw-ring-color: rgb(59 130 246 / 0.5);
-            --tw-ring-offset-shadow: 0 0 #0000;
-            --tw-ring-shadow: 0 0 #0000;
-            --tw-shadow: 0 0 #0000;
-            --tw-shadow-colored: 0 0 #0000;
-            --tw-blur: ;
-            --tw-brightness: ;
-            --tw-contrast: ;
-            --tw-grayscale: ;
-            --tw-hue-rotate: ;
-            --tw-invert: ;
-            --tw-saturate: ;
-            --tw-sepia: ;
-            --tw-drop-shadow: ;
-            --tw-backdrop-blur: ;
-            --tw-backdrop-brightness: ;
-            --tw-backdrop-contrast: ;
-            --tw-backdrop-grayscale: ;
-            --tw-backdrop-hue-rotate: ;
-            --tw-backdrop-invert: ;
-            --tw-backdrop-opacity: ;
-            --tw-backdrop-saturate: ;
-            --tw-backdrop-sepia:
-        }
-
-        .relative {
-            position: relative
-        }
-
-        .mx-auto {
-            margin-left: auto;
-            margin-right: auto
-        }
-
-        .mx-6 {
-            margin-left: 1.5rem;
-            margin-right: 1.5rem
-        }
-
-        .ml-4 {
-            margin-left: 1rem
-        }
-
-        .mt-16 {
-            margin-top: 4rem
-        }
-
-        .mt-6 {
-            margin-top: 1.5rem
-        }
-
-        .mt-4 {
-            margin-top: 1rem
-        }
-
-        .-mt-px {
-            margin-top: -1px
-        }
-
-        .mr-1 {
-            margin-right: 0.25rem
-        }
-
-        .flex {
-            display: flex
-        }
-
-        .inline-flex {
-            display: inline-flex
-        }
-
-        .grid {
-            display: grid
-        }
-
-        .h-16 {
-            height: 4rem
-        }
-
-        .h-7 {
-            height: 1.75rem
-        }
-
-        .h-6 {
-            height: 1.5rem
-        }
-
-        .h-5 {
-            height: 1.25rem
-        }
-
-        .min-h-screen {
-            min-height: 100vh
-        }
-
-        .w-auto {
-            width: auto
-        }
-
-        .w-16 {
-            width: 4rem
-        }
-
-        .w-7 {
-            width: 1.75rem
-        }
-
-        .w-6 {
-            width: 1.5rem
-        }
-
-        .w-5 {
-            width: 1.25rem
-        }
-
-        .max-w-7xl {
-            max-width: 80rem
-        }
-
-        .shrink-0 {
-            flex-shrink: 0
-        }
-
-        .scale-100 {
-            --tw-scale-x: 1;
-            --tw-scale-y: 1;
-            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
-        }
-
-        .grid-cols-1 {
-            grid-template-columns: repeat(1, minmax(0, 1fr))
-        }
-
-        .items-center {
-            align-items: center
-        }
-
-        .justify-center {
-            justify-content: center
-        }
-
-        .gap-6 {
-            gap: 1.5rem
-        }
-
-        .gap-4 {
-            gap: 1rem
-        }
-
-        .self-center {
-            align-self: center
-        }
-
-        .rounded-lg {
-            border-radius: 0.5rem
-        }
-
-        .rounded-full {
-            border-radius: 9999px
-        }
-
-        .bg-gray-100 {
-            --tw-bg-opacity: 1;
-            background-color: rgb(243 244 246 / var(--tw-bg-opacity))
-        }
-
-        .bg-white {
-            --tw-bg-opacity: 1;
-            background-color: rgb(255 255 255 / var(--tw-bg-opacity))
-        }
-
-        .bg-red-50 {
-            --tw-bg-opacity: 1;
-            background-color: rgb(254 242 242 / var(--tw-bg-opacity))
-        }
-
-        .bg-dots-darker {
-            background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E")
-        }
-
-        .from-gray-700\/50 {
-            --tw-gradient-from: rgb(55 65 81 / 0.5);
-            --tw-gradient-to: rgb(55 65 81 / 0);
-            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
-        }
-
-        .via-transparent {
-            --tw-gradient-to: rgb(0 0 0 / 0);
-            --tw-gradient-stops: var(--tw-gradient-from), transparent, var(--tw-gradient-to)
-        }
-
-        .bg-center {
-            background-position: center
-        }
-
-        .stroke-red-500 {
-            stroke: #ef4444
-        }
-
-        .stroke-gray-400 {
-            stroke: #9ca3af
-        }
-
-        .p-6 {
-            padding: 1.5rem
-        }
-
-        .px-6 {
-            padding-left: 1.5rem;
-            padding-right: 1.5rem
-        }
-
-        .text-center {
-            text-align: center
-        }
-
-        .text-right {
-            text-align: right
-        }
-
-        .text-xl {
-            font-size: 1.25rem;
-            line-height: 1.75rem
-        }
-
-        .text-sm {
-            font-size: 0.875rem;
-            line-height: 1.25rem
-        }
-
-        .font-semibold {
-            font-weight: 600
-        }
-
-        .leading-relaxed {
-            line-height: 1.625
-        }
-
-        .text-gray-600 {
-            --tw-text-opacity: 1;
-            color: rgb(75 85 99 / var(--tw-text-opacity))
-        }
-
-        .text-gray-900 {
-            --tw-text-opacity: 1;
-            color: rgb(17 24 39 / var(--tw-text-opacity))
-        }
-
-        .text-gray-500 {
-            --tw-text-opacity: 1;
-            color: rgb(107 114 128 / var(--tw-text-opacity))
-        }
-
-        .underline {
-            -webkit-text-decoration-line: underline;
-            text-decoration-line: underline
-        }
-
-        .antialiased {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale
-        }
-
-        .shadow-2xl {
-            --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-            --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
-            box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
-        }
-
-        .shadow-gray-500\/20 {
-            --tw-shadow-color: rgb(107 114 128 / 0.2);
-            --tw-shadow: var(--tw-shadow-colored)
-        }
-
-        .transition-all {
-            transition-property: all;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 150ms
-        }
-
-        .selection\:bg-red-500 *::selection {
-            --tw-bg-opacity: 1;
-            background-color: rgb(239 68 68 / var(--tw-bg-opacity))
-        }
-
-        .selection\:text-white *::selection {
-            --tw-text-opacity: 1;
-            color: rgb(255 255 255 / var(--tw-text-opacity))
-        }
-
-        .selection\:bg-red-500::selection {
-            --tw-bg-opacity: 1;
-            background-color: rgb(239 68 68 / var(--tw-bg-opacity))
-        }
-
-        .selection\:text-white::selection {
-            --tw-text-opacity: 1;
-            color: rgb(255 255 255 / var(--tw-text-opacity))
-        }
-
-        .hover\:text-gray-900:hover {
-            --tw-text-opacity: 1;
-            color: rgb(17 24 39 / var(--tw-text-opacity))
-        }
-
-        .hover\:text-gray-700:hover {
-            --tw-text-opacity: 1;
-            color: rgb(55 65 81 / var(--tw-text-opacity))
-        }
-
-        .focus\:rounded-sm:focus {
-            border-radius: 0.125rem
-        }
-
-        .focus\:outline:focus {
-            outline-style: solid
-        }
-
-        .focus\:outline-2:focus {
-            outline-width: 2px
-        }
-
-        .focus\:outline-red-500:focus {
-            outline-color: #ef4444
-        }
-
-        .group:hover .group-hover\:stroke-gray-600 {
-            stroke: #4b5563
-        }
-
-        .z-10 {
-            z-index: 10
-        }
-
-        @media (prefers-reduced-motion: no-preference) {
-            .motion-safe\:hover\:scale-\[1\.01\]:hover {
-                --tw-scale-x: 1.01;
-                --tw-scale-y: 1.01;
-                transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+<?php
+session_start();
+define("access",true);
+if(!isset($_POST["identity_number"]))
+{
+    die("Invalid access");
+}
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require '../PHPMailer/src/Exception.php';
+require '../PHPMailer/src/PHPMailer.php';
+require '../PHPMailer/src/SMTP.php';
+include ("../classes/controls.php");
+include ("../templates/claim_templates.php");
+$control=new controls();
+
+$identity = (int)$_POST['identity_number'];
+if ($identity == 1) {
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        $practice_number = validateXss($_POST['practice_number']);
+        if (!empty($practice_number)) {
+            $practice_number = str_pad($practice_number, 7, '0', STR_PAD_LEFT);
+            if($control->viewDoctor($practice_number)==true) {
+                $doctor = $control->viewDoctor($practice_number);
+                $doctor_name = $doctor["name_initials"];
+                $doctor_surname = $doctor["surname"];
+                $contact = "(" . $doctor["tel1code"] . ")" . $doctor["tel1code"];
+                $gives_discount = $doctor["gives_discount"];
+                $doctor_id = $doctor["doc_id"];
+                $doctor_arr=array("doctor_name"=>$doctor_name,"doctor_surname"=>$doctor_surname,"contact"=>$contact,"gives_discount"=>$gives_discount,"doctor_id"=>$doctor_id);
+                echo json_encode($doctor_arr);
+            }
+            else
+            {
+                echo "Failed to find this Doctor";
             }
         }
 
-        @media (prefers-color-scheme: dark) {
-            .dark\:bg-gray-900 {
-                --tw-bg-opacity: 1;
-                background-color: rgb(17 24 39 / var(--tw-bg-opacity))
-            }
-
-            .dark\:bg-gray-800\/50 {
-                background-color: rgb(31 41 55 / 0.5)
-            }
-
-            .dark\:bg-red-800\/20 {
-                background-color: rgb(153 27 27 / 0.2)
-            }
-
-            .dark\:bg-dots-lighter {
-                background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E")
-            }
-
-            .dark\:bg-gradient-to-bl {
-                background-image: linear-gradient(to bottom left, var(--tw-gradient-stops))
-            }
-
-            .dark\:stroke-gray-600 {
-                stroke: #4b5563
-            }
-
-            .dark\:text-gray-400 {
-                --tw-text-opacity: 1;
-                color: rgb(156 163 175 / var(--tw-text-opacity))
-            }
-
-            .dark\:text-white {
-                --tw-text-opacity: 1;
-                color: rgb(255 255 255 / var(--tw-text-opacity))
-            }
-
-            .dark\:shadow-none {
-                --tw-shadow: 0 0 #0000;
-                --tw-shadow-colored: 0 0 #0000;
-                box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
-            }
-
-            .dark\:ring-1 {
-                --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-                --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-                box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
-            }
-
-            .dark\:ring-inset {
-                --tw-ring-inset: inset
-            }
-
-            .dark\:ring-white\/5 {
-                --tw-ring-color: rgb(255 255 255 / 0.05)
-            }
-
-            .dark\:hover\:text-white:hover {
-                --tw-text-opacity: 1;
-                color: rgb(255 255 255 / var(--tw-text-opacity))
-            }
-
-            .group:hover .dark\:group-hover\:stroke-gray-400 {
-                stroke: #9ca3af
-            }
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error : ".$e->getMessage();
+    }
+}
+else if ($identity == 2) {
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        $scheme_name = filter_var($_POST['medical_scheme'], FILTER_SANITIZE_STRING);
+        $scheme_name = htmlspecialchars($scheme_name);
+        $scheme_name = my_utf8_decode($scheme_name);
+        $scheme_name = trim($scheme_name);
+        $countScheme = count($control->viewSchemeOptions($scheme_name));
+        if ($countScheme > 0) {
+            echo json_encode($control->viewSchemeOptions($scheme_name), JSON_NUMERIC_CHECK);
+        }
+        else{
+            echo "No Scheme Option";
         }
 
-        @media (min-width: 640px) {
-            .sm\:fixed {
-                position: fixed
-            }
-
-            .sm\:top-0 {
-                top: 0px
-            }
-
-            .sm\:right-0 {
-                right: 0px
-            }
-
-            .sm\:ml-0 {
-                margin-left: 0px
-            }
-
-            .sm\:flex {
-                display: flex
-            }
-
-            .sm\:items-center {
-                align-items: center
-            }
-
-            .sm\:justify-center {
-                justify-content: center
-            }
-
-            .sm\:justify-between {
-                justify-content: space-between
-            }
-
-            .sm\:text-left {
-                text-align: left
-            }
-
-            .sm\:text-right {
-                text-align: right
+    } catch (Exception $e) {
+        echo("There is an error : ".$e->getMessage());
+    }
+}
+else if ($identity == 3) {
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        echo json_encode($control->viewAllICD10());
+    } catch (Exception $e) {
+        echo("There is an error : ".$e->getMessage());
+    }
+}
+else if ($identity == 4) {
+    try {
+        $icd10_code=validateXss($_POST["icd10_code"]);
+        if($control->viewICD10Details($icd10_code)==true)
+        {
+            $data=$control->viewICD10Details($icd10_code);
+            $diag_code=$data["diag_code"];
+            $pmb_code=$data["pmb_code"];
+            $shortdesc=$data["shortdesc"];
+            if (strlen($pmb_code) > 1) {
+                echo "<div class=\"uk-alert-success\" uk-alert><a class=\"uk-alert-close\" uk-close></a><h4><span uk-icon=\"icon: info\"></span> Diagonisis Code : $diag_code (PMB)</h4><p>PMB Code : $pmb_code</p><p>Description : $shortdesc</p></div>";
+            } else {
+                echo "<div class=\"uk-alert-danger\" uk-alert><a class=\"uk-alert-close\" uk-close></a><h4><span uk-icon=\"icon: close\"></span> Diagonisis Code : $diag_code (Non-PMB)</h4><p>PMB Code : $pmb_code</p><p>Description : $shortdesc</p></div>";
             }
         }
+        else
+        {
+            echo "<div class=\"uk-alert-danger\" uk-alert><a class=\"uk-alert-close\" uk-close></a><h4><span uk-icon=\"icon: close\"></span> Invalid ICD10 Code</h4></div>";
+        }
+    } catch (Exception $e) {
+        $error="There is an error : ".$e->getMessage();
+        echo "<div class=\"uk-alert-danger\" uk-alert><a class=\"uk-alert-close\" uk-close></a><p><span uk-icon=\"icon: close\"></span> $error</p></div>";
+    }
+}
+else if ($identity == 5) {
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        $client_id=(int)$_POST["client_id"];
+        if($client_id==31)
+        {
+            $new_claim = $control->generateClaimNumber($client_id);
+            $remove_net=(int)str_replace("ASPEN","",$new_claim);
+            $temp_number = $remove_net + 1;
+            $pad_number=str_pad($temp_number,5,"0",STR_PAD_LEFT);
+            echo "ASPEN" . $pad_number;
 
-        @media (min-width: 768px) {
-            .md\:grid-cols-2 {
-                grid-template-columns: repeat(2, minmax(0, 1fr))
+        }
+        else if($client_id==33)
+        {
+            $new_claim = $control->generateClaimNumber($client_id);
+            $remove_net=(int)str_replace("NET","",$new_claim);
+            $temp_number = $remove_net + 1;
+            $pad_number=str_pad($temp_number,5,"0",STR_PAD_LEFT);
+            echo "NET" . $pad_number;
+        }
+        else
+        {
+            $new_claim = $control->generateClaimNumber($client_id);
+            $remove_net=(int)str_replace("MCA","",$new_claim);
+            $temp_number = $remove_net + 1;
+            $pad_number=str_pad($temp_number,5,"0",STR_PAD_LEFT);
+            echo "MCA" . $pad_number;
+
+        }
+    } catch (Exception $e) {
+        echo("There is an error : ".$e->getMessage());
+    }
+}
+else if ($identity == 6) {
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        $claim_number=validateXss($_POST["claim_number"]);
+        $client_id=(int)$_POST["client_id"];
+        if($control->validateClaim($claim_number,$client_id)>0)
+        {
+            echo "Duplicate Claim";
+        }
+        else{
+            echo "New Claim";
+        }
+    } catch (Exception $e) {
+        echo("There is an error : ".$e->getMessage());
+    }
+}
+else if ($identity == 7) {
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        $claim_line_id=(int)$_POST["claim_line_id"];
+        echo json_encode($control->viewEachClaimLine($claim_line_id));
+    } catch (Exception $e) {
+        echo("There is an error : ".$e->getMessage());
+    }
+}
+else if ($identity == 8) {
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        $service_date_from = validateXss($_POST['sd']);
+        $tariff_code = validateXss($_POST['tc']);
+        $primaryICDCode = validateXss($_POST['icd']);
+        $clmnline_charged_amnt = (double)$_POST['ca'];
+        $clmline_scheme_paid_amnt = (double)$_POST['ss'];
+        $gap = (double)$_POST['gap'];
+        $msg_code = validateXss($_POST['res']);
+        $treatmentDate = validateXss($_POST['trt']);
+        $gap_aamount_line = (double)$_POST['act_gap'];
+        $myid = validateXss($_POST['myid']);
+        $cpt = validateXss($_POST['cpt']);
+        $claim_id = (int)$_POST['claim_id'];
+        $practice_number = validateXss($_POST['practice_number']);
+        $benefit_description = validateXss($_POST['invoice_date']);
+        $createdBy="System";
+        $pmb="N";
+        if($control->viewICD10Details($primaryICDCode)==true) {
+            $data = $control->viewICD10Details($primaryICDCode);
+            $pmb_code = $data["pmb_code"];
+            $pmb_code = strlen($pmb_code);
+            if (strlen($pmb_code) > 0 && $pmb_code!=0) {
+                $pmb="Y";
             }
         }
-
-        @media (min-width: 1024px) {
-            .lg\:gap-8 {
-                gap: 2rem
-            }
-
-            .lg\:p-8 {
-                padding: 2rem
+        $control->checkDoctorTRCP1($practice_number,$cpt);
+        if(!$control->checkDoctorTRCP2($practice_number)) {
+            $result = $control->checkAllDoctorsCPT4($claim_id);
+            $result1 = (explode("---", $result));
+            if (count($result1) > 1) {
+                if (strlen($result1[1]) < 2) {
+                    //die("Please Enter CPT4");
+                }
             }
         }
-    </style>
-</head>
+        if($control->callInsertClaimLine($claim_id,$practice_number,$clmnline_charged_amnt,$clmline_scheme_paid_amnt,$gap,$tariff_code,$service_date_from,$primaryICDCode,$pmb,$benefit_description,$gap_aamount_line,$msg_code,$treatmentDate,$createdBy))
+        {
+            echo "Done!!!";
+            $c=$control->callUpdateDoctor($claim_id,$practice_number,"cpt_code",$cpt);
+            $control->amountsProcess($claim_id);
+ $emergencyarr=explode(",",$control->viewValidationsInd(5));
+             if(in_array($tariff_code, $emergencyarr))
+                                            {
+                                                $control->callUpdateClaimKey($claim_id,"emergency","1");
+                                            }
+        } else {
+            echo "Failed!!!";
+        }
 
-<body class="antialiased">
-    <div
-        class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
+    } catch (Exception $e) {
+        echo("There is an error : ".$e->getMessage());
+    }
+}
+else if ($identity == 9) {
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        $id = (int)$_POST['practice_number'];
+        $tariff_code=validateXss($_POST['tc']);
+        $primaryICDCode=validateXss($_POST['icd']);
+        $clmnline_charged_amnt=(double)$_POST['ca'];
+        $clmline_scheme_paid_amnt=(double)$_POST['ss'];
+        $claimline_memberportion=(double)$_POST['gap'];
+        $gap_aamount_line=(double)$_POST['act_gap'];
+        $pmb="N";
+        if($control->viewICD10Details($primaryICDCode)==true) {
+            $data = $control->viewICD10Details($primaryICDCode);
+            $pmb_code = $data["pmb_code"];
+            $pmb_code = strlen($pmb_code);
+            if (strlen($pmb_code) > 0 && $pmb_code!=0) {
+                $pmb="Y";
+            }
+        }
+        $benefit_description=validateXss($_POST['invoice_date']);
+        $msg_code=validateXss($_POST['res']);
 
-        <div class="max-w-7xl mx-auto p-6 lg:p-8">
-            <div class="flex justify-center">
-                <svg viewBox="0 0 62 65" fill="none" xmlns="http://www.w3.org/2000/svg"
-                    class="h-16 w-auto bg-gray-100 dark:bg-gray-900">
-                    <path
-                        d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z"
-                        fill="#FF2D20" />
-                </svg>
-            </div>
+        $clmn_line_pmnt_status="";
+        $treatmentDate=validateXss($_POST['trt']);
+        $cpt=validateXss($_POST['cpt']);
+        $claim_id=(int)$_POST['claim_id'];
 
-            <div class="mt-16">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                    <a href="https://laravel.com/docs"
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                                </svg>
-                            </div>
+        $practice_number="";
+        $practice_type="";
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Documentation</h2>
+        $all=$control->checkBenefit($msg_code);
+        $lng_msg_dscr=$all["lng"];
+        $msg_dscr=$all["shrt"];
+        if($control->callEditClaimLine($id,$clmnline_charged_amnt,$clmline_scheme_paid_amnt,$claimline_memberportion,$tariff_code,$primaryICDCode,$pmb,$benefit_description,$msg_code,$clmn_line_pmnt_status,$treatmentDate,$gap_aamount_line,$lng_msg_dscr,$msg_dscr))
+        {
+            $control->amountsProcess($claim_id);
+            $control->callInsertDoctorClaimLogs($claim_id,$practice_number,"claim line",$clmnline_charged_amnt,$clmline_scheme_paid_amnt,$gap_aamount_line,$control->loggedAs());
+ $emergencyarr=explode(",",$control->viewValidationsInd(5));
+             if(in_array($tariff_code, $emergencyarr))
+                                            {
+                                                $control->callUpdateClaimKey($claim_id,"emergency","1");
+                                            }
+            echo "Done!!!";
+        }
+        else {
+            echo "Failed!!!";
+        }
 
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laravel has wonderful documentation covering every aspect of the framework. Whether you
-                                are a newcomer or have prior experience with Laravel, we recommend reading our
-                                documentation from beginning to end.
-                            </p>
-                        </div>
 
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                        </svg>
-                    </a>
+    } catch (Exception $e) {
+        echo("There is an error : ".$e->getMessage());
+    }
+}
+elseif($identity==10)
+{
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        $claimline = (int)$_POST["claimline_id"];
+        $claim_id=$control->viewClaimIDfromClaimLine($claimline);
+$ddata=$control->viewEachClaimLine($claimline);
+        $dd=$control->clearClaimLine($claimline);
+        if($dd==1)
+        {
+            
+            $practice_number=$ddata["practice_number"];
+            $clmnline_charged_amnt=$ddata["clmnline_charged_amnt"];
+            $clmline_scheme_paid_amnt=$ddata["clmline_scheme_paid_amnt"];
+            $gap_aamount_line=$ddata["gap_aamount_line"];
+            $control->callInsertDoctorClaimLogs($claim_id,$practice_number,"claim line",$clmnline_charged_amnt,$clmline_scheme_paid_amnt,$gap_aamount_line,$control->loggedAs());
+            $control->amountsProcess($claim_id);
+            echo "Deleted";
 
-                    <a href="https://laracasts.com"
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                    <path stroke-linecap="round"
-                                        d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
-                                </svg>
-                            </div>
+        }
+        else{
+            echo "Failed to delete";
+        }
+    }
+    catch (Exception $e){
+        echo "There is an error ".$e->getMessage();
+    }
+}
+elseif($identity==11)
+{
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    $note_id = (int)$_POST['note_id'];
+    try {
+        $rowD=$control->viewSingleNote($note_id);
+        $id = $rowD[0];
+        $claim_id = $rowD[1];
+        $desc = $rowD[2];
+        $date_entered = $rowD[3];
+        $owner = $rowD[4];
+        $sys_username = $rowD[5];
+        if($control->callInsertNoteLog($id,$claim_id,$desc,$date_entered,$owner))
+        {
+            if ($control->callDeleteNote($note_id)) {
+                echo "Deleted";
+            } else {
+                echo "Deletion Failed";
+            }
+        }
+        else{
+            echo "There is an error";
+        }
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laracasts</h2>
 
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript
-                                development. Check them out, see for yourself, and massively level up your development
-                                skills in the process.
-                            </p>
-                        </div>
+    } catch (Exception $c) {
+        echo "There is an error, try again ".$c;
+    }
+}
 
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                        </svg>
-                    </a>
+else if ($identity == 13) {
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    $note_id = (int)$_POST['textid'];
+    $note = filter_var($_POST['text'], FILTER_SANITIZE_STRING);
+    $note=htmlspecialchars($note);
+    $note=my_utf8_decode($note);
+    $note=trim($note);
 
-                    <a href="https://laravel-news.com"
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" />
-                                </svg>
-                            </div>
+    try {
+        $rowD=$control->viewSingleNote($note_id);
+        $id = $rowD[0];
+        $claim_id = $rowD[1];
+        $desc = $rowD[2];
+        $date_entered = $rowD[3];
+        $owner = $rowD[4];
+        $sys_username = $rowD[5];
+        if($control->callInsertNoteLog($id,$claim_id,$desc,$date_entered,$owner)) {
+            if ($control->callUpdateNote($note_id, $note)) {
+                echo "<b style='color: green'>Updated!!!</b>";
+            } else {
+                echo "<b style='color: red'>Failed!!!</b>";
+            }
+        }
+    } catch (Exception $e) {
+        echo "<b style='color: red'>There is an error!!!</b>";
+    }
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laravel News</h2>
+}
+elseif($identity==14)
+{
+    if($control->isInternal() || isset($_POST["from_live"]))
+    {
+    }
+    else{
+         $json_arr=array("purple_total"=>0,"red_total"=>0,"orange_total"=>0,"green_total"=>0,"next_claim_id"=>0);
+        echo json_encode($json_arr);
+        die();
+    }
+    try {
+        $val=1;
+        $condition=":username";
+        if($control->isClaimsSpecialist())
+        {
+            $condition="username=:username";
+            $val=$control->loggedAs();
+        }
+        elseif ($control->isGapCover())
+        {
+            $condition="c.client_name=:username";
+            $val=$control->loggedAs();
+        }
+        $nonotes_array=$control->viewNoNotesClaims($condition,$val);
+        $notes_array=$control->viewNotesClaims($condition,$val);
+        $all_array=array_merge($nonotes_array,$notes_array);
+        $purple_arr=array();
+        $red_arr=array();
+        $orange_arr=array();
+        $green_arr=array();
+        $all_array_sort=asort($all_array);
+        foreach ($all_array as $row)
+        {
+            $days=0;
+        $hours=0;
+            $claim_id=$row["claim_id"];
+            $date_entered=$row["date_entered"];
+            $status_type=$row["status_type"];
+            $date_closed=$row["date_closed"];
+            $date_reopened=$row["date_reopened"];
+            $date_closed=$row["date_closed"]!== null?$row["date_closed"]:"-";
+            $date_reopened=$row["date_reopened"]!== null?$row["date_reopened"]:"-";
+            $client=$row["client_name"];
+            if(strlen($date_reopened)<2 && strlen($date_closed)>10)
+            {
+                $dat0=$control->viewClaimDate($claim_id,$date_reopened,$date_entered);
+                $date_entered=$date_entered>$dat0?$date_entered:$dat0;
+            }
+            
+            if(in_array($client,$r_clients))
+                {
+                    $hours=(double)$control->getWorkingHours($date_entered,date("Y-m-d H:i:s"),$control->holidays());                                        
+                }
+                else
+                {
+                    $from_date1 = date('Y-m-d', strtotime($date_entered));
+                    $days=round($control->getWorkingDays($from_date1,$control->todayDate(),$control->holidays()));
+                }
+               
+            $arr=array("date_entered"=>$date_entered,"claim_id"=>$claim_id,"hours"=>$hours);
+            if(($days>2 || $hours>= 8 ) && $status_type == "No_Notes")
+            {
+                array_push($purple_arr,$arr);
+            }
+           elseif(($hours>0 && $hours<8 && $status_type == "No_Notes") || $hours>=8)
+            {
+                array_push($red_arr,$arr);
+            }
+            elseif($days>2 || ($days==2  && $status_type == "No_Notes"))
+            {
+                array_push($red_arr,$arr);
+            }  
+            
+            elseif ($days==2 || $hours>=4)
+            {
+                array_push($orange_arr,$arr);
+            }
 
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laravel News is a community driven portal and newsletter aggregating all of the latest
-                                and most important news in the Laravel ecosystem, including new package releases and
-                                tutorials.
-                            </p>
-                        </div>
+            else
+            {
+                array_push($green_arr,$arr);
+            }
 
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                        </svg>
-                    </a>
+        }
+        $count_purple=count($purple_arr);
+        $count_red=count($red_arr);
+        $count_orange=count($orange_arr);
+        $count_green=count($green_arr);
+        $next_claim_id=0;
+        if($count_purple>0)
+        {
+            usort($purple_arr, function($a, $b) { return $b["hours"] - $a["hours"];});
+            $next_claim_id=$purple_arr[0]["claim_id"];
+        }
+        elseif($count_red>0)
+        {
+            usort($red_arr, function($a, $b) { return $b["hours"] - $a["hours"];});
+            $next_claim_id=$red_arr[0]["claim_id"];
+        }
+        elseif($count_orange>0)
+        {
+            usort($orange_arr, function($a, $b) { return $b["hours"] - $a["hours"];});
+            $next_claim_id=$orange_arr[0]["claim_id"];
+        }
+        else
+        {
+            usort($green_arr, function($a, $b) { return $b["hours"] - $a["hours"];});
+            $next_claim_id=$green_arr[0]["claim_id"];
+        }
+        $json_arr=array("purple_total"=>$count_purple,"red_total"=>$count_red,"orange_total"=>$count_orange,"green_total"=>$count_green,"next_claim_id"=>$next_claim_id,"myarr"=>$red_arr);
+        echo json_encode($json_arr);
+    }
+    catch (Exception $e)
+    {
+        $json_arr=array("purple_total"=>0,"red_total"=>0,"orange_total"=>0,"green_total"=>0,"next_claim_id"=>0);
+        echo json_encode($json_arr);
+    }
+}
+elseif($identity==15)
+{
+    if(!$control->isInternal())
+    {
+        $arr=array("claim_number"=>"","full_name"=>"","contact_number"=>"","email"=>"","client_name"=>"","policy_number"=>"","Service_Date"=>"","notice"=>"");
+        echo json_encode($arr);
+        die();
+    }
+    try {
+        $claim_id=(int)$_POST["claim_id"];
+        $data=$control->viewSingleClaim($claim_id);
+        $notice=$control->viewTemplate("notice_board");
+        $arr=array("claim_number"=>$data["claim_number"],"full_name"=>$data["first_name"]." ".$data["surname"],"contact_number"=>$data["cell"],"email"=>$data["email"],"client_name"=>$data["client_name"],"policy_number"=>$data["policy_number"],"Service_Date"=>$data["Service_Date"],"notice"=>$notice);
+        echo json_encode($arr);
+    }
+    catch (Exception $e)
+    {
+        $json_arr=array("claim_number"=>"","full_name"=>"","contact_number"=>"","email"=>"");
+        echo json_encode($json_arr);
+    }
+}
+elseif($identity==16)
+{
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        $claim_id=(int)$_POST["claim_id"];
+        $arr=$control->viewNotes($claim_id);
+        rsort($arr);
+        homeNotes($arr,$control,"Notes",1);
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error -> ".$e->getMessage();
+    }
+}
+elseif($identity==17)
+{
+    if(!$control->isInternal())
+    {
+        die();
+    }
+    try {
+        $role=$control->myRole();
+        $mcausername=$control->loggedAs();
+        $condition=$control->isTopLevel()?":username":"username=:username";
+        $val=$control->isTopLevel()?"1":$mcausername;
+        $member_arr=$control->view4DaysMembers($condition,$val);
+        $file_arr=$control->viewUpdatedDocs($condition,$val);
+        $zer_arr=$control->viewZeroAmounts($condition,$val);
+        $json_arr=array("members"=>$member_arr,"files"=>$file_arr,"zeros"=>$zer_arr);
+        echo json_encode($json_arr);
+    }
+    catch (Exception $e)
+    {
+        $json_arr=array("members"=>"","files"=>"","zeros"=>$e->getMessage());
+        echo json_encode($json_arr);
+    }
+}
+elseif($identity==18)
+{
+    if(!$control->isInternal())
+    {
+        die("Invalid access");
+    }
+    try {
+        $intervention_desc="This claim was sent for clinical review.";
+        $claim_id=(int)$_POST["claim_id"];
+        $type="admed";
+        $data=$control->viewSingleClaim($claim_id);
+        /*
+        if((int)$data["client_id"]==6)
+        {
+            $username1=$data["username"];
+        }
+        else
+        {
+            $data_lat=$control->viewLatestUser();
+            $username1=$data_lat["username"];
+            $type="not_admed";
+        }
+*/
+        $open=1;
+        if($control->viewClinicalNote($claim_id,$intervention_desc)>0 && ((int)$data["client_id"]==34 || (int)$data["client_id"]==35))
+        {
+            $open=4;
+        }
+        $result=$control->callUpdateClaimKey($claim_id,"Open",$open);
+        if($result>0)
+        {
+            /*
+            if($type=="not_admed")
+            {
+                $control->callUpdateClaimKey($claim_id,"username",$username1);
+                $control->callUpdateUser($username1);
+            }
+            */
+            echo"<div class=\"uk-alert-success\" uk-alert>
+    <a class=\"uk-alert-close\" uk-close></a>
+    <p>Successfully allocated the claim to <b>$username1</b></p>
+</div>";
+        }
+        else{
+            echo "";
+            echo"<div class=\"uk-alert-success\" uk-alert>
+    <a class=\"uk-alert-close\" uk-close></a>
+    <p>Failed to allocate the claim</p>
+</div>";
+        }
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error - ".$e->getMessage();
+    }
+}
+elseif($identity==19)
+{
+    if(!$control->isAdmin())
+    {
+        die("Invalid access");
+    }
+    $claim_id = (int)$_POST['claim_id'];
+    try {
+        if ($control->clearClaim($claim_id)>0) {
+            echo "Deleted";
+        } else {
+            echo "Deletion Failed";
+        }
+    } catch (Exception $e) {
+        echo "There is an error, try again ".$e->getMessage();
+    }
+}
+elseif($identity==20 && $control->isInternal())
+{
+    try {
 
-                    <div
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64" />
-                                </svg>
-                            </div>
+        $claim_id=(int)$_POST["claim_id"];
+        echo json_encode($control->viewConfirmOptions($claim_id));
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error : ".$e->getMessage();
+    }
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Vibrant Ecosystem</h2>
+}
+elseif($identity == 21 && $control->isInternal())
+{
+    $claim_id=(int)$_POST["claim_id"];
+    try {
+        $claim_data=$control->viewSingleClaim($claim_id);
+        $date_entered=$claim_data["date_entered"];
+        $member_contacted=$claim_data["member_contacted"];
+        $open=$claim_data["Open"];
+        $coding_checked=$claim_data["coding_checked"];
+        $date_closed=$claim_data["date_closed"]!== null?$claim_data["date_closed"]:"";
+        $date_reopened=$claim_data["date_reopened"]!== null?$claim_data["date_reopened"]:"";
+        $client_id=$claim_data["client_id"];
+        $current_date=date('Y-m-d H:i:s');
+        if($control->myRole()=="claims_specialist")
+        {
+        $control->callUpdateClaimKey($claim_id,"new",1);
+    }
+        $control->callUpdateClaimKey($claim_id,"recent_date_time",$current_date);
+        if($client_id==1) {
+            if(strlen($date_closed)>10)
+            {
+                $line_data=$control->viewLatestClaimLine($claim_id);
+                $claim_linedate=$line_data["date_entered"];
+                $date_reopened=$date_reopened>$claim_linedate?$date_reopened:$claim_linedate;
+            }
+        }
+        $date_entered = strlen($date_reopened)>10?$date_reopened:$date_entered;
+        $today = date('Y-m-d');
+        $from_date1 = date('Y-m-d', strtotime($date_entered));
+        $days=$control->getWorkingDays($from_date1,$today,$control->holidays());
+        //echo $days."----".$member_contacted."---".$open;
+        if($days>=4 && $member_contacted != 1 && $open==1)
+        {
+            echo "<div class=\"uk-alert-danger nothing1\" uk-alert><a class=\"uk-alert-close\" uk-close> </a><p>Please update the Member/Broker as this case is 4 days (or more). </p>                
+                <label><input class=\"uk-checkbox\" id='contactmember' type=\"checkbox\" onclick='showhide(\"contactmember\",\"membspan\")'> <span>Member/Broker Contacted?</span></label><span id='membspan' style='display: none'> <textarea class=\"uk-textarea\"  id='memtxt'></textarea><br><button class=\"uk-button uk-button-primary uk-button-small\"  onclick='updateMember(\"$claim_id\")'>Update</button></span></div>";
+        }
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error ".$e->getMessage();
+    }
 
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laravel's robust library of first-party tools and libraries, such as <a
-                                    href="https://forge.laravel.com"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Forge</a>,
-                                <a href="https://vapor.laravel.com"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Vapor</a>,
-                                <a href="https://nova.laravel.com"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Nova</a>,
-                                and <a href="https://envoyer.io"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Envoyer</a>
-                                help you take your projects to the next level. Pair them with powerful open source
-                                libraries like <a href="https://laravel.com/docs/billing"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Cashier</a>,
-                                <a href="https://laravel.com/docs/dusk"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dusk</a>,
-                                <a href="https://laravel.com/docs/broadcasting"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Echo</a>,
-                                <a href="https://laravel.com/docs/horizon"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Horizon</a>,
-                                <a href="https://laravel.com/docs/sanctum"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Sanctum</a>,
-                                <a href="https://laravel.com/docs/telescope"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Telescope</a>,
-                                and more.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+}
+elseif($identity==22 && $control->isInternal())
+{
+    try {
 
-            <div class="flex justify-center mt-16 px-0 sm:items-center sm:justify-between">
-                <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-left">
-                    <div class="flex items-center gap-4">
-                        <a href="https://github.com/sponsors/taylorotwell"
-                            class="group inline-flex items-center hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                class="-mt-px mr-1 w-5 h-5 stroke-gray-400 dark:stroke-gray-600 group-hover:stroke-gray-600 dark:group-hover:stroke-gray-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                            </svg>
-                            Sponsor
-                        </a>
-                    </div>
-                </div>
+        $doc=$_POST["doc"];
+        $claim_id=(int)$_POST["claim_id"];
+        $txt=$_POST["txt"];
+        $nu=$control->callUpdateClaimKey($claim_id,"member_contacted",$doc);
+        if($nu==1)
+        {
+            $control->callInsertNotes($claim_id,$txt);
+            echo "Updated";
+        }
+        else
+        {
+            echo "Failed";
+        }
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error : ".$e->getMessage();
+    }
+}
+elseif($identity==23 && $control->isGapCover())
+{
+    try {
+        $search_term=$_POST["search_term"];
+        if($control->viewAllClaims($control->myRole(),0 ,1,$control->loggedAs(),$search_term,1,0)>0) {
+            foreach ($control->viewAllClaims($control->myRole(), 0, 1, $control->loggedAs(), $search_term, 0, 0) as $row) {
+                $name = htmlspecialchars(strtoupper($row[0] . " " . $row[1]));
+                $policy = htmlspecialchars(strtoupper($row[2]));
+                $claim_number = htmlspecialchars(strtoupper($row[3]));
+                $claim_id = $row["claim_id"];
+                echo "<table class='striped uk-table' style='border: 2px solid whitesmoke'><tr><th>Name</th><th>Pol.No</th><th>Claim No</th></tr><tr><td>$name</td><td>$policy</td><td>";
+                echo "<form action='case_details.php' method='post'>";
+                echo "<input type=\"hidden\" name=\"claim_id\" value=\"$claim_id\" />";
+                echo "<button style='background: none;border: none;color: #54bf99;text-decoration: underline;cursor: pointer;' name=\"btn\">$claim_number</button>";
+                echo "</form>";
+                echo "</td></tr></table>";
+            }
+        }
+        else{
+            echo "<p style='color: red'> Claim not found</p>";
+        }
 
-                <div class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
-                    Laravel v10.41.0 (PHP v8.2.0)
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error : ".$e->getMessage();
+    }
+}
+elseif($identity==24 && $control->isInternal())
+{
+    $claim_id=(int)$_POST["claim_id"];
+    $vaclinix=array();
+    $arx05=[];
+    $inhosparr=[];
+    $vaclini=["N"];
+    $codes3=[];
+    $emegncyarr=[];
+    $cdarry=[];
+    $icu=["1204", "1205","1206","1207","1208","1209","1210"];
+    try {
+        $count_lines=0;
+        foreach ($control->viewClaimDoctor($claim_id) as $doctor_row) {
+            $practice_number = str_pad($doctor_row["practice_number"], 7, '0', STR_PAD_LEFT);
+            $doctor = $control->viewDoctor($practice_number);
+            $disciplinecode = $doctor["disciplinecode"];
+            $doctor_cpt4 = $doctor_row["cpt_code"];
+            if ($disciplinecode == "010" || $disciplinecode == "10") {
+                array_push($vaclinix, $practice_number);
+            }
+            if ($control->checkMofifier($claim_id, $practice_number, $disciplinecode)) {
+                array_push($arx05, $practice_number);
+            }
+            $descipline_code_array = ["56", "57", "58", "59", "056", "057", "058", "059"];
 
-</html>
+            if (in_array($disciplinecode,$descipline_code_array)) {
+                array_push($inhosparr, $practice_number);
+            }
+            foreach ($control->viewClaimline($claim_id, $practice_number) as $line_row) {
+                array_push($emegncyarr, $line_row["tariff_code"]);
+                array_push($codes3, $line_row["tariff_code"]);
+                $icd10=$line_row["primaryICDCode"];
+                if ($control->isPMB($icd10)=="Y") {
+                    array_push($vaclini,"Y");
+                }
+                $count_lines++;
+                $mycoding=$control->viewCoding($line_row["tariff_code"],$icd10,$doctor_cpt4);
+                if(count($mycoding)>0 && !in_array($line_row["tariff_code"],$icu))
+                {
+                    $mxr=array("number"=>$count_lines,"descr"=>implode(";",$mycoding));
+                    array_push($cdarry,$mxr);
+
+                }
+            }
+        }
+        validations($claim_id, $control, $vaclinix, $arx05, $inhosparr, $vaclini, $emegncyarr, $codes3,$cdarry);
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error : ".$e->getMessage();
+    }
+
+}
+elseif($identity==25 && $control->isInternal())
+{
+    try {
+
+        $doc=$_POST["doc"];
+        $claim_id=(int)$_POST["claim_id"];
+        $txt=$_POST["txt"];
+        $idx=$_POST["idx"];
+        $nu=$control->callUpdateClaimKey($claim_id,"icd10_emergency",$doc);
+        if($nu==1)
+        {
+            $control->callInsertConfirm($claim_id,$txt,$idx);
+            echo "Updated";
+
+        }
+        else
+        {
+            echo "Failed";
+        }
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error : ".$e->getMessage();
+    }
+}
+elseif($identity==26 && $control->isInternal())
+{
+    try {
+//provider_zf
+        $doc=$_POST["doc"];
+        $claim_id=(int)$_POST["claim_id"];
+        $txt=$_POST["txt"];
+        $idx=$_POST["idx"];
+        $nu=$control->callUpdateClaimKey($claim_id,"provider_zf",$doc);
+        if($nu==1)
+        {
+            $control->callInsertConfirm($claim_id,$txt,$idx);
+            echo "Updated";
+        }
+        else
+        {
+            echo "Failed";
+        }
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error : ".$e->getMessage();
+    }
+}
+elseif($identity==27 && $control->isInternal())
+{
+    try {
+        $doc=$_POST["doc"];
+        $claim_id=(int)$_POST["claim_id"];
+        $txt=$_POST["txt"];
+        $idx=$_POST["idx"];
+        $nu=$control->callUpdateClaimKey($claim_id,"is_atheniest",$doc);
+        if($nu==1)
+        {
+            $control->callInsertConfirm($claim_id,$txt,$idx);
+            echo "Updated";
+        }
+        else
+        {
+            echo "Failed";
+        }
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error : ".$e->getMessage();
+    }
+
+}
+else if ($identity == 28) {
+
+    $user=$control->loggedAs();
+    $url=$_POST["url"];
+    try {
+        $control->callInsertVisitLogs($user,$url);
+        echo "success.==".$_SESSION["level"];
+
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+}
+else if ($identity == 29) {
+    $val = validateXss($_POST['vall']);
+    $_SESSION['level'] = $val;
+    echo $val;
+
+}else if ($identity == 30) {
+    $claim_id = validateXss($_POST['claim_id']);
+    $note = $_POST['text'];
+    $note = filter_var($_POST['text'], FILTER_SANITIZE_STRING);
+    $note=htmlspecialchars($note);
+    $note=my_utf8_decode($note);
+    $note=trim($note);
+    $entered_by=$control->loggedAs();
+    $claim_data=$control->viewSingleClaim($claim_id);
+    $claim_user=$claim_data["username"];
+    $claim_number=$claim_data["claim_number"];
+    $user_data=$control->viewUserInformation($claim_user);
+    $email=$user_data["email"];
+    $subject="Update on claim [$claim_number]";
+    $copied_email="shirley@medclaimassist.co.za";
+    $body="Hi<br><br>Update on claim : <br><br><b>$note</b><br><br>Medclaim Assist Team";
+    try {
+        $mail = new PHPMailer(true);
+        if ($control->call8days($note,$claim_id,$entered_by) > 0) {
+            $email_data=$control->viewEmailCredentils();
+            $from_email=$email_data["notification_email"];
+            $from_password=$email_data["notification_password"];
+            if($claim_user==$entered_by)
+            {
+                $control->sendEmail($mail,$from_email,"MCA",$from_password,$copied_email,"MCA System User",$subject,$body);
+            }
+            else
+            {
+                $control->sendEmail($mail,$from_email,"MCA",$from_password,$email,"MCA System User",$subject,$body,0,"",$copied_email);
+            }
+            echo "Successfully Added!!!";
+        } else {
+            echo "Failed";
+        }
+    } catch (Exception $e) {
+        echo "There is an error : ".$e->getMessage();
+    }
+}
+else if ($identity == 31) {
+    $arr=array();
+    foreach ($control->viewActiveUsers() as $row) {
+
+        $username = $row["username"];
+        $mydate = date('Y-m');
+        $claims_value = $control->viewClaimValue($mydate, "username=:username", $username);
+        $savings = $control->viewMonthlySavings($mydate, "username=:username", $username);
+
+        $perc = $claims_value>0?(int)round(($savings / $claims_value) * 100):0;
+
+        $alignperc = $perc * 10;
+        $nummove = $alignperc + 100;
+        $arrinn=array("username"=>$username,"horsemove"=>$alignperc,"textmove"=>$nummove);
+        array_push($arr,$arrinn);
+    }
+    echo json_encode($arr,true);
+}
+else if($identity==32)
+{
+    try {
+
+        $doc=(int)$_POST["doc"];
+        $claim_id=(int)$_POST["claim_id"];
+        $txt=$_POST["txt"];
+        $nu=$control->callUpdateClaimKey($claim_id,"coding_checked",$doc);
+        if($nu==1)
+        {
+            $control->callInsertConfirm($claim_id,$txt,4);
+            echo "Updated";
+        }
+        else
+        {
+            echo "Failed";
+        }
+    }
+    catch (Exception $e)
+    {
+        echo "There is an error : ".$e->getMessage();
+    }
+
+}
+else if($identity==33)
+{
+    $val=1;
+    $condition=":username";
+    $rolex="other";
+    if($control->isClaimsSpecialist())
+    {
+        $condition="username=:username";
+        $val=$control->loggedAs();
+        $rolex="cs";
+    }
+    elseif ($control->isGapCover())
+    {
+        $condition="c.client_name=:username";
+        $val=$control->loggedAs();
+    }
+    //INNER JOIN clients as c ON b.client_id=c.client_id
+ $data=$control->viewOpenNew($condition,$val);
+    $open_claims=$data["det"]["open1"];
+    $new_claims=$data["det"]["new1"];
+    $preassessment=$data["det"]["preassess1"];
+    $leads=$control->isGapCover()?0:$control->viewLeads($condition,$val);    
+    $qa=$control->viewQA($condition,$val,$rolex);
+    $clinical=$data["clinical"];
+    $owls_error=$data["owlserror"];
+    $new_claims-=$preassessment;
+    $sub_rep_arr=array("open_claims"=>$open_claims,"new_claims"=>$new_claims,"leads"=>$leads,"preassessment"=>$preassessment,"qa"=>$qa,"clinical"=>$clinical,"owls_error"=>$owls_error);
+    echo json_encode($sub_rep_arr);
+
+}
+else if($identity==34)
+{
+    $savings_date=date("Y-m");
+    $val=1;
+    $condition=":username";
+    if($control->isClaimsSpecialist())
+    {
+        $condition="username=:username";
+        $val=$control->loggedAs();
+    }
+    elseif ($control->isGapCover())
+    {
+        $condition="c.client_name=:username";
+        $val=$control->loggedAs();
+    }
+    $savings=$control->viewGetSavings($savings_date,$condition,$val);
+    $closed_claims=$control->viewClosedThisMonth($condition,$val);
+    $entered_claims=$control->viewEnteredthisClaims($savings_date,$condition,$val);
+    $seconds=$control->viewAveragethisClaims($savings_date,$condition,$val);
+  
+    if($entered_claims<1)
+    {
+        $average=0;
+    }
+    else {
+     $average = round($seconds);
+    }
+    $scheme_savings=number_format((double)$savings["scheme_savings"],2,'.',',');
+    $discount_savings=number_format((double)$savings["discount_savings"],2,'.',',');
+    $total_savings=number_format((double)$savings["sav"],2,'.',',');
+    $sub_rep_arr=array("scheme_savings"=>$scheme_savings,"discount_savings"=>$discount_savings,"total_savings"=>$total_savings,"average"=>$average,"closed_cases"=>$closed_claims,"total_cases"=>$entered_claims);
+    echo json_encode($sub_rep_arr);
+
+}
+else if($identity==35)
+{
+    try {
+        if(strlen($_POST["keyword"])>0) {
+            $keyword=$_POST["keyword"];
+            $ccount=count($control->viewICD10five($keyword));
+            $msg="";
+            if($ccount>0)
+            {
+                $msg="<ul id=\"country-list\" class=\"uk-card uk-card-body uk-card-default\">";
+                foreach ($control->viewICD10five($keyword) as $row)
+                {
+                    $icdcode=$row["diag_code"];
+                    $description=$row["shortdesc"];
+                    $msg.="<li onClick=\"selectICD('$icdcode')\">$icdcode<br><span style=\"color: #fff; font-size: small\">$description</span></li>";
+                }
+                $msg.="</ul>";
+            }
+            echo $msg;
+        }
+    }
+    catch (Exception $e)
+    {
+        echo $e->getMessage();
+    }
+}
+else if($identity==36)
+{
+    $claim_id=(int)$_POST["claim_id"];
+    $qa_status=(int)$_POST["qa_status"];
+    try {
+
+        if($control->isTopLevel()) {
+            if($control->callUpdateClaimKey($claim_id,"quality",$qa_status))
+            {
+                echo "Updated";
+            }
+            else
+            {
+                echo "Failed";
+            }
+        }
+        else
+        {
+            echo "Invalid Entry";
+        }
+
+    }
+    catch (Exception $e)
+    {
+        echo $e->getMessage();
+    }
+}
+else if($identity==37) {
+    $error_id = (int)$_POST["error_id"];
+    $sender_id = (int)$_POST["sender_id"];
+    $claim_number = $_POST["claim_number"];
+     $api_data = $control->viewAPIURL($sender_id);
+    $url = $api_data["api_url"];
+    $auth_key = $api_data["auth_key"];
+
+    $data_string=$control->viewOwlsById($error_id);
+    $status="Resend - $error_id - ".$control->loggedAs();
+ $tt=$control->generalSendAPI($url, $data_string, $claim_number, $status,$auth_key);
+    if ($tt=="Success")
+    {
+        $control->callUpdateErrorOwls($error_id,"failed",2);
+        echo $tt;
+    }
+    else{
+        $control->callUpdateErrorOwls($error_id,"failed",2);
+        echo $tt;
+    }
+
+}
+else if($identity==38)
+{
+    $error_id = (int)$_POST["error_id"];
+    $errornote = $_POST["errornote"];
+    if(empty($errornote))
+    {
+        die("Please type your note");
+    }
+    if($control->callUpdateErrorOwls($error_id,"failed",2))
+    {
+        $control->callUpdateErrorOwls($error_id,"other_msg",$errornote);
+        echo "Successfully updated";
+    }
+    else
+    {
+        echo "Failed";
+    }
+}
+else if($identity==39)
+{
+    echo json_encode($control->viewViewReasons(),true);
+}
+else if($identity==40)
+{
+
+    $dat=$_POST["dates"];
+    $status=$_POST["status"];
+    $txt="<ul class=\"uk-nav-default uk-nav-divider\" uk-nav><li class=\"uk-active\"><a href=\"#\"><b>Claim Specialists</b></a></li>";
+    $condition="1";
+    $xcon="";
+    if($control->isClaimsSpecialist())
+    {
+        $condition="username=:username";
+    }
+    if($status=="0")
+    {
+        $xcon=" AND controller_action=0 AND cs_action=0 AND completed=0";
+    }
+    elseif ($status=="1")
+    {
+        $xcon=" AND controller_action=1 AND completed=0";
+    }
+    elseif ($status=="2")
+    {
+        $xcon=" AND controller_action=1 AND cs_action=1 AND completed=1";
+    }
+
+    $arr=$control->viewQAFeedBackUsers($dat,$condition,$xcon);
+    if(count($arr)>0) {
+        foreach ($arr as $users) {
+            $xuser = $users["username"];
+            $txt .= "<li style='padding-top: 5px' class='uk-text-danger users' data='$xuser'><span uk-icon=\"user\"></span> <a href=\"#\" class='uk-text-danger'><b>$xuser</b></a></li>";
+        }
+    }
+    else
+    {
+        $txt.="<p>No users</p>";
+    }
+    echo $txt."</ul>";
+
+}
+else if($identity==41)
+{
+    $dat=$_POST["dates"];
+    $username=$_POST["username"];
+    $txt="";
+    $hiddentag="";
+    $arr=$control->viewFeedbackQA($dat,$username);
+    if(count($arr)>0) {
+        foreach ($arr as $row) {
+            $id = $row["id"];
+            $claim_id= $row["claim_id"];
+            $claim_number= $row["claim_number"];
+            $qa_position = $row["qa_position"];
+            $improvement_area = $row["improvement_area"];
+            $action_plan = $row["action_plan"];
+            $controller_action = (int)$row["controller_action"];
+            $cs_action = (int)$row["cs_action"];
+            $completed = (int)$row["completed"];
+            if($controller_action==0)
+            {$hiddentag="<span hidden='hidden'>initial controller activex</span>";}
+            if($controller_action==1)
+            {$hiddentag="<span hidden='hidden'>first controller activex</span>";}
+            if($cs_action==1)
+            {$hiddentag="<span hidden='hidden'>cs activex</span>";}
+            if($completed==1)
+            {$hiddentag="<span hidden='hidden'>closed activex</span>";}
+            $comment = $row["comment"];
+            $txtaction="action_plan".$id;
+            $txtcomment="comment".$id;
+            $col="";
+            if($qa_position=="Failed")
+            {
+                $col="background-color:pink !important";
+            }
+            $txt.= " <tr style='$col'><td class='text-primary'>";
+            $txt.="<form action='case_details.php' method='post' target='_blank'>";
+            $txt.= "<input type=\"hidden\" name=\"claim_id\" value=\"$claim_id\">";
+            $txt.= "<button name=\"btn\" class='linkButton'>$claim_number</button>";
+            $txt.="</form>";
+            $txt.="</td><td>$improvement_area</td><td><div class=\"uk-margin\">
+                        <textarea id='$txtaction' class=\"uk-textarea\" rows=\"5\">$action_plan</textarea></div>
+                </td><td><div class=\"uk-margin\"><textarea id='$txtcomment' class=\"uk-textarea\" rows=\"5\">$comment</textarea>
+                    </div></td>
+                <td><button class=\"uk-button uk-button-primary addnotes\" data='$id'><span uk-icon=\"check\"></span> Save</button></td>
+            </tr>";
+        }
+    }
+    else{
+        $txt.="<tr><td colspan='5'>No Data</td></tr>";
+    }
+    echo $txt.$hiddentag;
+}
+else if($identity==42)
+{
+    $id=$_POST["id"];
+    $action_plan=$_POST["action_plan"];
+    $comment=$_POST["comment"];
+    echo $control->callupdateFeedbackQA($id,$action_plan,$comment);
+}
+else if($identity==43)
+{
+    $dat=$_POST["dates"];
+    $username=$_POST["username"];
+    $button=$_POST["button"];
+    $mail = new PHPMailer(true);
+    $email_data=$control->viewEmailCredentils();
+    $from_email=$email_data["notification_email"];
+    $from_password=$email_data["notification_password"];
+    $email=$control->viewUserInformation($username)["email"];
+
+    $subject="QA Feedback Session";
+    $body="Hi<br>Your QA Feedback is Ready. You may complete your Action Plan.<br>MCA Team";
+
+    if($button=="controller_action")
+    {
+        $control->sendEmail($mail,$from_email,"MCA",$from_password,$email,"MCA System User",$subject,$body);
+        echo $control->callupdateFeedbackQAKey("controller_action",1,$username,$dat);
+    }
+    elseif($button=="cs_action"){
+        $email="shirley@medclaimassist.co.za";
+        $body="Hi<br>$username has completed the QA Feedback session, you may cose it now.<br>MCA Team";
+
+        $control->sendEmail($mail,$from_email,"MCA",$from_password,$email,"MCA System User",$subject,$body);
+        echo $control->callupdateFeedbackQAKey("cs_action",1,$username,$dat);
+    }
+    else
+    {
+        echo $control->callupdateFeedbackQAKey("completed",1,$username,$dat);
+    }
+
+}
+else if($identity==44)
+{
+    $claim_id=(int)$_POST["claim_id"];
+    $result=$control->callUpdateClaimKey($claim_id,"quality",2);
+  $result=$control->callupdateQAKey($claim_id,"qa_signed",1);
+    $result=$control->callupdateQAKey($claim_id,"cs_signed",1);
+    echo $result;
+}
+else if($identity==45)
+{
+    $arr=$control->viewDeclineReasons();
+  echo json_encode($arr,true);
+
+}
+else if($identity==46)
+{
+    $claim_id=(int)$_POST["claim_id"];
+    $practice_number=$_POST["practice_number"];
+    $key="decline_reason_id";
+    $value=(int)$_POST["reason_id"];
+    if($control->callUpdateDoctor($claim_id,$practice_number,$key,$value))
+    {
+        echo "Record Updated";
+    }
+    else
+    {
+        echo "Failed"; 
+    }
+
+}
+else if($identity==47)
+{
+    $claim_id=(int)$_POST["claim_id"];
+    $practice_number=$_POST["practice_number"];
+    $charged_amount=(double)$_POST["charged_amount"];
+    $scheme_amount=(double)$_POST["scheme_amount"];
+    $gap=(double)$_POST["gap"];
+    $pred=$control->viewSpecific($claim_id,$practice_number);
+    $old_charged=$pred["doc_charged_amount"];
+    $old_scheme=$pred["doc_scheme_amount"];
+    $old_gap=$pred["doc_gap"];
+    if($control->callUpdateDoctor($claim_id,$practice_number,"doc_gap",$gap))
+    {
+        $control->callUpdateDoctor($claim_id,$practice_number,"doc_scheme_amount",$scheme_amount);
+        $control->callUpdateDoctor($claim_id,$practice_number,"doc_charged_amount",$charged_amount);
+        $control->callInsertDoctorClaimLogs($claim_id,$practice_number,"doctor",$old_charged,$old_scheme,$old_gap,$control->loggedAs());
+        echo "<div class='uk-alert-success' uk-alert><a href class='uk-alert-close' uk-close></a><p>Changes Successfully Saved.</p></div>";
+    }
+    else
+    {
+        echo "<div class='uk-alert-danger' uk-alert><a href class='uk-alert-close' uk-close></a><p>Failed to save changes.</p></div>";
+    }
+
+}
+
+else if($identity==48)
+{
+    $claim_id=(int)$_POST["claim_id"];
+    $patient_email=$_POST["patient_email"];
+    $patient_contact=$_POST["patient_contact"];
+    if($control->callUpdatePatient($claim_id,"patient_address",$patient_email))
+    {
+      $control->callUpdatePatient($claim_id,"patient_contact",$patient_contact);
+        echo "<div class='uk-alert-success' uk-alert><a href class='uk-alert-close' uk-close></a><p>Changes Successfully Saved.</p></div>";
+    }
+    else
+    {
+        echo "<div class='uk-alert-danger' uk-alert><a href class='uk-alert-close' uk-close></a><p>Failed to save changes.</p></div>";
+    }
+
+}
+?>

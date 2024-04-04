@@ -7,19 +7,17 @@ use Illuminate\Http\Request;
 use App\Http\Requests\SignUpRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ProfileRequest;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\EmailNotification;
 use App\Models\MemberModel;
 use App\Models\TrailModel;
 use App\Models\ClaimModel;
-use App\Models\ClaimMemberModel;
 use App\Models\QueryModel;
 use App\Http\Controllers\Api\ClaimsController;
-use App\Http\Middleware\Authenticate;
 use App\Models\SchemeModel;
+use App\Models\DocumentLineModel;
+use App\Models\QueryDocumentModel;
 
 class MemberController extends Controller
 {
@@ -139,19 +137,22 @@ public function verifyEmail(Request $request)
      $total_claims = ClaimModel::join('member','claim.member_id','=','member.member_id')
             ->where('member.email', $authuser->email)
             ->count(); 
+            $benefit = $this->countBenefit($authuser->id);
+            $doc_count = $this->getQueryDocument($authuser->id);
     $total_switch_claims = $c->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium.php",0,$authuser->email,$authuser->scheme_number,$authuser->id_number);
     $trail = TrailModel::where('user_id','=',$authuser->id)->get();
     return response()->json(['message' => 'Records Return','total_query'=>$total_queries,
-    'total_claims'=>$total_claims,'total_switch_claims'=>$total_switch_claims,'trail'=>$trail,'user'=>$authuser], 200);
+    'total_claims'=>$total_claims,'total_switch_claims'=>$total_switch_claims,'trail'=>$trail,'user'=>$authuser,'benefit'=>$benefit,'doc_count'=>$doc_count], 200);
        }
     catch(\Exception $e){
         return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
     }
      }
 
-   private function getQueries($user_id)
+   private function getQueryDocument($user_id)
    {
-    $total = QueryModel::where('user_id','=',$user_id)->count();
+    $total = QueryDocumentModel::where('user_id','=',$user_id)->count();
+    return $total;
    }
    public function updatePlan(Request $request)
      {
@@ -176,6 +177,24 @@ public function verifyEmail(Request $request)
     catch(\Exception $e){
         return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
     }
+     }
+     private function countBenefit($user_id)
+     {
+        $txCount = DocumentLineModel::join('freemium_doc_queries as d', 'freemium_doc_lines.doc_query_id', '=', 'd.id')
+      ->where('d.user_id', $user_id)
+      ->distinct('d.user_id')
+      ->count('d.user_id');
+  if($txCount>0)
+  {
+     $data['correct'] = $txCount;
+     $data['incorrect'] = 0;
+  }
+  else
+  {
+     $data['correct'] = 0;
+     $data['incorrect'] = 1;
+  }
+      return $data;
      }
 
      public function updateUser(ProfileRequest $request)

@@ -933,12 +933,11 @@ public function callSFTPNegative()
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Authorization: Bearer ' . $auth_key,
+'Authorization: Bearer ' . $auth_key,
                 'authKey:e15c4c44-2ea3-4bc7-bc5d-5b7555bb9c63',
                 'Content-Type", "application/raw',
                 'Content-Type: application/json')
         );
-        
         $result = curl_exec($ch);
         $err = curl_error($ch);
         curl_close($ch);
@@ -950,7 +949,7 @@ public function callSFTPNegative()
             $pos8 = strpos($result, "success");
             $pos9 = strpos($result, "Claimline ID");
             $pos10 = strpos($result, "Status");
-            $pos11 = strpos($result, "accepted for processing");
+                $pos11 = strpos($result, "accepted for processing");
             $jres=false;
             if($pos8 > 0 || ($pos9 > 0 && $pos10 > 0) || $pos11>0)
             {
@@ -1002,6 +1001,35 @@ public function callSFTPNegative()
         $qDecoded=openssl_decrypt($password,"AES-128-ECB",$cryptKey);
         return( $qDecoded );
     }
+        function getWorkingHours($startDate, $endDate) {
+        $startWorkingHour = 8;
+        $endWorkingHour = 16;
+        $startDate = strtotime($startDate);
+        $endDate = strtotime($endDate);
+        $workingDays = 0;
+        $currentDate = $startDate;
+        while ($currentDate <= $endDate+86400) {
+            $dayOfWeek = date('N', $currentDate);
+            if ($dayOfWeek >= 1 && $dayOfWeek <= 5) {
+                $currentDateFormatted = date('Y-m-d', $currentDate);
+                if (!in_array($currentDateFormatted, $this->holidays())) {           
+                    $startTime = strtotime(date('Y-m-d', $currentDate) . " $startWorkingHour:00:00");
+                    $endTime = strtotime(date('Y-m-d', $currentDate) . " $endWorkingHour:00:00");
+                    $startTime = $startTime<$startDate? $startDate : $startTime;
+                    if((int)date('H', $startTime)<$endWorkingHour){
+                    $endTime = $endTime>$endDate? $endDate : $endTime;
+                    if($startTime<$endTime){
+                      //$workingHours = floor(($endTime - $startTime) / 3600); 
+                      $workingHours = ($endTime - $startTime) / 3600; 
+                      $workingDays += $workingHours;
+                    }              
+                 }
+                }          
+            }      
+            $currentDate = strtotime('+1 day', $currentDate);
+        }
+        return $workingDays;
+      }
     function getWorkingDays($startDate,$endDate,$holidays){
         // do strtotime calculations just once
         $endDate = strtotime($endDate);
@@ -1056,8 +1084,7 @@ public function callSFTPNegative()
 
         //We subtract the holidays
         foreach($holidays as $holiday){
-            $myholiday=date("Y")."-";
-            $time_stamp=strtotime($myholiday.$holiday);
+            $time_stamp=strtotime($holiday);
             //If the holiday doesn't fall in weekend
             if ($startDate <= $time_stamp && $time_stamp <= $endDate && date("N",$time_stamp) != 6 && date("N",$time_stamp) != 7)
                 $workingDays--;
@@ -1065,42 +1092,6 @@ public function callSFTPNegative()
 
         return $workingDays;
     }
-    function getWorkingHours($startDate, $endDate, $holidays) {
-        $startWorkingHour = 8;
-        $endWorkingHour = 16;
-        $startDate = strtotime($startDate);
-        $endDate = strtotime($endDate);
-        $workingDays = 0;
-        $currentDate = $startDate;
-        while ($currentDate <= $endDate+86400) {
-            $dayOfWeek = date('N', $currentDate);
-            if ($dayOfWeek >= 1 && $dayOfWeek <= 5) {
-                $currentDateFormatted = date('Y-m-d', $currentDate);
-                if (!in_array($currentDateFormatted, $holidays)) {           
-                    $startTime = strtotime(date('Y-m-d', $currentDate) . " $startWorkingHour:00:00");
-                    $endTime = strtotime(date('Y-m-d', $currentDate) . " $endWorkingHour:00:00");
-                    $startTime = $startTime<$startDate? $startDate : $startTime;
-                    if((int)date('H', $startTime)<$endWorkingHour){
-                    $endTime = $endTime>$endDate? $endDate : $endTime;
-                    if($startTime<$endTime){
-                      //$workingHours = floor(($endTime - $startTime) / 3600); 
-                      $workingHours = ($endTime - $startTime) / 3600; 
-                      $workingDays += $workingHours;
-                    }              
-                 }
-                }          
-            }      
-            $currentDate = strtotime('+1 day', $currentDate);
-        }
-        return $workingDays;
-      }
-
-      function arrDesc($arr)
-      {
-        usort($arr, function($a, $b) {
-            return $b["hours"] - $a["hours"]; // Compare hours in descending order
-        });
-      }
     function checkDisciplineCodes($discipline_id)
     {
         global $conn;
@@ -1131,7 +1122,7 @@ public function callSFTPNegative()
 
     function holidays()
     {
-        return array("01-01","03-21","03-29","04-01","04-27","05-01","06-17","08-09","09-24","12-16","12-25","12-26");
+        return array("2024-01-01","2024-03-21","2024-03-29","2024-04-01","2024-04-27","2024-05-01","2024-06-17","2024-08-09","2024-09-24","2024-12-16","2024-12-25","2024-12-26");
     }
     function rearrageArray($arr)
 
@@ -1230,7 +1221,7 @@ public function callSFTPNegative()
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Authorization: Bearer ' . $auth_key,
+'Authorization: Bearer ' . $auth_key,
                 'authKey:e15c4c44-2ea3-4bc7-bc5d-5b7555bb9c63',
                 'Content-Type", "application/raw',
                 'Content-Type: application/json')
@@ -1244,7 +1235,8 @@ public function callSFTPNegative()
         } else {
 
             $pos8 = strpos($result, "success");
-            if ($pos8 === false) {
+ $pos11 = strpos($result, "accepted for processing");
+            if ($pos8 === false && $pos11 === false) {
                 $messg="Failed";
             } else {
                 $ffailed=4;
@@ -1331,8 +1323,8 @@ function generateRandomString()
     }
     function sendIcr($target_file,$pagerange)
 {
-         $license_code = "A82A4AE8-1C0E-4794-88C3-29E9980E09CF";
-        $username =  "SAMANTHAM";
+         $license_code = "B05AFD65-80EF-411C-BA5D-4A20BFF2A0F4";
+        $username =  "JOMBO";
         $url = 'http://www.ocrwebservice.com/restservices/processDocument?gettext=true&outputformat=txt&newline=1';
         $filePath = $target_file;  
         $fp = fopen($filePath, 'r');

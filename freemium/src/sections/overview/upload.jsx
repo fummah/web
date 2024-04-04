@@ -32,10 +32,10 @@ const FormUpload = () => {
     if (Array.isArray(e)) {
       return e;
     }
+    setDocumentName(e.file.name);
     if(e.fileList[0].status==="done")
     {
-      setLines(e.fileList[0].response.lines);
-      setDocumentName(e.fileList[0].response.document);
+      setLines(e.fileList[0].response.lines);     
       setModal(true);
     }  
     return e?.fileList;

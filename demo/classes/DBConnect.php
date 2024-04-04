@@ -1145,7 +1145,7 @@ group_disciplinecode, sub_disciplinecode_description, disciplinecode_id, email, 
     }
     function getNoNotesClaims($condition,$val)
     {
-        $stmt = $this->conn->prepare('SELECT a.date_entered,a.claim_id,"No_Notes" as status_type,a.username,c.client_name,a.date_closed,a.date_reopened,"" as descr,b.medical_scheme FROM `claim` as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id where Open=1 AND a.claim_id not in (SELECT claim_id FROM intervention) AND '.$condition);
+        $stmt = $this->conn->prepare('SELECT a.date_entered,a.claim_id,"No_Notes" as status_type,a.username,c.client_name,a.date_closed,a.date_reopened,"" as descr,b.medical_scheme,a.date_entered as n_date FROM `claim` as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id where Open=1 AND a.claim_id not in (SELECT claim_id FROM intervention) AND '.$condition);
         $stmt->bindParam(':username', $val, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -1153,7 +1153,7 @@ group_disciplinecode, sub_disciplinecode_description, disciplinecode_id, email, 
     }
     function getNotesClaims($condition,$val)
     {
-        $sql='SELECT x.date_entered,x.claim_id,"With_Notes" as status_type,y.username,y.client_name,y.date_closed,y.date_reopened,x.intervention_desc as descr,y.medical_scheme FROM intervention as x INNER JOIN (SELECT MAX(a.intervention_id) AS most_recent_claim,b.username,c.client_name,b.date_closed,b.date_reopened,j.medical_scheme FROM intervention as a INNER JOIN claim as b ON a.claim_id=b.claim_id INNER JOIN member as j ON b.member_id=j.member_id INNER JOIN clients as c ON j.client_id=c.client_id WHERE b.Open=1 AND '.$condition.' GROUP BY a.claim_id) y ON y.most_recent_claim = x.intervention_id';
+        $sql='SELECT x.date_entered,x.claim_id,"With_Notes" as status_type,y.username,y.client_name,y.date_closed,y.date_reopened,x.intervention_desc as descr,y.medical_scheme,y.date_entered as n_date FROM intervention as x INNER JOIN (SELECT MAX(a.intervention_id) AS most_recent_claim,b.username,c.client_name,b.date_closed,b.date_reopened,b.date_entered,j.medical_scheme FROM intervention as a INNER JOIN claim as b ON a.claim_id=b.claim_id INNER JOIN member as j ON b.member_id=j.member_id INNER JOIN clients as c ON j.client_id=c.client_id WHERE b.Open=1 AND '.$condition.' GROUP BY a.claim_id) y ON y.most_recent_claim = x.intervention_id';
 
         //echo $sql;
         $stmt = $this->conn->prepare($sql);

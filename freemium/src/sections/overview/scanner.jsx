@@ -1,14 +1,10 @@
 import PropTypes from 'prop-types';
-import { Form,Modal,Input,Table,Button, Popconfirm } from 'antd';
 import React, { useRef, useState,useEffect,useContext } from 'react';
+import { Form,Modal,Input,Table,Button, Divider,Popconfirm } from 'antd';
 
 import Grid from '@mui/material/Grid';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
 
 import useAxiosFetch from 'src/hooks/use-axios';
 
@@ -98,7 +94,6 @@ const EditableCell = ({
 
 const Scanner = ({lines,document_name,mymodal}) => {
   const [open, setOpen] = useState(false);
-  const [category, setCategory] = useState('');
   const [postData, setPostData] = useState({});
   const [fetchBtnClicked, setFetchBtnClicked] = useState(false);
   const valueDescription = useRef('');
@@ -106,18 +101,20 @@ const Scanner = ({lines,document_name,mymodal}) => {
   const [count, setCount] = useState(100);
   const [documents, setDocument] = useState("");
 
-  const { isLoading, isError, data } = useAxiosFetch('addquery','POST',postData,fetchBtnClicked);
+  const { isLoading, isError, data } = useAxiosFetch('adddocument','POST',postData,fetchBtnClicked);
   useEffect(() => {
     if(fetchBtnClicked)
     {
+      setDocument(document_name);
       setPostData(getFormValues());       
-      setFetchBtnClicked(false);    
+      setFetchBtnClicked(false);  
+      console.log(data);  
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchBtnClicked]); 
     useEffect(() => {
       setDataSource(...dataSource, lines);
-      setDocument(document_name);
+      setDocument(document_name);    
       // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [lines]);   
 
@@ -131,11 +128,12 @@ const Scanner = ({lines,document_name,mymodal}) => {
       
     const getFormValues = () =>{
       const obj = {
-        "category":category,
+        "category":"---",
         "document":documents,
         "description":valueDescription.current.value,
         "lines":JSON.stringify(dataSource)
       };
+      console.log(obj);
       return obj;
     }
 
@@ -148,10 +146,7 @@ const Scanner = ({lines,document_name,mymodal}) => {
   const handleCancel = (e) => {
         setOpen(false);
   };
-  const handleCategoryChange = (event) => {
-    setCategory(event.target.value);
-     
-  };
+
 
   const handleDelete = (key) => {
     const newData = dataSource.filter((item) => item.key !== key);
@@ -254,26 +249,8 @@ const Scanner = ({lines,document_name,mymodal}) => {
       >
       <div>
       <Grid container spacing={2}>
-      <Grid item xs={12} sm={6}>
-      <FormControl sx={{ m: 1, minWidth: '100%' }}>
-                  <InputLabel id="demo-select-small-label">Select Category</InputLabel>
-                   <Select
-        labelId="demo-select-small-label"
-        id="category"
-        value={category}
-        label="Category"
-        onChange={handleCategoryChange}
-      >
-         <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
-        <MenuItem value="Chronic">Chronic</MenuItem>
-        <MenuItem value="Benefit Help">Benefit Help</MenuItem>
-        <MenuItem value="Others">Others</MenuItem>
-      </Select>
-          </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
+   
+          <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
                   name="query_description"
@@ -289,6 +266,7 @@ const Scanner = ({lines,document_name,mymodal}) => {
                    
               </Grid>
               </Grid>
+              <Divider/>
       <Button
         onClick={handleAdd}
         type="primary"

@@ -1,8 +1,11 @@
+import { Button } from 'antd';
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
+
+import { useRouter } from 'src/routes/hooks';
 
 import { fNumber } from 'src/utils/format-number';
 
@@ -13,6 +16,7 @@ import FormUpload from './upload';
 // ----------------------------------------------------------------------
 
 export default function AppConversionRates({ title, subheader, chart, count, ...other }) {
+  const router = useRouter();
   const { colors, series, options } = chart;
 
   const chartSeries = series.map((i) => i.value);
@@ -41,12 +45,17 @@ export default function AppConversionRates({ title, subheader, chart, count, ...
     ...options,
   });
 
+  const handleFilesBtn = () =>{
+    router.push(`/documents`);
+  }
+
   return (
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} />
-
+      
       <Box sx={{ mx: 3 }}>
       {count>0?
+      <><Button type="dashed" onClick={handleFilesBtn} style={{marginTop:10}}>Uploaded Files</Button>
         <Chart
           dir="ltr"
           type="bar"
@@ -54,7 +63,7 @@ export default function AppConversionRates({ title, subheader, chart, count, ...
           options={chartOptions}
           width="100%"
           height={364}
-        />: <FormUpload/>
+        /></>: <FormUpload/>
         }
       </Box>
     </Card>

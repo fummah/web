@@ -768,6 +768,7 @@ function preparePdf() {
         url:"ajax/process.php",
         type:"POST",
         beforeSend:function () {
+            console.log("testing...");
             $("#prepdf").text("please wait...");
         },
         data:{
@@ -776,6 +777,7 @@ function preparePdf() {
         async:false,
         success:function(data)
         {
+            console.log("testing77...");
             total=data;
             console.log(data);
         },

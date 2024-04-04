@@ -8,15 +8,20 @@ const icon = (name) => (
 
 const navConfig = [
   {
-    title: 'dashboard',
+    title: 'Dashboard',
     path: '/',
     icon: icon('ic_analytics'),
   },
   {
-    title: 'queries',
+    title: 'Queries',
     path: '/query',
-    icon: icon('ic_document'),
+    icon: icon('ic_claim'),
   }, 
+  {
+    title: 'Uploaded Documents',
+    path: '/documents',
+    icon: icon('ic_document'),
+  },
   {
     title: 'Identified Claims',
     path: '/switch-claims',

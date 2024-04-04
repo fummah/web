@@ -26,7 +26,8 @@ class MemberController extends Controller
          $memberId=(int)$user['id'];
          $details = $this->getTopDetails($memberId);
          $accumulated = $this->getAccumulated($memberId);
-         $groupId=$details["group_id"];
+         //$groupId=$details["group_id"];
+         $groupId = $this->cchLate($details["group_id"],$memberId);
          $register = $this->combineRegister($memberId,$groupId);
          $graph = $this->getGraphProcess($groupId);
          $dd =$details["date_entered"];
@@ -38,7 +39,7 @@ class MemberController extends Controller
       }
       catch(\Exception $e)
       {
-         return response()->json(['message'=> 'There is an error. Please try again later.'],500);
+         return response()->json(['message'=> 'There is an error. Please try again later.'.$e->getMessage()],500);
       }
     
    }
@@ -101,6 +102,39 @@ class MemberController extends Controller
       {
          return response()->json(['message'=> 'There is an error. Please try again later.'],500);
       }
+   }
+   public function getSearch(Request $request)
+   {
+      try{
+      $searchTerm = $request->search_term;
+
+      $members = ZbsMembers::select('members.member_id', 'members.first_name', 'members.last_name', 'locations.location_name', 'groups.group_name', 'members.contact_number')
+          ->join('locations', 'members.location_id', '=', 'locations.location_id')
+          ->join('groups', 'locations.group_id', '=', 'groups.group_id')
+          ->where(function ($query) use ($searchTerm) {
+              $query->where('members.first_name', 'like', "%{$searchTerm}%")
+                  ->orWhere('members.last_name', 'like', "%{$searchTerm}%")
+                  ->orWhereRaw('CONCAT(members.first_name, " ", members.last_name) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhereRaw('CONCAT(members.last_name, " ", members.first_name) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhere('members.contact_number', 'like', "%{$searchTerm}%");
+          })
+          ->limit(5)
+          ->get();
+      
+      // Renaming the concatenated fields
+      $members->transform(function ($member) {
+          $member->member_name = $member->first_name . ' ' . $member->last_name;
+          $member->location = $member->location_name . ' - ' . $member->group_name;
+          unset($member->first_name, $member->last_name, $member->location_name, $member->group_name);
+          return $member;
+      });;
+      return response()->json(['message'=> 'Success','searched_members'=>$members],200);
+
+   }
+   catch(\Exception $e)
+   {
+      return response()->json(['message'=> 'There is an error. Please try again later.'],500);
+   }
    }
    public function getProfile(Request $request)
    {
@@ -176,7 +210,7 @@ $member = ZbsMembers::select('members.*','locations.location_name','groups.group
 return $member;
    }
 
-   private function getAccumulated($memberId)
+      private function getAccumulated($memberId)
    {
     $totalFunerals = RegisterModel::where('register.member_id', $memberId)
     ->join('funerals as f', 'register.funeral_id', '=', 'f.funeral_id')
@@ -194,7 +228,6 @@ return $data;
 
     $count = DB::table('deceased')
     ->whereIn('funeral_id', function($query) use ($memberId) {
-      echo "uuuu".$memberId;
         $query->select('funeral_id')
             ->distinct()
             ->from('register')
@@ -205,6 +238,8 @@ return $data;
 
     return $count;
    }
+
+
 
    private function combineRegister($memberId,$groupId,$limit=9)
    {
@@ -221,13 +256,32 @@ return $data;
       }     
       return array("latest_funeral"=>$latest_funeral_arr,"register"=>$myarr);      
    }
+
    private function getLatestFuneral($groupId)
    {
       $funeral = FuneralsModel::select('funerals.funeral_id', 'funerals.funeral_name', 'funerals.amount_paid', 'funerals.status', 'funerals.date_entered', 'funerals._type', 'funerals.price', 'groups.group_id', 'groups.group_name')
       ->join('groups', 'funerals.group_id', '=', 'groups.group_id')
       ->where('funerals.group_id', '=', $groupId)
       ->latest('funeral_id')->first();
-      return $funeral;  
+
+         return $funeral; 
+     
+       
+   }
+
+   private function cchLate($groupId,$memberId)
+   {
+      $funeralgroup = FuneralsModel::where('group_id', '=', $groupId)->get()->first();  
+      if(!$funeralgroup)
+      {
+         $groupId = RegisterModel::join('funerals as f', 'register.funeral_id', '=', 'f.funeral_id')
+         ->where('register.member_id', 4886)
+         ->orderByDesc('register.register_id')
+         ->limit(1)
+         ->pluck('f.group_id')
+         ->first();
+      }
+      return $groupId;
    }
 
    private function register($memberId,$limit)
@@ -279,7 +333,7 @@ return $data;
    private function notifications($memberId)
    {
       $notifications = NotificationsModel::where('member_id', '=', $memberId)
-      ->orderBy('notification_id', 'DESC')
+       ->orderBy('notification_id', 'DESC')
       ->limit(50)
       ->get();  
     return $notifications;
@@ -300,39 +354,6 @@ return $data;
       ->get();
   
   return $results;
-   }
-   public function getSearch(Request $request)
-   {
-      try{
-      $searchTerm = $request->search_term;
-
-      $members = ZbsMembers::select('members.member_id', 'members.first_name', 'members.last_name', 'locations.location_name', 'groups.group_name', 'members.contact_number')
-          ->join('locations', 'members.location_id', '=', 'locations.location_id')
-          ->join('groups', 'locations.group_id', '=', 'groups.group_id')
-          ->where(function ($query) use ($searchTerm) {
-              $query->where('members.first_name', 'like', "%{$searchTerm}%")
-                  ->orWhere('members.last_name', 'like', "%{$searchTerm}%")
-                  ->orWhereRaw('CONCAT(members.first_name, " ", members.last_name) LIKE ?', ["%{$searchTerm}%"])
-                  ->orWhereRaw('CONCAT(members.last_name, " ", members.first_name) LIKE ?', ["%{$searchTerm}%"])
-                  ->orWhere('members.contact_number', 'like', "%{$searchTerm}%");
-          })
-          ->limit(5)
-          ->get();
-      
-      // Renaming the concatenated fields
-      $members->transform(function ($member) {
-          $member->member_name = $member->first_name . ' ' . $member->last_name;
-          $member->location = $member->location_name . ' - ' . $member->group_name;
-          unset($member->first_name, $member->last_name, $member->location_name, $member->group_name);
-          return $member;
-      });;
-      return response()->json(['message'=> 'Success','searched_members'=>$members],200);
-
-   }
-   catch(\Exception $e)
-   {
-      return response()->json(['message'=> 'There is an error. Please try again later.'],500);
-   }
    }
    private function getGraphProcess($groupId)
    {

@@ -12,12 +12,15 @@ export const VerifyEmailPage = lazy(() => import('src/pages/verify-email'));
 export const FaqPage = lazy(() => import('src/pages/faq'));
 export const QueryPage = lazy(() => import('src/pages/query'));
 export const QueryDetailsPage = lazy(() => import('src/pages/query-details'));
+export const DocumentsPage = lazy(() => import('src/pages/documents'));
 export const SwitchClaimsPage = lazy(() => import('src/pages/switch-claims'));
 export const TipsPage = lazy(() => import('src/pages/tips'));
 export const ClaimsPage = lazy(() => import('src/pages/claims'));
 export const ClaimDetailsPage = lazy(() => import('src/pages/claim-details'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
+export const DocViewer = lazy(() => import('src/pages/doc-viewer'));
 export const ProfilePage = lazy(() => import('src/pages/profile'));
+export const ForgotPasswordPage = lazy(() => import('src/pages/forgot-password'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 // ----------------------------------------------------------------------
@@ -45,6 +48,7 @@ export default function Router() {
         { path: 'switch-claims', element: <SwitchClaimsPage /> },
         { path: 'tips', element: <TipsPage /> },
         { path: 'claims', element: <ClaimsPage /> },
+        { path: 'documents', element: <DocumentsPage /> },
         { path: 'profile', element: <ProfilePage /> },
       ],
     },
@@ -59,6 +63,14 @@ export default function Router() {
     {
       path: 'verify-email',
       element: <VerifyEmailPage />,
+    },
+    {
+      path: 'forgot-password',
+      element: <ForgotPasswordPage />,
+    },
+    {
+      path: 'doc-viewer',
+      element: <DocViewer />,
     },
     {
       path: '404',

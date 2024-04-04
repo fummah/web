@@ -17,19 +17,17 @@ class ClaimsController extends Controller
      public function getClaims(Request $request)
    {
     try{
-        $authuser=$request->user();
-
      if($request->type == "internal")
     {
      $claims = ClaimModel::join('member','claim.member_id','=','member.member_id')
-            ->where('member.email', $authuser->email)->select('claim.claim_id','claim.claim_number','member.medical_scheme','claim.date_entered','claim.charged_amnt','claim.Open')
+            ->where('member.email', $request->email)->select('claim.claim_id','claim.claim_number','member.medical_scheme','claim.date_entered','claim.charged_amnt','claim.Open')
             ->get();
    
     return response()->json(['message' => 'Records Return','claims'=>$claims], 200);
 }
 else
 {
-    return $this->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium.php",0,$authuser->email,$authuser->scheme_number,$authuser->id_number);
+    return $this->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium.php",0,$request->email,$request->scheme_number,$request->id_number);
        }
 }
     catch(\Exception $e){
@@ -40,7 +38,6 @@ else
       public function getClaim(Request $request)
    {
     try{
-        
     if($request->type == "internal")
     {
      $claim = ClaimModel::join('member','claim.member_id','=','member.member_id')

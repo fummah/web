@@ -298,7 +298,7 @@ class DBConnect extends Validate
     }
        function getGroups()
     {
-        $stmt=$this->conn->prepare("SELECT `group_id`, `group_name`FROM `groups` WHERE group_id>1");
+        $stmt=$this->conn->prepare("SELECT `group_id`, `group_name`FROM `groups` WHERE group_id>3");
         $stmt->execute();
         return $stmt->fetchAll();
     }

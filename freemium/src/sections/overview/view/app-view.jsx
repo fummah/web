@@ -25,23 +25,28 @@ export default function AppView() {
   const [open, setOpen] = useState(true);
 const [totalqueries, setTotalqueries] = useState(0);
 const [totalclaims, setTotalclaims] = useState(0);
+const [totalDocs, setTotalDocs] = useState(0);
 const [totalswitchclaims, setTotalswitchclaims] = useState(0);
 const [trail, setTrail] = useState([]);
 const [switchclaims, setSwitchclaims] = useState([]);
 const [graph2, setGraph2] = useState([]);
 const [user, setUser] = useState({});
+const [benefit, setBenefit] = useState(null);
 const { isLoading: isLoadingDashboard, isError: isErrorDashboard, data: dataDashboard,statusCode:statusCodeDashboard } = useAxiosFetch('getdashboard','GET', {});
 
 useEffect(() => {
  
     if(dataDashboard && statusCodeDashboard===200)
     {
+      
       setTotalqueries(dataDashboard.total_query);
       setTotalclaims(dataDashboard.total_claims);
       setTotalswitchclaims(dataDashboard.total_switch_claims.original.length);
       setTrail([...dataDashboard.trail, ...switchTrail(dataDashboard.total_switch_claims.original)]);
       setSwitchclaims([dataDashboard.total_switch_claims.original]); 
-      setUser(dataDashboard.user)
+      setUser(dataDashboard.user);
+      setBenefit(dataDashboard.benefit);
+      setTotalDocs(dataDashboard.doc_count);
       const ccsGrouperDescArray = dataDashboard.total_switch_claims.original.flatMap(item => item.claim_lines.map(line => line.ccs_grouper_desc));
       setGraph2(getGraph2(ccsGrouperDescArray)); 
       // Set cookie for the subdomain
@@ -63,7 +68,7 @@ const newTrail = arr.map(item => ({
 }));
 return newTrail;
     }
-    console.log(trail);
+  
     const getGraph2 = (ccsGrouperDescArray=[]) =>{    
       const groupedArray = ccsGrouperDescArray.reduce((acc, curr) => {
         const existingGroup = acc.find(item => item.label === curr);
@@ -145,11 +150,11 @@ return newTrail;
           <AppConversionRates
             title="Benefit Usage"
             subheader="where Benefits are paid from"
-            count={totalqueries}
+            count={totalDocs}
             chart={{
               series: [
-                { label: 'Correct', value: 1 },
-                { label: 'Incorrect', value: 0 },
+                { label: 'Correct', value: benefit?.correct },
+                { label: 'Incorrect', value: benefit?.incorrect },
                 { label: 'Possibly Correct', value: 0 },
                 { label: 'Possibly Incorrect', value: 0 },
               ],
