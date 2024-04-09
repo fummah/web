@@ -266,6 +266,7 @@ background-color: red !important;
                         <th>Last Name</th>
                         <th>Contact Number</th>
                         <th>Status</th>
+                        
                         <?php
                         $mem_arr=array_reverse($db->getIndividualFunerals(0,11));
                         foreach($mem_arr as $row)
@@ -438,6 +439,7 @@ include("footer.php");
                             <th>Surname</th>
                             <th>Date of Birth</th>
                             <th>Status</th>
+                            <th>Date Entered</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -470,6 +472,7 @@ include("footer.php");
                                         </select>
                                     </div>
                                 </td>
+                                <td></td>
                                 <td>
                                     <button class="uk-button uk-button-secondary" onclick="addDependent()">Add</button>
                                     <span id="ddp"></span>

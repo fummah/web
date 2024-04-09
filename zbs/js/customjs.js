@@ -139,7 +139,7 @@ function loadDependncies(member_id)
             var json = JSON.parse(data);
             for(var key in json)
             {
-                $("#mydependencies").append("<tr style='color: indianred !important;' id='"+json[key]["dependency_id"]+"'><td>"+json[key]["first_name"]+"</td><td>"+json[key]["surname"]+"</td><td>"+json[key]["d_o_b"]+"</td><td>"+json[key]["status"]+"</td><td><button class='uk-button uk-button-danger del' del='"+json[key]["dependency_id"]+"'>Delete</button></td></tr>");
+                $("#mydependencies").append("<tr style='color: indianred !important;' id='"+json[key]["dependency_id"]+"'><td>"+json[key]["first_name"]+"</td><td>"+json[key]["surname"]+"</td><td>"+json[key]["d_o_b"]+"</td><td>"+json[key]["status"]+"</td><td>"+json[key]["date_entered"]+"</td><td><button class='uk-button uk-button-danger del' del='"+json[key]["dependency_id"]+"'>Delete</button></td></tr>");
             }
         },
         error:function(jqXHR, exception)
