@@ -21,6 +21,7 @@ export const ProductsPage = lazy(() => import('src/pages/products'));
 export const DocViewer = lazy(() => import('src/pages/doc-viewer'));
 export const ProfilePage = lazy(() => import('src/pages/profile'));
 export const ForgotPasswordPage = lazy(() => import('src/pages/forgot-password'));
+export const ResetPasswordPage = lazy(() => import('src/pages/reset-password'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 // ----------------------------------------------------------------------
@@ -67,6 +68,10 @@ export default function Router() {
     {
       path: 'forgot-password',
       element: <ForgotPasswordPage />,
+    },
+    {
+      path: 'reset-password',
+      element: <ResetPasswordPage />,
     },
     {
       path: 'doc-viewer',

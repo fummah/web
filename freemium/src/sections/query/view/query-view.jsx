@@ -128,7 +128,7 @@ export default function QueryPage() {
         {isLoadingQueries?<Loader/>:null}
         
 
-       <QueryDrawer myvariant="contained" mycolor="inherit" mytext="Add Query" plan={user.plan}/>
+       <QueryDrawer myvariant="contained" mycolor="inherit" mytext="Add Query" plan={user.plan} claim_id="0"/>
       </Stack>
       {isErrorQueries?<Error mymessage={dataQueries.message}/>:null}
       <Card>

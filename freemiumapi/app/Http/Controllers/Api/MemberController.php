@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\SignUpRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ProfileRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -18,6 +19,8 @@ use App\Http\Controllers\Api\ClaimsController;
 use App\Models\SchemeModel;
 use App\Models\DocumentLineModel;
 use App\Models\QueryDocumentModel;
+use App\Models\FaqModel;
+use App\Models\BlogModel;
 
 class MemberController extends Controller
 {
@@ -51,7 +54,7 @@ class MemberController extends Controller
         return response()->json(['message' => 'Account created successfully','token'=>$token, 'user' => $user], 200);
         }
     catch(\Exception $e){
-        return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
+        return response()->json(['message' => 'Internal Error',], 500);
     }
 
    }
@@ -80,7 +83,7 @@ class MemberController extends Controller
         }
     }
     catch(\Exception $e){
-        return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
+        return response()->json(['message' => 'Internal Error',], 500);
     }
         
 }
@@ -106,7 +109,7 @@ public function verifyEmail(Request $request)
     }
     }
     catch(\Exception $e){
-        return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
+        return response()->json(['message' => 'Internal Error',], 500);
     }
       
    }
@@ -134,18 +137,17 @@ public function verifyEmail(Request $request)
         $c = new ClaimsController();
         $authuser = $request->user();
     $total_queries = QueryModel::where('user_id','=',$authuser->id)->count();
-     $total_claims = ClaimModel::join('member','claim.member_id','=','member.member_id')
-            ->where('member.email', $authuser->email)
-            ->count(); 
+     $total_faq = FaqModel::count(); 
+     $total_blog = BlogModel::count(); 
             $benefit = $this->countBenefit($authuser->id);
             $doc_count = $this->getQueryDocument($authuser->id);
     $total_switch_claims = $c->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium.php",0,$authuser->email,$authuser->scheme_number,$authuser->id_number);
     $trail = TrailModel::where('user_id','=',$authuser->id)->get();
     return response()->json(['message' => 'Records Return','total_query'=>$total_queries,
-    'total_claims'=>$total_claims,'total_switch_claims'=>$total_switch_claims,'trail'=>$trail,'user'=>$authuser,'benefit'=>$benefit,'doc_count'=>$doc_count], 200);
+    'total_faq'=>$total_faq,'total_blog'=>$total_blog,'total_switch_claims'=>$total_switch_claims,'trail'=>$trail,'user'=>$authuser,'benefit'=>$benefit,'doc_count'=>$doc_count], 200);
        }
     catch(\Exception $e){
-        return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
+        return response()->json(['message' => 'Internal Error',], 500);
     }
      }
 
@@ -164,7 +166,7 @@ public function verifyEmail(Request $request)
         return response()->json(['message' => 'Successfully Updated','status'=>$user,'email'=>$email,'plan'=>$plan], 200);
         }
     catch(\Exception $e){
-        return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
+        return response()->json(['message' => 'Internal Error',], 500);
     }
      }
      public function getUser(Request $request)
@@ -175,7 +177,7 @@ public function verifyEmail(Request $request)
         return response()->json(['message' => 'Successfully Updated','user'=>$authuser,'schemes'=>$schemes], 200);
         }
     catch(\Exception $e){
-        return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
+        return response()->json(['message' => 'Internal Error',], 500);
     }
      }
      private function countBenefit($user_id)
@@ -215,8 +217,69 @@ public function verifyEmail(Request $request)
         return response()->json(['message' => 'Successfully Updated','user'=>$user], 200);
         }
     catch(\Exception $e){
-        return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
+        return response()->json(['message' => 'Internal Error',], 500);
     }
+    
+}
+
+public function forgotPassword(Request $request)
+    {
+       try
+       {       
+       $email = $request->email;
+       $user_email = MemberModel::where('email','=',$email)->first();
+       if($user_email)
+       {
+        $user = MemberModel::find((int)$user_email['id']);
+        $temp_code = rand(10000,200000);   
+        $user->update([
+               'date_password_changed' => date('Y-m-d H:i:s'),
+               'temp_code' => $temp_code,               
+           ]);
+
+           $inar=[
+            'data'=>"Hello<br><br>To reset your password use the temporary code below: <br><br><b>".$temp_code."</b><br><br>If you did not request a password reset from Medclaim Assist, you can safely ignore this email.",
+            'hid'=>""    
+            ];
+          $user->notify(new EmailNotification($inar));
+       }
+      
+      
+       return response()->json(['message' => 'Successfully Redirected'], 200);
+       }
+   catch(\Exception $e){
+       return response()->json(['message' => 'Internal Error',], 500);
+   }
+     }
+     public function resetPassword(ForgotPasswordRequest $request)
+    {
+       try
+       {   
+       $data = $request->validated();  
+       $email = $data['email'];  
+       $temp_code = $data['temp_code'];
+       $user_email = MemberModel::where('email','=',$email)->where('temp_code','=',$temp_code)->first();
+       if($user_email)
+       {
+        $user = MemberModel::find((int)$user_email['id']);  
+        $user->update([
+               'date_password_changed' => date('Y-m-d H:i:s'),
+               'temp_code' => "0001",  
+               'password' => Hash::make($data['password']),           
+           ]);
+           return response()->json(['message' => 'Password Successfully updated'], 200);
+       }
+       else
+       {
+        return response()->json(['message' => 'There is an error, try again',], 500);
+       }
+      
+      
+       
+       }
+   catch(\Exception $e){
+       return response()->json(['message' => 'Internal Error',], 500);
+   }
      }
 
 }

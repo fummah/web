@@ -1189,8 +1189,6 @@ COUNT(claim_id) as total_claim,SUM(charged_amnt-scheme_paid) as charged FROM cla
                 $claims=$row[3];
                 $charged=$row[4];
                 $perc=$charged>0?($total_savings/$charged)*100:0;
-
-
                 $totdis+=$discount;$totscheme+=$scheme;$tottot+=$total_savings;
                 $s=$conn->prepare("SELECT COUNT(a.claim_id) as total_claims FROM claim as a INNER JOIN member as b 
 ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE a.date_entered >= :dat AND a.date_entered < :dat2 AND client_name=:name AND a.Open<>2");
@@ -1210,11 +1208,28 @@ ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id
                 $stmt->bindParam(':name', $client, PDO::PARAM_STR);
                 $stmt->execute();
                 $days=round($stmt->fetchColumn());
+                $newaverage ="";
+                if(in_array($client,["Kaelo","Western"]) && $dat2>"2024-04-01")
+                {
+                    
+                $sqlw="SELECT SUM(TIMESTAMPDIFF(SECOND,a.date_entered,a.date_closed))/(COUNT(claim_id) * 86400) as total_time FROM claim as a INNER JOIN member as b 
+                ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id
+                    WHERE a.date_closed >= :dat AND a.date_closed < :dat2 AND a.date_entered>'2024-04-01' AND client_name=:name AND a.Open=0 AND a.claim_id not in (SELECT claim_id FROM reopened_claims)";
+                                $stmtw = $conn->prepare($sqlw);
+                                $stmtw->bindParam(':dat', $dat, PDO::PARAM_STR);
+                                $stmtw->bindParam(':dat2', $dat2, PDO::PARAM_STR);
+                                $stmtw->bindParam(':name', $client, PDO::PARAM_STR);
+                                $stmtw->execute();
+                                $daysw=round($stmtw->fetchColumn());
+                    $averagew=$claims>0?$daysw:0;
+                $averagew=is_nan($averagew)?0:$averagew;
+                $newaverage=" / ".round($averagew);
+                }
 
                 $average=$claims>0?$days:0;
                 $average=is_nan($average)?0:$average;
                 $tot_claims+=$claims;$totcharged+=$charged;$totperc+=$perc;$totaver+=$average;
-                $localarr=array("month"=>$month,"claims"=>$claims,"discount"=>$discount,"scheme"=>$scheme,"total_savings"=>$total_savings,"charged"=>$charged,"percentage"=>round($perc,1),"average"=>round($average),"total_referred"=>$referredclaims);
+                $localarr=array("month"=>$month,"claims"=>$claims,"discount"=>$discount,"scheme"=>$scheme,"total_savings"=>$total_savings,"charged"=>$charged,"percentage"=>round($perc,1),"average"=>round($average).$newaverage,"total_referred"=>$referredclaims);
                 array_push($arrMonth,$localarr);
             }
             //$totperc+=$perc;$totaver+=$average;
@@ -1223,6 +1238,7 @@ ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id
             return $arrMonth;
 
         } catch (Exception $e) {
+            //echo $e;
             return "There is an error.".$e;
         }
     }

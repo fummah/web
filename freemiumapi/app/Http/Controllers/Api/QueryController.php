@@ -12,6 +12,8 @@ use App\Models\QueryDocumentModel;
 use App\Models\DocumentLineModel;
 use App\Models\FaqModel;
 use App\Models\BlogModel;
+use App\Models\TrailModel;
+use App\Http\Controllers\Api\ClaimsController;
 
 class QueryController extends Controller
 {
@@ -20,7 +22,7 @@ class QueryController extends Controller
         try
         {
             $data = $request->validate([          
-            
+            'claim_id' => 'required',
             'category' => 'required|string|min:2',
             'description' => 'required|string|min:4',
             ]);
@@ -28,10 +30,12 @@ class QueryController extends Controller
 
         $query = QueryModel::create([
             'user_id' => $user->id, 
+            'switch_claim_id' => $data['claim_id'],
             'category' => $data['category'],
             'description' => $data['description'],
             'entered_by' => $user->id,          
         ]);
+        $this->saveTrail($user->id,"New Query Loaded",$user->id);
         $lines = json_decode($request->lines,true);
         if(count($lines)>0)
         {
@@ -58,6 +62,7 @@ class QueryController extends Controller
                 'random_number' => rand(1,100), 
                 'entered_by' => $user->id,      
             ]);
+            $this->saveTrail($user->id,"Query Document Loaded",$user->id);
         }
          return response()->json(['message' => 'New Query Successfully Added','query' => $query,"lines"=>$lines,"document"=>$request->document], 200);
         
@@ -110,12 +115,13 @@ class QueryController extends Controller
             $data = $request->validate([            
             'query_id' => 'required|numeric|between:0,999999999999999',
             ]);
-
+            $c = new ClaimsController();
         $query = QueryModel::find($data['query_id']);
+        $dd = $c->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium2.php",$query["switch_claim_id"]);
         $documents = FreemiumDocumentsModel::where('associated_id','=',$data['query_id'])->where('_type','=','query')->get();
         $notes = QueryNotesModel::where('query_id','=',$data['query_id'])->get();
-        $lines = QueryLineModel::where('query_id','=',$data['query_id'])->get();
-         return response()->json(['message' => 'Records Successfully Retrieved','query' => $query,'documents'=>$documents,'notes'=>$notes,'lines'=>$lines], 200);
+        //$lines = QueryLineModel::where('query_id','=',$data['query_id'])->get();
+         return response()->json(['message' => 'Records Successfully Retrieved','query' => $query,'documents'=>$documents,'notes'=>$notes,'doctors'=>$dd], 200);
         }
     catch(\Exception $e){
         return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
@@ -153,6 +159,7 @@ class QueryController extends Controller
             'entered_by' => $user->id,          
         ]);
             }
+
         } 
         if($request->document!="")
         {
@@ -165,6 +172,7 @@ class QueryController extends Controller
                 'random_number' => rand(1,100), 
                 'entered_by' => $user->id,      
             ]);
+            $this->saveTrail($user->id,"Document Loaded",$user->id);
         }
          return response()->json(['message' => 'New Document Successfully Added','query' => $query,"lines"=>$lines,"document"=>$request->document], 200);
         
@@ -197,5 +205,13 @@ class QueryController extends Controller
     catch(\Exception $e){
         return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
     }
+    }
+    private function saveTrail($user_id,$trail_name,$entered_by):void
+    {
+     TrailModel::create([
+             'user_id' => $user_id,
+             'trail_name' => $trail_name,
+             'entered_by' => $entered_by,
+         ]);
     }
 }

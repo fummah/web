@@ -401,7 +401,7 @@ elseif ($identity==23)
     foreach ($results->getClientsWithSavings($today) as $row) {
         $client = $row["client_name"];
         $id = $row["client_id"];
-        $base_fee = (double)$row["base_fee"];
+        $base_fee = 0;
         $threshold = (double)$row["threshold"];
         $threshold1 = (double)$row["threshold1"];
         $savings = (double)$row["savings"];
@@ -414,6 +414,18 @@ elseif ($identity==23)
         $vatexcl=$actualsavings;
         $ssw = $results->switchProd($id,$today) + $results->switchSeamless($id,$today);
         $ccochf= $client=="Kaelo" || $client=="Western" || $client=="Sanlam"?(int)$results->getSwitchCHF($client,0,$today):0;
+        if($today."-01">="2024-04-01" && ($client=="Western" || $client=="Kaelo"))
+        {
+            $base_fee =(double)$ccochf;
+        }
+        elseif($today."-01">="2024-04-01" && $client=="Cinagi")
+        {
+            $base_fee =(double)$actualsavings>10000?0.30*(double)$actualsavings:10000;
+        }
+        else
+        {
+           $base_fee = (double)$row["base_fee"];
+        }
         //$ssw = 0;
         //$ccochf=0;
         $switch += $switch;
@@ -469,6 +481,7 @@ elseif ($identity==23)
         {
             $perc30=$actualsavings*0.33;
         }
+
 
         $savings = $results->reformat($savings);
         $vatexcl = $results->reformat($vatexcl);

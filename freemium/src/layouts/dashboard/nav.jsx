@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useMemo,useState,useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -13,6 +13,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import { usePathname } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
+import useAxiosFetch from 'src/hooks/use-axios';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import { account } from 'src/_mock/account';
@@ -25,9 +26,19 @@ import navConfig from './config-navigation';
 
 // ----------------------------------------------------------------------
 
-export default function Nav({ openNav, onCloseNav }) {
-  const pathname = usePathname();
 
+export default function Nav({ openNav, onCloseNav }) {
+  const [user,setUser] = useState({});
+  const pathname = usePathname();
+  const { data,statusCode } = useAxiosFetch('getuser','GET', {});
+
+    useMemo(() => {
+      if(data && statusCode===200)
+    {      
+      setUser(data.user);      
+    }  
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
   const upLg = useResponsive('up', 'lg');
 
   useEffect(() => {
@@ -74,7 +85,7 @@ export default function Nav({ openNav, onCloseNav }) {
     <Box>
       <Stack alignItems="center" spacing={1} sx={{ pt: 1, borderRadius: 2, position: 'relative' }}>
        
-{account.user.plan === null? 
+{user?.plan === null? 
 <>
 
 <Button

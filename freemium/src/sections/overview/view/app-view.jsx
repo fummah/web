@@ -24,9 +24,10 @@ export default function AppView() {
   const ref3 = useRef(null);
   const [open, setOpen] = useState(true);
 const [totalqueries, setTotalqueries] = useState(0);
-const [totalclaims, setTotalclaims] = useState(0);
 const [totalDocs, setTotalDocs] = useState(0);
 const [totalswitchclaims, setTotalswitchclaims] = useState(0);
+const [totalFaqs, setFaqs] = useState(0);
+const [totalBlogs, setBlogs] = useState(0);
 const [trail, setTrail] = useState([]);
 const [switchclaims, setSwitchclaims] = useState([]);
 const [graph2, setGraph2] = useState([]);
@@ -40,7 +41,8 @@ useEffect(() => {
     {
       
       setTotalqueries(dataDashboard.total_query);
-      setTotalclaims(dataDashboard.total_claims);
+      setFaqs(dataDashboard.total_faq);
+      setBlogs(dataDashboard.total_blog);
       setTotalswitchclaims(dataDashboard.total_switch_claims.original.length);
       setTrail([...dataDashboard.trail, ...switchTrail(dataDashboard.total_switch_claims.original)]);
       setSwitchclaims([dataDashboard.total_switch_claims.original]); 
@@ -52,9 +54,7 @@ useEffect(() => {
       // Set cookie for the subdomain
      document.cookie = `first_name=${dataDashboard.user.first_name}; Domain=.freemium.meclaimassist.co.za; path=/`;
      document.cookie = `last_name=${dataDashboard.user.last_name}; Domain=.freemium.meclaimassist.co.za; path=/`;
-     document.cookie = `email=${dataDashboard.user.email}; Domain=.freemium.meclaimassist.co.za; path=/`;
-
-      
+     document.cookie = `email=${dataDashboard.user.email}; Domain=.freemium.meclaimassist.co.za; path=/`;      
     }   
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataDashboard]); 
@@ -99,7 +99,7 @@ return newTrail;
       },
     ];
   return (
-    <Container maxWidth="xl">
+       <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
         Hi, {user.first_name} 👋
       </Typography>
@@ -130,7 +130,7 @@ return newTrail;
         <Grid xs={12} sm={6} md={3} ref={ref2}>
           <AppWidgetSummary
             title="FAQs"
-            total={0}
+            total={totalFaqs}
             color="warning"
             icon={<img alt="icon" src="/assets/icons/glass/ic_claim.png" />}
           />
@@ -139,8 +139,8 @@ return newTrail;
 
         <Grid xs={12} sm={6} md={3} ref={ref3}>
           <AppWidgetSummary
-            title="Tips"
-            total={totalclaims}
+            title="Blog Posts"
+            total={totalBlogs}
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/ic_tips.png" />}
           />
@@ -153,10 +153,10 @@ return newTrail;
             count={totalDocs}
             chart={{
               series: [
-                { label: 'Correct', value: benefit?.correct },
-                { label: 'Incorrect', value: benefit?.incorrect },
-                { label: 'Possibly Correct', value: 0 },
-                { label: 'Possibly Incorrect', value: 0 },
+                { label: 'Correct', value: 0 },
+                { label: 'Incorrect', value: 0 },
+                { label: 'Possibly Correct', value: benefit?.correct },
+                { label: 'Possibly Incorrect', value: benefit?.incorrect },
               ],
             }}
           />         
@@ -190,5 +190,6 @@ return newTrail;
        
       </Grid>
     </Container>
+    
   );
 }

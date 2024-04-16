@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Form,Card,Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import React, { useRef, useState, useEffect } from 'react';
@@ -42,7 +43,7 @@ const onFinish = (values) => {
 };
 
 
-const AddQueryForm = React.memo(() => {
+const AddQueryForm = React.memo(({claim_id}) => {
   const [category, setCategory] = useState('');
   const [postData, setPostData] = useState({});
   const [fetchBtnClicked, setFetchBtnClicked] = useState(false);
@@ -63,10 +64,7 @@ const AddQueryForm = React.memo(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchBtnClicked]);   
  
-    if(data)
-    {
-      console.log(data);
-    }
+  
   const handleChange = (event) => {
     setCategory(event.target.value);
      
@@ -80,6 +78,7 @@ const AddQueryForm = React.memo(() => {
     const getFormValues = () =>{
       const obj = {
         "id":account.user.id,
+        "claim_id":claim_id,
         "document":document_name,
         "category":category,
         "description":valueDescription.current.value,
@@ -88,7 +87,7 @@ const AddQueryForm = React.memo(() => {
       return obj;
     }
     const normFile = (e) => {
-      console.log('Upload event:', e);
+    
       if (Array.isArray(e)) {
         return e;
       }
@@ -99,7 +98,7 @@ const AddQueryForm = React.memo(() => {
       return e?.fileList;
     };
 
-    console.log(getFormValues()); 
+  
 
   const renderForm = ( 
       <Stack spacing={3}>
@@ -222,3 +221,6 @@ const AddQueryForm = React.memo(() => {
 });
 
 export default AddQueryForm;
+AddQueryForm.propTypes = {
+  claim_id: PropTypes.any,
+};

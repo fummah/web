@@ -23,6 +23,7 @@ export default function UserTableRow({
   service_date,
   charged_amnt,
   scheme_paid,
+  claim_id,
   gap,
   plan,
   handleClick,
@@ -35,8 +36,7 @@ export default function UserTableRow({
   const handleCloseMenu = () => {
     setOpen(null);
   };
-  console.log("My Plan");
-  console.log(plan);
+
 
   return (
     <>
@@ -63,10 +63,10 @@ export default function UserTableRow({
       
         <TableCell>
         {plan === null?
-       <QueryDrawer myvariant="outlined" mycolor="success" mytext="Help" plan={plan}/>   
+       <QueryDrawer myvariant="outlined" mycolor="success" mytext="Help" plan={plan} claim_id={claim_id}/>   
 :
 <>
-<QueryDrawer myvariant="outlined" mycolor="success" mytext="Help" plan={plan}/>  
+<QueryDrawer myvariant="outlined" mycolor="success" mytext="Help" plan={plan} claim_id={claim_id}/>  
 <Button style={{marginTop:'10px'}} variant="outlined" color="error" onClick={handleViewClick}>
        <ChecklistRtl/> View
       </Button>
@@ -109,6 +109,7 @@ UserTableRow.propTypes = {
   service_date: PropTypes.any,
   selected: PropTypes.any,
   scheme_paid: PropTypes.any,
+  claim_id: PropTypes.any,
   gap: PropTypes.any,
   plan: PropTypes.any,
 };

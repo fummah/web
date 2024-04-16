@@ -28,6 +28,8 @@ Route::middleware('guest:sanctum')->group(function(){
     Route::post('/login', [MemberController::class,'login'])->name('login');
     Route::post('/verify-email', [MemberController::class,'verifyEmail'])->name('verify_email');
     Route::post('/updateplan', [MemberController::class,'updatePlan'])->name('update_plan');
+    Route::post('/forgot-password', [MemberController::class,'forgotPassword'])->name('forgot_password');
+    Route::post('/reset-password', [MemberController::class,'resetPassword'])->name('reset_password');
 });
 
 Route::middleware('auth:sanctum')->group(function(){

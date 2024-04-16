@@ -54,7 +54,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 export default function FaqPage() {
- const [expanded, setExpanded] = useState('panel1');
+ const [expanded, setExpanded] = useState('');
  const [faqs,setFaqs] = useState([]);
  const { isLoading,isError, data,statusCode } = useAxiosFetch('getfaqs','GET', {});
 
@@ -88,7 +88,7 @@ export default function FaqPage() {
           <div>
             {
             faqs.map((faq,index) =>
-      <Accordion expanded={expanded === 'panel1'} key={index} onChange={handleChange('panel1')}>
+      <Accordion expanded={expanded === index} key={index} onChange={handleChange(index)}>
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
           <Typography>{faq.title}</Typography>
         </AccordionSummary>

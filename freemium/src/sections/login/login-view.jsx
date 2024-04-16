@@ -54,6 +54,7 @@ export default function LoginView() {
       if(!isErrorLogin && statusCodeLogin===200)   
       {    
         localStorage.removeItem('UNACTIVATEDID');
+        localStorage.removeItem('RESETEMAIL');
         localStorage.setItem('ACCEESS_GRANTED', dataLogin.token);
         localStorage.setItem('USER', JSON.stringify(dataLogin.user));
         
@@ -66,7 +67,7 @@ export default function LoginView() {
     {
       if(statusCodeLogin===403)
       {
-         localStorage.setItem('UNACTIVATEDID', dataLogin.user.id);
+        localStorage.setItem('UNACTIVATEDID', dataLogin.user.id);
       return <Navigate to="/verify-email"/>
     }
     }

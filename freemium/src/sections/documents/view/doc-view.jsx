@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table1 from '@mui/material/Table';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
@@ -12,9 +13,12 @@ import TablePagination from '@mui/material/TablePagination';
 
 import useAxiosFetch from 'src/hooks/use-axios';
 
+import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import Error from 'src/components/response/error';
 import Loader from 'src/components/response/loader';
+
+import FormUpload from 'src/sections/overview/upload';
 
 import TableNoData from '../table-no-data';
 import UserTableHead from '../user-table-head';
@@ -36,6 +40,7 @@ export default function DocumentsPage() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
+  const [open_doc, setOpenDoc] = useState(false);
 
 
   const { isLoading: isLoadingQueries, isError: isErrorQueries, data: dataQueries,statusCode:statusCodeQueries } = useAxiosFetch('getdocuments','GET', {});
@@ -169,9 +174,13 @@ export default function DocumentsPage() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Uploaded Documents</Typography>
         {isLoadingQueries?<Loader/>:null}
-      </Stack>
+        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={()=>{setOpenDoc(true)}}>Add Document</Button>
+        </Stack>
       {isErrorQueries?<Error mymessage={dataQueries.message}/>:null}
       <Card>
+      {open_doc && <div style={{marginLeft:20}}>
+      <FormUpload text=''/>
+    </div>}
         <UserTableToolbar
           numSelected={selected.length}
           filterName={filterName}

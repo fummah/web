@@ -14,7 +14,6 @@ export default function DashboardLayout({ children }) {
 
   return (
     <>
-    
       <Header onOpenNav={() => setOpenNav(true)} />
 
       <Box
@@ -29,8 +28,7 @@ export default function DashboardLayout({ children }) {
 
         <Main>{children}</Main>
       </Box>
-
-    </>
+      </>
   );
 }
 

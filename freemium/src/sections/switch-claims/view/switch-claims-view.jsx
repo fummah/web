@@ -46,8 +46,7 @@ export default function ClaimsPage() {
   useEffect(() => {
     if(dataClaims && statusCodeClaims===200)
     {
-      console.log("Claims Load");
-      console.log(dataClaims);  
+  
       setClaims(dataClaims);    
     }   
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -172,6 +171,7 @@ export default function ClaimsPage() {
                       service_date={row.claim_header.Service_Date}                     
                       charged_amnt={row.claim_header.charged_amnt}
                       scheme_paid={row.claim_header.scheme_paid}
+                      claim_id={row.claim_header.claim_id}
                       tips={row.tips}
                       gap={row.claim_header.gap}
                       plan={account.user.plan}

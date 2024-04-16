@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
+import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -31,8 +32,8 @@ export default function ClaimlinesTable({claim_lines}) {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >             
               <TableCell align="right">{claim_line.treatmentDate}</TableCell>
-              <TableCell align="right">{claim_line.tariff_code}</TableCell>
-              <TableCell align="right">{claim_line.primaryICDCode}</TableCell>
+              <TableCell align="right"><Tooltip title={claim_line.tariff_desc} arrow>{claim_line.tariff_code}</Tooltip></TableCell>
+              <TableCell align="right"><Tooltip title={claim_line.primaryICDDescr} arrow>{claim_line.primaryICDCode}</Tooltip></TableCell>
               <TableCell align="right">{claim_line.PMBFlag}</TableCell>
               <TableCell align="right">{claim_line.clmnline_charged_amnt}</TableCell>
               <TableCell align="right">{claim_line.clmline_scheme_paid_amnt}</TableCell>

@@ -52,6 +52,7 @@ export default function SignUpView() {
     const valueSchemeNumber= useRef('');
     const valuePassword= useRef('');
     const valueConfirmPassword= useRef('');
+    const [fileContent, setFileContent] = useState('');
 
    const handleChange = (event) => {
     setMedicaScheme(event.target.value);
@@ -76,7 +77,23 @@ export default function SignUpView() {
       setSignupBtnClicked(false);       
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [signupBtnClicked]);   
+    }, [signupBtnClicked]);  
+    useEffect(() => {
+      const fetchTextFile = async () => {
+        try {
+          const response = await fetch('tc.txt');
+          if (!response.ok) {
+            throw new Error('Failed to fetch the file');
+          }
+          const text = await response.text();
+          setFileContent(text);
+        } catch (error) {
+          console.error('Error fetching the file:', error);
+        }
+      };
+  
+      fetchTextFile();
+    }, []); 
 
   const handleSignUp = (e) =>{
  setSignupBtnClicked(true);
@@ -308,8 +325,8 @@ export default function SignUpView() {
           {renderForm}
         </Card>
       </Stack>
-      <Modal title="Terms & Conditions" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>Content Here</p>        
+      <Modal title="Terms & Conditions" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width="50%">
+              <pre style={{ whiteSpace: 'pre-wrap',overflowX: 'auto',}}>{fileContent}</pre>
       </Modal>
     </Box>
   );

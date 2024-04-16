@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React,{useState} from 'react';
 import { Form,Space,Upload,message} from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
@@ -23,7 +24,7 @@ const beforeUpload = (file) => {
 const onFinish = (values) => {
   console.log('Received values of form: ', values);
 };
-const FormUpload = () => {
+const FormUpload = ({text="No Benefit Usage Found."}) => {
   const [lines,setLines] = useState([]);
   const [document_name,setDocumentName] = useState("");
   const [modal,setModal] = useState(false);
@@ -60,11 +61,11 @@ const FormUpload = () => {
    
     <Form.Item>
       <Form.Item name="dragger" valuePropName="fileList" getValueFromEvent={normFile} noStyle>
-        <Upload.Dragger accept=".pdf" name="file" action="https://medclaimassist.co.za/testing/freemium_ocr.php" beforeUpload={beforeUpload}>
+        <Upload.Dragger id="uu" accept=".pdf" name="file" action="https://medclaimassist.co.za/testing/freemium_ocr.php" beforeUpload={beforeUpload}>
           <p className="ant-upload-drag-icon">
             <InboxOutlined />
           </p>
-          <p className="ant-upload-text">No Benefit Usage Found.</p>
+          <p className="ant-upload-text">{text}</p>
           <p className="ant-upload-hint">Click or drag file to this area to upload</p>
         </Upload.Dragger>
       </Form.Item>
@@ -83,3 +84,6 @@ const FormUpload = () => {
   );
 };
 export default FormUpload;
+FormUpload.propTypes = {
+  text: PropTypes.any,
+};
