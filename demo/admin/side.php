@@ -41,6 +41,7 @@
 <ul class="mm-collapse">
 <li><a href="subscriptions.php">Subscriptions</a></li>
 <li><a href="web_broker.php">All Brokers</a></li>
+<li><a href="web_broker_claims.php">Broker Claims</a></li>
 </ul>
 </li>
 <li class="">
@@ -55,6 +56,7 @@
 <li><a href="zero_amounts.php">Zero Amounts</a></li>
 <li><a href="reopened_claims.php">Reopened Cases</a></li>
 <li><a href="eightdays.php">More than 8 days</a></li>
+<li><a href="sla_progress.php">SLA</a></li>
 </ul>
 </li>
 <li class="">

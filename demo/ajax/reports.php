@@ -1,5 +1,5 @@
 <?php
-error_reporting(0);
+//error_reporting(0);
 define("access",true);
 session_start();
 include ("../classes/reportsClass.php");
@@ -402,6 +402,9 @@ elseif ($identity==23)
         $client = $row["client_name"];
         $id = $row["client_id"];
         $base_fee = 0;
+        $perc25 = 0.00;
+        $perc30 = 0.00;
+        $variance1=0.00;
         $threshold = (double)$row["threshold"];
         $threshold1 = (double)$row["threshold1"];
         $savings = (double)$row["savings"];
@@ -420,7 +423,8 @@ elseif ($identity==23)
         }
         elseif($today."-01">="2024-04-01" && $client=="Cinagi")
         {
-            $base_fee =(double)$actualsavings>10000?0.30*(double)$actualsavings:10000;
+            $base_fee = (double)$row["base_fee"];
+            $perc30 =0.30*(double)$vatexcl1;
         }
         else
         {
@@ -442,9 +446,7 @@ elseif ($identity==23)
             $caret = "ti-angle-double-down";
             $subtract = $savings - $actualsavings;
         }
-        $perc25 = 0.00;
-        $perc30 = 0.00;
-        $variance1=0.00;
+        
         if ($threshold > 0 && $vatexcl > $threshold1) {
             $perc25=$vatexcl<200000?$vatexcl-$threshold1:$threshold1;
 
@@ -494,7 +496,7 @@ elseif ($identity==23)
         $perc25 = $results->reformat($perc25);
         $perc30 = $results->reformat($perc30);
         $threshold1 = $results->reformat($threshold1);
-        if(!in_array($client,$client_arr))
+        if(!in_array($client,$client_arr) && $client_arr!="Cinagi")
         {
             $vatexcl="--";
         }
@@ -949,5 +951,82 @@ elseif($identity==44)
    $arr = array('compare1' => $compare1, 'compare2'=>$compare2);
 
     echo json_encode($arr,true);
+}
+elseif($identity==45)
+{    
+    $date=$_GET["date"];
+    $broker=(int)$_GET["broker"];
+   $arr = $results->getBrokerClaims($date,$broker);
+    echo json_encode($arr,true);
+}
+elseif($identity==46)
+{
+    try
+    {
+   
+    //$clients_web=explode(",",$_GET["clients"]);
+    //$users_web=explode(",",$_GET["users"]);
+    $clients_web=json_decode($_GET["clients"]);
+    $users_web=json_decode($_GET["users"]);
+    $clients=!empty($clients_web)?implode(",",$clients_web):"";
+    $users=!empty($users_web)?implode(",",$users_web):"";
+    $start_date=$_GET["start_date"];
+    $end_date=$_GET["end_date"];
+
+$rows = $results->getClaimsforSLA($start_date,$end_date,$clients,$users);
+
+$mainarr=array();
+foreach($rows as $row)
+{
+    $claim_id = $row['claim_id'];
+    $claim_number = $row['claim_number'];
+    $date_entered = $row['date_entered'];    
+    $username = $row['username'];  
+    $client_name = $row['client_name'];  
+    $open = $row['Open']==0?"Closed":"Open";
+    $tlines = $results->getIntervention($claim_id);
+    $sal_date = "---";
+    $hours = "--";
+    if(count($tlines)<1)
+    {
+        $sal_date = date('Y-m-d H:i:s');
+        $hours = $results->getWorkingHours($sal_date,$date_entered);
+    }
+    $color="";
+    $bg="";
+    if((double)$hours>=8)
+    {
+        $bg="#813f4d";
+        $color="white";        
+    }  
+    
+    array_push($mainarr,array("claim_id"=>$claim_id,"claim_number"=>$claim_number,"date_entered"=>$date_entered,"username"=>$username,
+    "client_name"=>$client_name,"sal_date"=>$sal_date,"hours"=>floor((double)$hours),"open"=>$open,"bg"=>$bg,"color"=>$color));
+$sal_date = $date_entered;
+foreach ($tlines as $t)
+{
+    $interv_date = $t["date_entered"];
+    $reop = $results->getSLAreopen($claim_id,$sal_date,$interv_date);
+    
+    $sal_date = $reop?$reop["reopened_date"]:$sal_date;
+    $hours = $results->getWorkingHours($sal_date,$interv_date);
+    $color="";
+    $bg="";
+    if((double)$hours>=8)
+    {
+        $bg="red";
+        $color="white";        
+    }
+    array_push($mainarr,array("claim_id"=>$claim_id,"claim_number"=>$claim_number.implode(',',$reop),"date_entered"=>$interv_date,"username"=>$username,
+    "client_name"=>$client_name,"sal_date"=>$sal_date,"hours"=>floor((double)$hours),"open"=>$open,"bg"=>$bg,"color"=>$color));
+    $sal_date = $interv_date;
+}
+}
+echo json_encode($mainarr,true);
+    }
+    catch(Exception $e)
+    {
+        echo $e;
+    }
 }
 ?>

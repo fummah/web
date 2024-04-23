@@ -152,6 +152,28 @@ a.Open, a.claim_id, a.username, a.savings_discount, b.scheme_number,a.sla,c.clie
         $stmt->execute();
         return $stmt->fetchColumn();
     }
+    function getQueryDocs($query_id,$type)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM `freemium_documents` WHERE associated_id=:associated_id AND _type=:typ");
+        $stmt->bindParam(':associated_id', $query_id, PDO::PARAM_STR);
+        $stmt->bindParam(':typ', $type, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    function getQueries($condition,$val)
+    {
+        $stmt = $this->conn->prepare("SELECT q.id,m.first_name,m.last_name,m.email,q.date_entered,q.assigned_to,q.category FROM `freemium_queries` as q INNER JOIN freemium_members as m ON q.user_id=m.id  WHERE $condition");
+        $stmt->bindParam(':username', $val, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    function getQuery($query_id)
+    {
+        $stmt = $this->conn->prepare("SELECT *FROM `freemium_queries` as q INNER JOIN freemium_members as m ON q.user_id=m.id  WHERE q.id=:query_id");
+        $stmt->bindParam(':query_id', $query_id, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
     function getQA($condition,$val1,$rolex)
     {
         if($rolex=="cs")
@@ -976,6 +998,14 @@ function getAPIURL($sender_id)
         else{
             return "";
         }
+    }
+    function getBrokerCodes($scheme,$broker)
+    {
+        $fbStmt = $this->conn->prepare("SELECT code_name FROM `broker_codes` WHERE `scheme`=:scheme AND `client`=:client");
+        $fbStmt->bindParam(':scheme', $scheme, PDO::PARAM_STR);
+        $fbStmt->bindParam(':client', $broker, PDO::PARAM_STR);
+        $fbStmt->execute();
+        return $fbStmt->fetchAll();        
     }
     function getIcd10Desc($icd10)
     {

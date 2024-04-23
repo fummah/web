@@ -264,6 +264,20 @@ if(!defined('access')) {
     33.3333% {left: 0; width: 100%;z-index: 10;}
     to {left: 0; width: 100%;}
 }
+.dropdown-contentx {
+    display: none; /* Hide the dropdown content by default */
+    position: absolute;
+    background-color: #54bf99;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+li:hover .dropdown-contentx {
+    display: block;
+}
+.dropdown-contentx li {
+    display: block;
+    padding: 5px 0;
+}
 </style>
 <?php
 $script_addclaim="";
@@ -361,8 +375,13 @@ else if($script=="switch_claims.php"){$script_switch="activex";}
                 if($control->isInternal())
                 {
                     ?>
-                    <li class="hidde <?php echo $script_leads;?>"><a href="leads.php">Leads <span class="uk-badge sub_badge leads"> 0</span></a></li>
-                    <li class="hidde <?php echo $script_qa;?>"><a href="view_quality.php">QA <span class="uk-badge sub_badge" id="qa"> 0</span></a></li>
+                        <li class="hidde <?php echo $script_qa;?>"><a href="view_quality.php">QA <span class="uk-badge sub_badge" id="qa"> 0</span></a></li>
+                    <li class="hidde <?php echo $script_leads;?>"><a href="leads.php">Leads <span class="uk-badge sub_badge leads"> 0</span></a>
+<ul class="dropdown-contentx">
+            <li><a href="queries.php">Queries</a></li>
+        </ul>
+                    </li>
+                
 
                     <?php
                     if($control->isAssessor() || $control->isTopLevel())

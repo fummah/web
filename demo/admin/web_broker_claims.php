@@ -1,7 +1,7 @@
 <?php
 session_start();
 define("access",true);
-$title="All Brokers";
+$title="Web Broker Claims";
 require_once("top.php");
 $db=new reportsClass();
 if(!$db->isTopLevel()){
@@ -42,7 +42,16 @@ require_once("top_nav.php");
 <div class="white_card_header">
 <div class="box_header m-0">
 <div class="main-title">
-<h3 class="m-0"><?php echo $title;?></h3>
+<select class="form-control allc" name="from_month" id="from_month" onchange="selectBroker()">
+                <?php
+                $zarr=array_reverse($db->day_rr(50,0));
+                for($i=0;$i<count($zarr);$i++)
+                {
+                  $newdate=$zarr[$i];
+                  echo "<option value='$newdate'>$newdate</option>";
+                }
+                ?>
+              </select>
 
 </div>
 <div class="header_more_tool">
@@ -56,7 +65,7 @@ require_once("top_nav.php");
                         {
                             $id=$row[0];
                             $broker=$row[1];
-                            echo "<option value='$broker'>$broker</option>";
+                            echo "<option value='$id'>$broker</option>";
                         }
                         ?>
                     </select>
@@ -77,22 +86,26 @@ require_once("top_nav.php");
                 <tr>
                     <th>First name</th>
                     <th>Last name</th>
-                    <th>Broker Name</th>
+                    <th>Claim Number</th>
                     <th>Email</th>
-                    <th>Contact Number</th>
-                    <th>Subscription Rate Amount</th>
+                    <th>Status</th>
                     <th>Date Entered</th>
+                    <th>View</th>
+                    
                 </tr>
                 </thead>
+                <tbody id="claims">
+
+                </tbody>
                 <tfoot>
                 <tr>
-                    <th>First name</th>
+                <th>First name</th>
                     <th>Last name</th>
-                    <th>Broker Name</th>
+                    <th>Claim Number</th>
                     <th>Email</th>
-                    <th>Subscription Rate Amount</th>
-                    <th>Scheme Name</th>
+                    <th>Status</th>
                     <th>Date Entered</th>
+                    <th>View</th>
                 </tr>
                 </tfoot>
             </table>
@@ -121,19 +134,54 @@ require_once("footer.php");
 ?>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#example').DataTable( {
-            "processing": true,
-            "serverSide": true,
-            "ajax": "ajax_processing.php"
-        } );
+        getClaims();
     } );
 
     function selectBroker()
     {
-        var broker=$("#broker").val();
-        $("input").val(broker);
+        getClaims();  
+             
+    }
+
+    function getClaims(){
         var table = $('#example').DataTable();
-        var table = $('#example').DataTable();
-        table.column(2).search(broker).draw();
+table.destroy();
+        let date = $("#from_month").val();
+        let broker = $("#broker").val();
+        $.ajax({
+      url:"../ajax/reports.php",
+      type:"GET",
+      data:{
+        identityNum:45,date:date,broker
+          },
+      async: true,
+      success:function (data) { 
+const json = JSON.parse(data);
+let txtval ="";
+for(let key in json)
+{ 
+    const claim_id =json[key]["claim_id"];
+                    const first_name =json[key]["first_name"];
+                    const last_name =json[key]["last_name"];
+                    const claim_number =json[key]["claim_number"];
+                    const email =json[key]["email"];
+                    const status =json[key]["Open"]>0?"<span style='color:red'>Open</span>":"Closed";
+                    const date_entered =json[key]["date_entered"];
+                    const txt = `<tr><td>${first_name}</td><td>${last_name}</td><td>${claim_number}</td><td>${email}</td><td>${status}</td>
+                    <td>${date_entered}</td><td><form action='../case_details.php' method='post' target='_blank'/><input type='hidden' name='claim_id'
+                     value='${claim_id}' /><button title='View Claim' name='btn' class='btn ti-angle-double-right'></button></form></td></tr>`;
+                    txtval+=txt;
+                }
+                $("#claims").html(txtval);
+                
+      },
+      complete: function () {
+        $('#example').DataTable(); 
+     },
+      error:function (jqXHR, exception) {
+        console.log(jqXHR.responseText);
+      }
+    });
+    
     }
 </script>

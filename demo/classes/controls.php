@@ -109,6 +109,7 @@ Class controls extends Validate
     public $validate8days;
     public $qa_disabled;
     public $clinical_disabled;
+    public $broker;
     public function __construct()   {
         parent::__construct();
         global $db;
@@ -259,6 +260,18 @@ b.policy_number like :search OR c.client_name like :search OR a.username like :s
     public function viewOpenClaims($condition=":username",$val="1")
     {
         return $this->db_action->getOpenClaims($condition,$val);
+    }
+    public function viewQueries($condition=":username",$val="1")
+    {
+        return $this->db_action->getQueries($condition,$val);
+    }
+    public function viewQuery($query_id)
+    {
+        return $this->db_action->getQuery($query_id);
+    }
+    public function viewQueryDocs($query_id,$type="query")
+    {
+        return $this->db_action->getQueryDocs($query_id,$type);
     }
     public function viewLeads($condition=":username",$val=1)
     {
@@ -903,6 +916,10 @@ public function callSFTPNegative()
   function callupdateQAKey($claim_id,$key,$value)
     {
         return $this->db_action->updateQAKey($claim_id,$key,$value);
+    }
+    function viewBrokerCodes($scheme,$broker)
+    {
+        return $this->db_action->getBrokerCodes($scheme,$broker);
     }
     function viewDisciplinecodes()
     {

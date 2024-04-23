@@ -118,6 +118,7 @@ function claim_header($data,$control,$username)
         $brokerArr=$control->viewSubscription($control->member_email);
         //print_r($brokerArr);
         $brokername=$brokerArr["fullname"];
+        $control->broker = $brokername;
         if(strlen($brokername)>1)
         {
             $individual1="";
@@ -481,10 +482,25 @@ function claim_buttons_temp($control)
             $mesg="mymessage.php?claim_id=".$control->claim_id;
             echo "<form style='display: inline; padding: 5px' action='edit_case.php' id='vv' method='post'><input type=\"hidden\" name=\"claim_id\" value=\"$control->claim_id\"><button class=\"uk-button uk-button-primary uk-button-small\" style=\"background-color: #54bf99;\"><span uk-icon=\"pencil\"></span> Edit Claim</button></form>";
             if($control->case_status==1) {
+if($control->broker == "Angela Van Breda" && in_array($control->medical_scheme,["Discovery Health Medical Scheme","Momentum Health"]))
+{
+    echo "<div class=\"uk-inline\" style='padding-right: 8px;'>";
+    echo "<span> <button class='uk-button uk-button-default uk-button-small' style=\"border: 1px solid #54bf99;\">Broker Codes</button></span>";
+    echo "<div uk-dropdown>";
+    foreach($control->viewBrokerCodes($control->medical_scheme,$control->broker) as $irow)
+    {
+$code_name = $irow["code_name"];
+echo "<p style=\"padding:2px\">$code_name</p>";
+    }
+    echo "</div>";
+    echo "</div>";
+}
+else
+{
+    echo "<span onclick='sendConsent(\"$control->claim_id\",\"$control->consent_description\")' title='$control->consent_description'><button class=\"uk-button uk-button-primary uk-button-small\" style=\"background-color: #54bf99;\"><span id='consentID'>Send Consent</span></button></span>";
 
-                echo "<span onclick='sendConsent(\"$control->claim_id\",\"$control->consent_description\")' title='$control->consent_description'><button class=\"uk-button uk-button-primary uk-button-small\" style=\"background-color: #54bf99;\"><span id='consentID'>Send Consent</span></button></span>
-                          ";
-
+}
+                
                 echo "<div class=\"uk-inline\" style='padding-right: 8px;'>";
                 echo "<span> <button class='uk-button uk-button-default uk-button-small' style=\"border: 1px solid #54bf99;\">View Consent</button></span>";
                 echo "<div uk-dropdown>";

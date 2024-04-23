@@ -3646,6 +3646,26 @@ function conGetF($r3,$users,$clients,$b4="count(a.username) as total")
             return "There is an error.".$e;
         }
     }
+    function getBrokerClaims($date,$broker)
+    {
+        global $conn; 
+        $date1 = $date."-01";
+        $date2 = $this->nexDate($date1);  
+        $addd =  $broker>0?" AND w.broker_id=".$broker:"";  
+        try {              
+                $stmt=$conn->prepare('SELECT a.claim_id,b.first_name,b.surname as last_name,a.claim_number,b.email,a.Open,a.date_entered,
+                w.broker_id FROM `claim` as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN web_clients as w 
+                ON b.email=w.email WHERE a.date_entered >=:dat AND a.date_entered <:dat2'.$addd);
+                $stmt->bindParam(':dat', $date1, PDO::PARAM_STR);
+                $stmt->bindParam(':dat2', $date2, PDO::PARAM_STR);
+                $stmt->execute();              
+            
+                return $stmt->fetchAll();           
+
+        } catch (Exception $e) {
+            return "There is an error.".$e;
+        }
+    }
       
     function getBestDays($dates,$r3,$users,$clients)
     {
@@ -3731,4 +3751,76 @@ SELECT mca_claim_id, MIN(l.id) minID,a.claim_number,a.savings_scheme,a.savings_d
         $arr=["< 2000","BETWEEN 2000 AND 10000","BETWEEN 10000 AND 30000","BETWEEN 30000 AND 50000",">=50000"];
         return $arr;
     }
+    function getClaimsforSLA($start_date,$end_date,$clients,$users)
+    {
+      global $conn;      
+          $date = new DateTime($end_date);
+          $date->modify('+1 day');
+          $end_date=$date->format('Y-m-d'); 
+      $dat=" AND a.date_entered >='".$start_date."' AND a.date_entered<'".$end_date."' AND a.date_entered >'2024-04-01'";
+   
+      $users_array=array_map('strval', explode(',', $users));
+      $clients_array=array_map('strval', explode(',', $clients));
+      $users_em = implode("','",$users_array);
+      $clients_em = implode("','",$clients_array);
+      $vol=!empty($users)?" AND a.username IN ('".$users_em."')":" AND 1";
+      $vol1=!empty($clients)?" AND c.client_name IN ('".$clients_em."')":" AND 1";
+      $all=$vol.$vol1.$dat;
+
+      $stmt = $conn->prepare("Select a.claim_id,a.claim_number,a.date_entered,a.username,c.client_name,a.Open FROM 
+      claim as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE 1 ".$all);
+      $stmt->execute();
+      return $stmt->fetchAll();
+    }
+    function getIntervention($claim_id)
+{
+    global $conn;
+$stmtx = $conn->prepare('Select claim_id,date_entered FROM intervention WHERE claim_id=:claim_id');
+$stmtx->bindParam(':claim_id', $claim_id, PDO::PARAM_STR);
+$stmtx->execute();
+return $stmtx->fetchAll();
+}
+function getSLAreopen($claim_id,$last_note,$current_note)
+{
+    global $conn;
+$stmtx = $conn->prepare('Select claim_id,reopened_date FROM reopened_claims WHERE claim_id=:claim_id AND reopened_date>=:last_note AND reopened_date<=:current_note');
+$stmtx->bindParam(':claim_id', $claim_id, PDO::PARAM_STR);
+$stmtx->bindParam(':last_note', $last_note, PDO::PARAM_STR);
+$stmtx->bindParam(':current_note', $current_note, PDO::PARAM_STR);
+$stmtx->execute();
+return $stmtx->fetch();
+}
+    function holidays()
+    {
+        return array("2024-01-01","2024-03-21","2024-03-29","2024-04-01","2024-04-27","2024-05-01","2024-06-17","2024-08-09","2024-09-24","2024-12-16","2024-12-25","2024-12-26");
+    }
+    function getWorkingHours($startDate, $endDate) {
+        $startWorkingHour = 8;
+        $endWorkingHour = 16;
+        $startDate = strtotime($startDate);
+        $endDate = strtotime($endDate);
+        $workingDays = 0;
+        $currentDate = $startDate;
+        while ($currentDate <= $endDate+86400) {
+            $dayOfWeek = date('N', $currentDate);
+            if ($dayOfWeek >= 1 && $dayOfWeek <= 5) {
+                $currentDateFormatted = date('Y-m-d', $currentDate);
+                if (!in_array($currentDateFormatted, $this->holidays())) {           
+                    $startTime = strtotime(date('Y-m-d', $currentDate) . " $startWorkingHour:00:00");
+                    $endTime = strtotime(date('Y-m-d', $currentDate) . " $endWorkingHour:00:00");
+                    $startTime = $startTime<$startDate? $startDate : $startTime;
+                    if((int)date('H', $startTime)<$endWorkingHour){
+                    $endTime = $endTime>$endDate? $endDate : $endTime;
+                    if($startTime<$endTime){
+                      //$workingHours = floor(($endTime - $startTime) / 3600); 
+                      $workingHours = ($endTime - $startTime) / 3600; 
+                      $workingDays += $workingHours;
+                    }              
+                 }
+                }          
+            }      
+            $currentDate = strtotime('+1 day', $currentDate);
+        }
+        return $workingDays;
+      }
 }
