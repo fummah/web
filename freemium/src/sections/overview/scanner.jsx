@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
+import { Form,Modal,Input, Divider } from 'antd';
 import React, { useRef, useState,useEffect,useContext } from 'react';
-import { Form,Modal,Input,Table,Button, Divider,Popconfirm } from 'antd';
 
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -98,7 +98,7 @@ const Scanner = ({lines,document_name,mymodal}) => {
   const [fetchBtnClicked, setFetchBtnClicked] = useState(false);
   const valueDescription = useRef('');
   const [dataSource, setDataSource] = useState([]);
-  const [count, setCount] = useState(100);
+  /* const [count, setCount] = useState(100); */
   const [documents, setDocument] = useState("");
 
   const { isLoading, isError, data } = useAxiosFetch('adddocument','POST',postData,fetchBtnClicked);
@@ -147,11 +147,12 @@ const Scanner = ({lines,document_name,mymodal}) => {
         setOpen(false);
   };
 
-
+/*
   const handleDelete = (key) => {
     const newData = dataSource.filter((item) => item.key !== key);
     setDataSource(newData);
   };
+  
   const defaultColumns = [
     {
       title: 'Treatment Date',
@@ -186,6 +187,7 @@ const Scanner = ({lines,document_name,mymodal}) => {
         ) : null,
     },
   ];
+  
   const handleAdd = () => {
     const newData = {
       key: count,
@@ -197,6 +199,7 @@ const Scanner = ({lines,document_name,mymodal}) => {
     setDataSource([...dataSource, newData]);
     setCount(count + 1);
   };
+
   const handleSave = (row) => {
     const newData = [...dataSource];
     const index = newData.findIndex((item) => row.key === item.key);
@@ -207,6 +210,7 @@ const Scanner = ({lines,document_name,mymodal}) => {
     });
     setDataSource(newData);
   };
+  
   const components = {
     body: {
       row: EditableRow,
@@ -228,11 +232,11 @@ const Scanner = ({lines,document_name,mymodal}) => {
       }),
     };
   });
-  
+  */
   return (
    
       <Modal
-        title="Statement Details"
+        title="Statement Details (Make sure you save your file)"
         open={open}
         onOk={handleOk}
         maskClosable={false} 
@@ -244,7 +248,7 @@ const Scanner = ({lines,document_name,mymodal}) => {
           disabled: false,
           }}
         width="80%"
-        okText="Save All"
+        okText="Save File"
         cancelText="Close"
       >
       <div>
@@ -267,6 +271,7 @@ const Scanner = ({lines,document_name,mymodal}) => {
               </Grid>
               </Grid>
               <Divider/>
+              {/*
       <Button
         onClick={handleAdd}
         type="primary"
@@ -276,13 +281,14 @@ const Scanner = ({lines,document_name,mymodal}) => {
       >
         Add a row
       </Button>
+       
       <Table
         components={components}
         rowClassName={() => 'editable-row'}
         bordered
         dataSource={dataSource}
         columns={columns}
-      />
+      /> */}
         {isLoading?<Typography>Please wait...</Typography>:null}
       {isError?<Error mymessage={data.message}/>:null}
       {data && !isError?<Success mymessage={data.message}/>:null}

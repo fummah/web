@@ -11,7 +11,6 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import FolderIcon from '@mui/icons-material/Folder';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 
 import useAxiosFetch from 'src/hooks/use-axios';
 
@@ -93,10 +92,17 @@ export default function QueryDetails()
                   <ListItemIcon>
                     <FolderIcon />
                   </ListItemIcon>
-                  <ListItemText
-                    primary={document.document_name}
-                    secondary="File"
-                  />
+                
+                    <form action='https://medclaimassist.co.za/testing/view_file_external.php' key={index} target='_blank'>
+              <div>             
+                <input 
+                  type="hidden" 
+                  name="my_doc" 
+                  value={document.document_name}
+                />
+              </div>
+              <button type="submit" style={{ border: 'none',backgroundColor: 'transparent',cursor:'pointer'}}>{document.document_name}</button>
+            </form>
                 </ListItem>
               ):<Typography>No Documents</Typography>}
                

@@ -3655,7 +3655,7 @@ function conGetF($r3,$users,$clients,$b4="count(a.username) as total")
         try {              
                 $stmt=$conn->prepare('SELECT a.claim_id,b.first_name,b.surname as last_name,a.claim_number,b.email,a.Open,a.date_entered,
                 w.broker_id FROM `claim` as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN web_clients as w 
-                ON b.email=w.email WHERE a.date_entered >=:dat AND a.date_entered <:dat2'.$addd);
+                ON b.email=w.email WHERE w.email<>"" AND a.date_entered >=:dat AND a.date_entered <:dat2'.$addd);
                 $stmt->bindParam(':dat', $date1, PDO::PARAM_STR);
                 $stmt->bindParam(':dat2', $date2, PDO::PARAM_STR);
                 $stmt->execute();              

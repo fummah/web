@@ -27,7 +27,8 @@ class ClaimsController extends Controller
 }
 else
 {
-    return $this->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium.php",0,$request->email,$request->scheme_number,$request->id_number);
+    $user = $request->user();
+    return array("switch"=>$this->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium.php",0,$request->email,$request->scheme_number,$request->id_number),"user"=>$user);
        }
 }
     catch(\Exception $e){

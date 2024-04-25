@@ -35,7 +35,9 @@ export default function Nav({ openNav, onCloseNav }) {
     useMemo(() => {
       if(data && statusCode===200)
     {      
-      setUser(data.user);      
+      setUser(data.user);  
+      localStorage.setItem('USER', JSON.stringify(data.user));  
+      console.log("Testing 1");  
     }  
      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);

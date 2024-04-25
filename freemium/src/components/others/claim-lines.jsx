@@ -22,7 +22,7 @@ export default function ClaimlinesTable({claim_lines}) {
             <TableCell align="right">PMB</TableCell>
             <TableCell align="right">Charged Amount</TableCell>
             <TableCell align="right">Scheme Amount</TableCell>
-            <TableCell align="right">Gap Amount</TableCell>
+            <TableCell align="right">Outstanding Amount</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

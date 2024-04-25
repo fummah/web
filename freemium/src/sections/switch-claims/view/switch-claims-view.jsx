@@ -40,14 +40,15 @@ export default function ClaimsPage() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [user, setUser] = useState({});
   const [tips,setTips]=useState([]);
   const { isLoading: isLoadingClaims, isError: isErrorClaims, data: dataClaims,statusCode:statusCodeClaims } = useAxiosFetch('getclaims','GET', {'id':account.user.id,'email':account.user.email,"claim_id":0,'type':'external','scheme_number':account.user.scheme_number,'id_number':account.user.id_number});
 
   useEffect(() => {
     if(dataClaims && statusCodeClaims===200)
-    {
-  
-      setClaims(dataClaims);    
+    { 
+      setClaims(dataClaims.switch.original); 
+      setUser(dataClaims.user);   
     }   
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataClaims]); 
@@ -174,7 +175,7 @@ export default function ClaimsPage() {
                       claim_id={row.claim_header.claim_id}
                       tips={row.tips}
                       gap={row.claim_header.gap}
-                      plan={account.user.plan}
+                      plan={user?.plan}
                       selected={selected.indexOf(row.claim_header.claim_number) !== -1}
                       handleClick={(event) => handleClick(event, row.claim_header.claim_number)}
                       handleViewClick={(event) => handleViewClick(event, row.claim_header.claim_id)}
