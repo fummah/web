@@ -51,7 +51,7 @@ export default function UserTableRow({
           <TableCell>{category}</TableCell>
         <TableCell>{date_entered}</TableCell>
         <TableCell>{source}</TableCell>
-        <TableCell align="center">{documents ? 'Yes' : 'No'}</TableCell>
+        <TableCell align="center">{documents}</TableCell>
 
         <TableCell>
           <Label color={(status === 'Open' && 'error') || 'success'}>{status}</Label>

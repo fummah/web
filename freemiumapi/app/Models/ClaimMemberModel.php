@@ -10,4 +10,16 @@ class ClaimMemberModel extends Model
     use HasFactory;
      protected $table = "member";
     public $timestamps = false;
+    protected $fillable = [
+        'client_id', 
+        'policy_number', 
+        'first_name', 
+        'surname', 
+        'email', 
+        'id_number', 
+        'scheme_number', 
+        'medical_scheme', 
+        'entered_by',
+    
+    ];
 }

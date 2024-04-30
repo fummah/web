@@ -15,6 +15,8 @@ import ListItemText from '@mui/material/ListItemText';
 
 import useAxiosFetch from 'src/hooks/use-axios';
 
+import QueryDrawer from 'src/drawers/add_query';
+
 import Error from 'src/components/response/error';
 import ChatBox from 'src/components/response/chat';
 import Loader from 'src/components/response/loader';
@@ -41,15 +43,14 @@ export default function ClaimDetails()
     setDocuments(dataClaim.documents);   
     setNotes(dataClaim.notes);  
     setDoctors(dataClaim.doctors);
-    setItems(myitems(dataClaim.claim));  
-    console.log(dataClaim);
+    setItems(myitems(dataClaim.claim)); 
+    localStorage.removeItem('EXTERNALCLAIM');
     }   
    // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [dataClaim]);  
 
    const myitems = (claim) => {
     const i =  [
-      { key: '1', label: 'Claim Number',  children: claim.claim_number, },
       { key: '2', label: 'Policy Number', children: claim.policy_number, },
       { key: '3', label: 'Date Entered', children: claim.date_entered, },
       { key: '4', label: 'Medical Scheme', children: claim.medical_scheme, },
@@ -60,13 +61,14 @@ export default function ClaimDetails()
       { key: '9', label: 'Scheme Amount', children: claim.scheme_paid,},
       { key: '10', label: 'Member Portion', children: claim.gap,},
       { key: '11', label: 'Service Date', children: claim.Service_Date,},
-      { key: '12', label: 'Status', children: claim.Open,},
     ];
     return i;
    };
   
   return (
     <>
+       <QueryDrawer myvariant="outlined" mycolor="success" mytext="Get Help" plan={1} claim_id={claim_id}/> 
+    <Divider/>
   <Descriptions title="Claim Information" items={items}/>
   {isLoadingClaim?<Loader/>:null}
   {isErrorClaim?<Error mymessage={dataClaim.message}/>:null}

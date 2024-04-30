@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DoctorsModel extends Model
+class FeedbackModel extends Model
 {
     use HasFactory;
-     protected $table = "doctors";
+     protected $table = "feedback";
     public $timestamps = false;
     protected $fillable=[
-'practice_number',
 'claim_id',
-'entered_by',
+'description',
+'owner',
     ];
 }

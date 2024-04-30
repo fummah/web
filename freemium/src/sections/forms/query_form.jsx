@@ -60,6 +60,7 @@ const AddQueryForm = React.memo(({claim_id}) => {
     {
       setPostData(getFormValues());   
       setFetchBtnClicked(false);  
+      
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchBtnClicked]);   
@@ -69,7 +70,7 @@ const AddQueryForm = React.memo(({claim_id}) => {
     setCategory(event.target.value);
      
   };
-
+  console.log(data); 
   const HandleAddQuery = (e) =>{
  setFetchBtnClicked(true);
  e.preventDefault();

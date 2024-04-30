@@ -16,6 +16,7 @@ try{
     $data=$control->viewSingleClaim($claim_id);
     $claim_status = $data["Open"];
     $sys_username = $data["username"];
+    $claim_number1 = (int)$data["claim_number1"];
     if($username==$sys_username || $control->isTopLevel())
     {
 
@@ -65,6 +66,12 @@ $isreason=$_POST['isreason'];
     {
         die("Please select the provider");
     }
+    
+        if($claim_number1>0)
+        {
+            $control->callFreemiumNotes($claim_number1,$notes);
+        }
+    
      if($isreason=="no" || $isreason=="yes")
     {
 if($isreason=="yes" && $reason_id==0)

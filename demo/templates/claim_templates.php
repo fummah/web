@@ -68,6 +68,7 @@ function claim_header($data,$control,$username)
     $control->sla=(int)$data["sla"];
     $start_date=$data["Service_Date"];
     $end_date=$data["end_date"];
+    $category_type= $data["category_type"];
     $myemail=$control->member_email;
 
     $user=$control->viewUser($control->owner_name);
@@ -152,7 +153,7 @@ function claim_header($data,$control,$username)
                     <div class=\"col-md-4\">
                         <b>$icd10_status</b>
                     </div> <div class=\"col-md-4\">
-                        Claim Number : <b>$control->claim_number</b> $qa_status
+                        Claim Number : <b<b uk-tooltip=\"title: $category_type; pos: top-right\" style='color: #00b3ee'>$control->claim_number</b> $qa_status
                     </div>
                     <div class=\"col-md-4\">
                         Date Opened/Closed : <b style=\"color: red\">$current_status $date_reopened_status</b>

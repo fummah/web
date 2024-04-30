@@ -26,7 +26,7 @@ export default function AppView() {
 const [totalqueries, setTotalqueries] = useState(0);
 const [totalDocs, setTotalDocs] = useState(0);
 const [totalswitchclaims, setTotalswitchclaims] = useState(0);
-const [totalFaqs, setFaqs] = useState(0);
+/* const [totalFaqs, setFaqs] = useState(0); */
 const [totalBlogs, setBlogs] = useState(0);
 const [trail, setTrail] = useState([]);
 const [switchclaims, setSwitchclaims] = useState([]);
@@ -41,10 +41,10 @@ useEffect(() => {
     {
       
       setTotalqueries(dataDashboard.total_query);
-      setFaqs(dataDashboard.total_faq);
+      /* setFaqs(dataDashboard.total_faq); */
       setBlogs(dataDashboard.total_blog);
       setTotalswitchclaims(dataDashboard.total_switch_claims.original.length);
-      setTrail([...dataDashboard.trail, ...switchTrail(dataDashboard.total_switch_claims.original)]);
+      setTrail(([...dataDashboard.trail, ...switchTrail(dataDashboard.total_switch_claims.original)]).sort(sortByDateDescending));
       setSwitchclaims([dataDashboard.total_switch_claims.original]); 
       setUser(dataDashboard.user);
       setBenefit(dataDashboard.benefit);
@@ -68,6 +68,8 @@ const newTrail = arr.map(item => ({
 }));
 return newTrail;
     }
+    const  sortByDateDescending = (a, b) => new Date(b.date_entered) - new Date(a.date_entered);
+  
   
     const getGraph2 = (ccsGrouperDescArray=[]) =>{    
       const groupedArray = ccsGrouperDescArray.reduce((acc, curr) => {
@@ -129,8 +131,8 @@ return newTrail;
 
         <Grid xs={12} sm={6} md={3} ref={ref2}>
           <AppWidgetSummary
-            title="FAQs"
-            total={totalFaqs}
+            title="Uploaded Files"
+            total={totalDocs}
             color="warning"
             icon={<img alt="icon" src="/assets/icons/glass/ic_claim.png" />}
           />
@@ -153,10 +155,10 @@ return newTrail;
             count={totalDocs}
             chart={{
               series: [
-                { label: 'Correct', value: 0 },
-                { label: 'Incorrect', value: 0 },
-                { label: 'Possibly Correct', value: benefit?.correct },
-                { label: 'Possibly Incorrect', value: benefit?.incorrect },
+                { label: 'Correct', value: benefit?.correct },
+                { label: 'Incorrect', value: benefit?.incorrect },
+                { label: 'Possibly Correct', value: benefit?.posscorrect },
+                { label: 'Possibly Incorrect', value: benefit?.possincorrect },
               ],
             }}
           />         
@@ -164,7 +166,7 @@ return newTrail;
 
         <Grid xs={12} md={6} lg={4}>
           <AppCurrentVisits
-            title="Diagnosis Groups"
+            title="Conditions"
             count={graph2.length}
             chart={{
               series: graph2,

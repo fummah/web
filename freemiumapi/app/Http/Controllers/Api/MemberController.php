@@ -139,10 +139,11 @@ public function verifyEmail(Request $request)
     $total_queries = QueryModel::where('user_id','=',$authuser->id)->count();
      $total_faq = FaqModel::count(); 
      $total_blog = BlogModel::count(); 
-            $benefit = $this->countBenefit($authuser->id);
+            
             $doc_count = $this->getQueryDocument($authuser->id);
     $total_switch_claims = $c->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium.php",0,$authuser->email,$authuser->scheme_number,$authuser->id_number);
     $trail = TrailModel::where('user_id','=',$authuser->id)->get();
+    $benefit = $this->countBenefit($authuser->id,$total_switch_claims);
     return response()->json(['message' => 'Records Return','total_query'=>$total_queries,
     'total_faq'=>$total_faq,'total_blog'=>$total_blog,'total_switch_claims'=>$total_switch_claims,'trail'=>$trail,'user'=>$authuser,'benefit'=>$benefit,'doc_count'=>$doc_count], 200);
        }
@@ -180,22 +181,14 @@ public function verifyEmail(Request $request)
         return response()->json(['message' => 'Internal Error',], 500);
     }
      }
-     private function countBenefit($user_id)
+     private function countBenefit($user_id,$arr=[])
      {
-        $txCount = DocumentLineModel::join('freemium_doc_queries as d', 'freemium_doc_lines.doc_query_id', '=', 'd.id')
-      ->where('d.user_id', $user_id)
-      ->distinct('d.user_id')
-      ->count('d.user_id');
-  if($txCount>0)
-  {
-     $data['correct'] = $txCount;
+        
+     $data['correct'] = 1;
      $data['incorrect'] = 0;
-  }
-  else
-  {
-     $data['correct'] = 0;
-     $data['incorrect'] = 1;
-  }
+     $data['posscorrect'] = 1;
+     $data['possincorrect'] = 0;
+ 
       return $data;
      }
 

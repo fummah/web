@@ -29,6 +29,14 @@ const SwipeableTemporaryDrawer = React.memo(({ myvariant, mycolor, mytext,plan,c
     ) {
       return;
     }
+    if(plan===null)
+    {
+      localStorage.setItem('EXTERNALCLAIM', claim_id);
+    }
+    else{
+      localStorage.removeItem('EXTERNALCLAIM');
+    }
+    
     setState({ ...state, [anchor]: open });
   };
 

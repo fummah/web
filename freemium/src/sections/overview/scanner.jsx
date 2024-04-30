@@ -131,7 +131,7 @@ const Scanner = ({lines,document_name,mymodal}) => {
         "category":"---",
         "document":documents,
         "description":valueDescription.current.value,
-        "lines":JSON.stringify(dataSource)
+        "lines":JSON.stringify([])
       };
       console.log(obj);
       return obj;

@@ -1166,6 +1166,15 @@ group_disciplinecode, sub_disciplinecode_description, disciplinecode_id, email, 
         return (int)$stmt->execute();
 
     }
+    function insertFreemiumNotes($query_id,$description,$entered_by)
+    {
+        $stmt=$this->conn->prepare("INSERT INTO freemium_query_notes(query_id,description,entered_by) VALUES(:query_id,:description,:entered_by)");
+        $stmt->bindParam(':query_id', $query_id, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $description, PDO::PARAM_STR);
+        $stmt->bindParam(':entered_by', $entered_by, PDO::PARAM_STR);
+        return (int)$stmt->execute();
+
+    }
     function updateNote($note_id,$desc)
     {
         $stmt1 = $this->conn->prepare('UPDATE intervention SET intervention_desc=:note WHERE intervention_id=:id');

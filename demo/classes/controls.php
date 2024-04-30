@@ -1325,6 +1325,10 @@ public function callSFTPNegative()
     {
         return $this->db_action->getFeedbackQA($dat,$username);
     }
+    function callFreemiumNotes($query_id,$description)
+    {
+        return $this->db_action->insertFreemiumNotes($query_id,$description,$this->loggedAs());
+    }
    function callupdateFeedbackQA($id,$action_plan,$comment)
     {
         return $this->db_action->updateFeedbackQA($id,$action_plan,$comment);

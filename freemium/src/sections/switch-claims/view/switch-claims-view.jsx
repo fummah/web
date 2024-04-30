@@ -48,7 +48,15 @@ export default function ClaimsPage() {
     if(dataClaims && statusCodeClaims===200)
     { 
       setClaims(dataClaims.switch.original); 
-      setUser(dataClaims.user);   
+      setUser(dataClaims.user);
+      const xclaim = localStorage.getItem('EXTERNALCLAIM');
+      if(xclaim!==null)
+      {
+        const urll = `/claim-details/${xclaim}/external`;
+        router.push(urll);
+      }
+      
+       
     }   
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataClaims]); 

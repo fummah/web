@@ -168,7 +168,7 @@ export default function QueryPage() {
                       category={row.category}
                       date_entered={row.date_entered}
                       source={row.source}
-                      documents={row.status}
+                      documents={row.isdoc}
                       status={row.status}                      
                       selected={selected.indexOf(row.id) !== -1}
                       handleClick={(event) => handleClick(event, row.id)}

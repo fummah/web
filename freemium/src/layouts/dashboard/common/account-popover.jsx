@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import Popover from '@mui/material/Popover';
@@ -19,15 +20,13 @@ const MENU_OPTIONS = [
   {
     label: 'Home',
     icon: 'eva:home-fill',
+    link:'/',
   },
   {
     label: 'Profile',
     icon: 'eva:person-fill',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
+    link:'/profile',
+  },  
 ];
 
 // ----------------------------------------------------------------------
@@ -106,7 +105,10 @@ export default function AccountPopover() {
 
         {MENU_OPTIONS.map((option) => (
           <MenuItem key={option.label} onClick={handleClose}>
+           
+            <Link variant="subtitle2" href={option.link} underline="hover">
             {option.label}
+        </Link>
           </MenuItem>
         ))}
 

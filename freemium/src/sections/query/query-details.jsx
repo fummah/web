@@ -30,7 +30,7 @@ export default function QueryDetails()
   const [documents, setDocuments] = React.useState([]);
   const [notes, setNotes] = React.useState([]);
   const [items, setItems] = React.useState([]);
-
+  
   const { isLoading: isLoadingQuery, isError: isErrorQuery, data: dataQuery } = useAxiosFetch('getquery','GET',{'query_id':query_id}); 
 
   React.useEffect(() => {
@@ -59,6 +59,7 @@ export default function QueryDetails()
   
   return (
     <>
+ 
   <Descriptions title="Query Information" items={items}/>
   {isLoadingQuery?<Loader/>:null}
         {isErrorQuery?<Typography variant="h6">There is an error</Typography>:null}
