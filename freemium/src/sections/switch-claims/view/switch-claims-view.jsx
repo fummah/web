@@ -42,12 +42,29 @@ export default function ClaimsPage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [user, setUser] = useState({});
   const [tips,setTips]=useState([]);
+  const [title,setTitle]=useState("Identified Claims");
   const { isLoading: isLoadingClaims, isError: isErrorClaims, data: dataClaims,statusCode:statusCodeClaims } = useAxiosFetch('getclaims','GET', {'id':account.user.id,'email':account.user.email,"claim_id":0,'type':'external','scheme_number':account.user.scheme_number,'id_number':account.user.id_number});
 
   useEffect(() => {
     if(dataClaims && statusCodeClaims===200)
     { 
-      setClaims(dataClaims.switch.original); 
+      const urlParams = new URLSearchParams(window.location.search);
+      let poss = urlParams.get('poss');
+      if (poss) {    
+        poss = parseFloat(poss); 
+        if(poss>1) 
+        {
+setTitle("Identified Claims | Possibly Incorrect");
+        }  
+        else{
+          setTitle("Identified Claims | Possibly Correct");
+        }
+        setClaims(dataClaims.switch.original.qq.filter(item => item.poss === poss)); 
+      }
+      else{
+        setClaims(dataClaims.switch.original.qq);
+      }
+      
       setUser(dataClaims.user);
       const xclaim = localStorage.getItem('EXTERNALCLAIM');
       if(xclaim!==null)
@@ -137,7 +154,7 @@ export default function ClaimsPage() {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Identified Claims</Typography>
+        <Typography variant="h4">{title}</Typography>
         {isLoadingClaims?<Loader/>:null}
         
       </Stack>

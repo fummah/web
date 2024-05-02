@@ -26,35 +26,37 @@ export default function AppView() {
 const [totalqueries, setTotalqueries] = useState(0);
 const [totalDocs, setTotalDocs] = useState(0);
 const [totalswitchclaims, setTotalswitchclaims] = useState(0);
-/* const [totalFaqs, setFaqs] = useState(0); */
+const [posscorrect, setPoscorrect] = useState([]); 
+const [possincorrect, setPosincorrect] = useState([]); 
 const [totalBlogs, setBlogs] = useState(0);
 const [trail, setTrail] = useState([]);
 const [switchclaims, setSwitchclaims] = useState([]);
 const [graph2, setGraph2] = useState([]);
 const [user, setUser] = useState({});
-const [benefit, setBenefit] = useState(null);
 const { isLoading: isLoadingDashboard, isError: isErrorDashboard, data: dataDashboard,statusCode:statusCodeDashboard } = useAxiosFetch('getdashboard','GET', {});
 
 useEffect(() => {
  
     if(dataDashboard && statusCodeDashboard===200)
     {
-      
+      console.log("2024"); 
+      console.log(dataDashboard); 
       setTotalqueries(dataDashboard.total_query);
-      /* setFaqs(dataDashboard.total_faq); */
+      setPoscorrect(dataDashboard.total_switch_claims.original.graph.posscorrect); 
+      setPosincorrect(dataDashboard.total_switch_claims.original.graph.possincorrect);
       setBlogs(dataDashboard.total_blog);
-      setTotalswitchclaims(dataDashboard.total_switch_claims.original.length);
-      setTrail(([...dataDashboard.trail, ...switchTrail(dataDashboard.total_switch_claims.original)]).sort(sortByDateDescending));
-      setSwitchclaims([dataDashboard.total_switch_claims.original]); 
+      setTotalswitchclaims(dataDashboard.total_switch_claims.original.qq.length);
+      setTrail(([...dataDashboard.trail, ...switchTrail(dataDashboard.total_switch_claims.original.qq)]).sort(sortByDateDescending));
+      setSwitchclaims([dataDashboard.total_switch_claims.original.qq]); 
       setUser(dataDashboard.user);
-      setBenefit(dataDashboard.benefit);
       setTotalDocs(dataDashboard.doc_count);
-      const ccsGrouperDescArray = dataDashboard.total_switch_claims.original.flatMap(item => item.claim_lines.map(line => line.ccs_grouper_desc));
+      const ccsGrouperDescArray = dataDashboard.total_switch_claims.original.qq.flatMap(item => item.claim_lines.map(line => line.ccs_grouper_desc));
       setGraph2(getGraph2(ccsGrouperDescArray)); 
       // Set cookie for the subdomain
      document.cookie = `first_name=${dataDashboard.user.first_name}; Domain=.freemium.meclaimassist.co.za; path=/`;
      document.cookie = `last_name=${dataDashboard.user.last_name}; Domain=.freemium.meclaimassist.co.za; path=/`;
-     document.cookie = `email=${dataDashboard.user.email}; Domain=.freemium.meclaimassist.co.za; path=/`;      
+     document.cookie = `email=${dataDashboard.user.email}; Domain=.freemium.meclaimassist.co.za; path=/`;    
+      
     }   
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataDashboard]); 
@@ -152,13 +154,13 @@ return newTrail;
           <AppConversionRates
             title="Benefit Usage"
             subheader="where Benefits are paid from"
-            count={totalDocs}
+            count={totalswitchclaims}
+            posscorrect={posscorrect}
+            possincorrect={possincorrect}
             chart={{
               series: [
-                { label: 'Correct', value: benefit?.correct },
-                { label: 'Incorrect', value: benefit?.incorrect },
-                { label: 'Possibly Correct', value: benefit?.posscorrect },
-                { label: 'Possibly Incorrect', value: benefit?.possincorrect },
+                { label: 'Possibly Correct', value: posscorrect.length },
+                { label: 'Possibly Incorrect', value: possincorrect.length },
               ],
             }}
           />         

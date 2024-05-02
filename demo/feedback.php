@@ -22,8 +22,10 @@ $mail = new PHPMailer(true);
     $claim_id=(int)$_POST['claim_id'];
      $claim_data=$control->viewSingleClaim($claim_id);
         $sys_username = $claim_data["username"];
-     $claim_number=$claim_data["claim_number"];
-     $client_email=$claim_data["client_email"];
+     $claim_number=$claim_data["claim_number"];    
+     $client_name=$claim_data["client_name"];
+     $client_email=$client_name=="Cinagi"?"admin@cinagi.co.za":$claim_data["client_email"];
+
      $user_data = $control->viewUser($sys_username);
     $role="claims_specialist";
     $sentoemail=$claim_data["email"];

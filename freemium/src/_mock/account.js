@@ -11,7 +11,6 @@ if(localStorage.getItem("USER") !== null){
   email: user.email,
   photoURL: '/assets/images/avatars/avatar_25.jpg',
   'user':user,
-  };
-  console.log("Testing 2");  
+  };  
 }
 export const account = obj;

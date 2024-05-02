@@ -15,7 +15,7 @@ import FormUpload from './upload';
 
 // ----------------------------------------------------------------------
 
-export default function AppConversionRates({ title, subheader, chart, count, ...other }) {
+export default function AppConversionRates({ title, subheader, chart, count,posscorrect,possincorrect, ...other }) {
   const router = useRouter();
   const { colors, series, options } = chart;
 
@@ -34,7 +34,7 @@ export default function AppConversionRates({ title, subheader, chart, count, ...
     },
     plotOptions: {
       bar: {
-        horizontal: true,
+        horizontal: false,
         barHeight: '28%',
         borderRadius: 2,
       },
@@ -48,6 +48,9 @@ export default function AppConversionRates({ title, subheader, chart, count, ...
   const handleFilesBtn = () =>{
     router.push(`/documents`);
   }
+  const handleGraphBtn = (poss=1) =>{
+    router.push(`/switch-claims?poss=${poss}`);
+  }
 
   return (
     <Card {...other}>
@@ -55,7 +58,10 @@ export default function AppConversionRates({ title, subheader, chart, count, ...
       
       <Box sx={{ mx: 3 }}>
       {count>0?
-      <><Button type="dashed" onClick={handleFilesBtn} style={{marginTop:10}}>Uploaded Files</Button>
+      <>
+      <Button type="dashed" onClick={handleFilesBtn} style={{marginTop:10}}>Uploaded Files</Button> 
+      <Button type="dashed" onClick={() => handleGraphBtn(1)} style={{marginTop:10, marginLeft:10,borderColor: '#00A76F',color: '#00A76F'}}>({posscorrect.length}) Possibly Correct</Button> 
+      <Button type="dashed" onClick={() => handleGraphBtn(2)} style={{marginTop:10, marginLeft:10,borderColor: '#00A76F',color: '#00A76F'}}>({possincorrect.length}) Possibly Incorrect</Button>
         <Chart
           dir="ltr"
           type="bar"
@@ -63,7 +69,7 @@ export default function AppConversionRates({ title, subheader, chart, count, ...
           options={chartOptions}
           width="100%"
           height={364}
-        /></>: <FormUpload/>
+        /></>: <><p className="ant-upload-hint">Insuffient Information</p><FormUpload/></>
         }
       </Box>
     </Card>
@@ -73,6 +79,8 @@ export default function AppConversionRates({ title, subheader, chart, count, ...
 AppConversionRates.propTypes = {
   chart: PropTypes.object,
   count: PropTypes.number,
+  posscorrect: PropTypes.any,
+  possincorrect: PropTypes.any,
   subheader: PropTypes.string,
   title: PropTypes.string,
 };
