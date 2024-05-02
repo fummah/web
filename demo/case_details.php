@@ -111,7 +111,7 @@ if(!isset($_POST["quick_view"])){
     }
     .inaction{
         background-color: lightblue !important;
-        padding 5px !important;
+        padding :5px !important;
         text-decoration: none !important;
         font-weight: bold !important;
     }
