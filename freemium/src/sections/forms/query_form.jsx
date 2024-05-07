@@ -15,6 +15,8 @@ import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import FormControl from '@mui/material/FormControl';
 
+import { useRouter } from 'src/routes/hooks';
+
 import useAxiosFetch from 'src/hooks/use-axios';
 
 import { account } from 'src/_mock/account';
@@ -44,6 +46,7 @@ const onFinish = (values) => {
 
 
 const AddQueryForm = React.memo(({claim_id}) => {
+  const router = useRouter();
   const [category, setCategory] = useState('');
   const [postData, setPostData] = useState({});
   const [fetchBtnClicked, setFetchBtnClicked] = useState(false);
@@ -59,18 +62,27 @@ const AddQueryForm = React.memo(({claim_id}) => {
     if(fetchBtnClicked)
     {
       setPostData(getFormValues());   
-      setFetchBtnClicked(false);  
-      
+      setFetchBtnClicked(false);      
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchBtnClicked]);   
  
+    useEffect(() => {
+        if(data && statusCode===200)
+        {
+  setTimeout(()=>{
+    router.reload();
+  },2000);
+        }
+        
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [data]);
   
   const handleChange = (event) => {
     setCategory(event.target.value);
      
   };
-  console.log(data); 
+
   const HandleAddQuery = (e) =>{
  setFetchBtnClicked(true);
  e.preventDefault();
@@ -122,6 +134,8 @@ const AddQueryForm = React.memo(({claim_id}) => {
         </MenuItem>
         <MenuItem value="Chronic">Chronic</MenuItem>
         <MenuItem value="Benefit Help">Benefit Help</MenuItem>
+        <MenuItem value="Claim Shortfall">Claim Shortfall</MenuItem>
+        <MenuItem value="Pre-auth">Pre-auth</MenuItem>
         <MenuItem value="Others">Others</MenuItem>
       </Select>
           </FormControl>

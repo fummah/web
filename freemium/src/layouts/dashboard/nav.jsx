@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useMemo,useState,useEffect } from 'react';
 
 import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -119,8 +120,9 @@ export default function Nav({ openNav, onCloseNav }) {
         },
       }}
     >
-  
+  <Link component={RouterLink} href="/" sx={{ display: 'contents' }}>
 <img src={logo1} alt="Logo" height="auto" width="auto" />
+</Link>
       {renderAccount}
 
       {renderMenu}

@@ -32,7 +32,7 @@ array_push($arr,$mar);
             }
             return $arr;
         }
-        catch (Exception $e)
+        catch (\Exception $e)
         {
             return $e->getMessage();
         }

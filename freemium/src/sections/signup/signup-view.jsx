@@ -58,18 +58,18 @@ export default function SignUpView() {
     setMedicaScheme(event.target.value);
   };
 
-  const { isError: isErrorScheme, data: dataScheme } = useAxiosFetch('getschemes'); 
+  const { isError: isErrorScheme, data: dataScheme,statusCode: statusCodeScheme } = useAxiosFetch('getschemes'); 
 
    const { isLoading: isLoadingAddButton, isError: isErrorAddButton, data: dataAddButton,statusCode: statusCodeSignup } = useAxiosFetch('adduser','POST',postData,signupBtnClicked);
 
    useEffect(() => {
-    if(dataScheme && statusCodeSignup===200)
+    if(dataScheme && statusCodeScheme===200)
     {
-      setSchemes(dataScheme.schemes);       
+      setSchemes(dataScheme.schemes); 
     }   
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataScheme]);   
-
+   
     useEffect(() => {
     if(signupBtnClicked)
     {

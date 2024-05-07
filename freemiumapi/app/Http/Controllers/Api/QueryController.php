@@ -57,7 +57,7 @@ class QueryController extends Controller
     }
     $service_date = $this->isValidDate($service_date)?$service_date:date('1970-01-01');
         $category = $data['category'];
-        $open=$category=="Chronic" || $category=="Benefit Help"?1:0;
+        $open=$category=="Others"?4:1;
         $claim = $this->createClaim($user->first_name,$user->last_name,$user->email,$user->id_number,$user->scheme_number,$user->scheme_name,$charged_amnt,$scheme_paid,$gap,$query->id,$open,$service_date,$category);
         $this->createPatient($claim["id"],$user->first_name." ".$user->last_name);
         $this->saveTrail($user->id,"New Query Loaded",$user->id);
@@ -90,10 +90,10 @@ class QueryController extends Controller
             DocumentsModel::create([
                 'claim_id'=>$claim["id"],
                 'doc_description'=> $request->document,
-                'doc_type'=>"",
+                'doc_type'=>"pdf",
                 'randomNum'=>"",
                 'uploaded_by'=>"System", 
-                'doc_size'=>""    
+                'doc_size'=>"678"    
             ]);
             $this->saveTrail($user->id,"Query Document Loaded",$user->id);
         }
@@ -235,7 +235,10 @@ $doctor = DoctorDetailsModel::create([
            $user = $request->user();
            $mainarr=[];
 
-        $queries = QueryModel::where('user_id','=',$user->id)->get();
+        $queries = QueryModel::where('user_id','=',$user->id)->orderByDesc('id')
+        ->join('claim', 'freemium_queries.id', '=', 'claim.claim_number1')
+        ->select('freemium_queries.*', 'claim.Open')
+        ->get();
         foreach($queries as $query)
         {
 $id=$query['id'];
@@ -243,7 +246,7 @@ $user_id=$query['user_id'];
 $description=$query['description'];
 $category=$query['category'];
 $source=$query['source'];
-$status=$query['status'];
+$status=(int)$query['Open']>0?"Open":"Closed";
 $date_entered=$query['date_entered'];
 $isdoc = count($this->getFile($id))>0?"Yes":"No";
 array_push($mainarr,array("id"=>$id,"user_id"=>$user_id,"description"=>$description,"category"=>$category,"source"=>$source,"status"=>$status,"date_entered"=>$date_entered,'isdoc'=>$isdoc));
@@ -278,6 +281,18 @@ array_push($mainarr,array("id"=>$id,"user_id"=>$user_id,"description"=>$descript
     }
     }
 
+    public function getClaimDetails($query_id)
+    {
+        try
+        {
+        $claim = ClaimModel::where('claim_number1','=',$query_id)->first();
+         return $claim;
+        }
+    catch(\Exception $e){
+        return null;
+    }
+    }
+
      public function getQuery(Request $request)
     {
         try
@@ -287,11 +302,12 @@ array_push($mainarr,array("id"=>$id,"user_id"=>$user_id,"description"=>$descript
             ]);
             $c = new ClaimsController();
         $query = QueryModel::find($data['query_id']);
+        $claim = $this->getClaimDetails((int)$data['query_id']);
         $dd = $c->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium2.php",$query["switch_claim_id"]);
         $documents = FreemiumDocumentsModel::where('associated_id','=',$data['query_id'])->where('_type','=','query')->get();
         $notes = QueryNotesModel::where('query_id','=',$data['query_id'])->get();
         //$lines = QueryLineModel::where('query_id','=',$data['query_id'])->get();
-         return response()->json(['message' => 'Records Successfully Retrieved','query' => $query,'documents'=>$documents,'notes'=>$notes,'doctors'=>$dd], 200);
+         return response()->json(['message' => 'Records Successfully Retrieved','query' => $query,'claim'=>$claim,'documents'=>$documents,'notes'=>$notes,'doctors'=>$dd], 200);
         }
     catch(\Exception $e){
         return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);

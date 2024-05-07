@@ -36,22 +36,23 @@ export default function QueryDetails()
   React.useEffect(() => {
    if(dataQuery)
    {
+    console.log(dataQuery);
     setDocuments(dataQuery.documents);   
     setNotes(dataQuery.notes);  
-    setItems(myitems(dataQuery.query)); 
+    setItems(myitems(dataQuery.query,dataQuery.claim));
     setDoctors(dataQuery.doctors?.original?.doctors); 
     setDense(false);
     }   
    // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [dataQuery]);  
 
-   const myitems = (query) => {
+   const myitems = (query,claim) => {
     const i =  [
-      { key: '1', label: 'Category',  children: query.category, },
-      { key: '2', label: 'Source', children: query.source, },
-      { key: '3', label: 'Status', children: query.status, },
+      { key: '2', label: 'Ref.No', children: claim?.claim_number, },
+      { key: '1', label: 'Category',  children: query.category, },      
+      { key: '3', label: 'Status', children: claim?.Open?"Open":"Closed", },
       { key: '4', label: 'Date Entered', children: query.date_entered, },
-      { key: '5', label: 'Assigned To', children: query.assigned_to,},
+      { key: '5', label: 'Assigned To', children: claim?.username,},
       { key: '6', label: 'Description', children: query.description,},
     ];
     return i;
