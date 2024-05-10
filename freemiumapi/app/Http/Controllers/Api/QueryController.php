@@ -21,6 +21,9 @@ use App\Models\DoctorsModel;
 use App\Models\ClaimLineModel;
 use App\Models\FeedbackModel;
 use App\Models\PatientModel;
+use App\Models\MemberModel;
+use App\Models\FreemiumFeedbackModel;
+use App\Notifications\EmailNotification;
 use App\Http\Controllers\Api\ClaimsController;
 
 class QueryController extends Controller
@@ -156,7 +159,8 @@ class QueryController extends Controller
     }
     private function createClaim($first_name,$surname,$email,$id_number,$scheme_number,$medical_scheme,$charged_amnt,$scheme_paid,$gap,$query_id,$open=1,$service_date="",$category="")
     {
-        $member=$this->createMember($first_name,$surname,$email,$id_number,$scheme_number,$medical_scheme);
+        $this->createMember($first_name,$surname,$email,$id_number,$scheme_number,$medical_scheme);
+        $member = ClaimMemberModel::where('email','=',$email)->where('client_id','=',4)->first();
         $claim = ClaimModel::create([
             'member_id'=>$member->member_id, 
             'claim_number'=>$this->createClaimNumber($member->member_id), 
@@ -399,5 +403,34 @@ array_push($mainarr,array("id"=>$id,"user_id"=>$user_id,"description"=>$descript
              'trail_name' => $trail_name,
              'entered_by' => $entered_by,
          ]);
+    }
+
+    public function addFeedback(Request $request)
+    {
+        try
+        {
+            $data = $request->validate([
+                'feedbackTxt' => 'required|string|min:2',
+            ]);
+            $feedbacktxt = $data['feedbackTxt'];
+            $user = $request->user(); 
+            $name = $user->first_name;
+            $last_name = $user->last_name;
+            FreemiumFeedbackModel::create([
+                'description'=>$feedbacktxt,
+                'entered_by'=>$name,
+            ]);
+            $userx = MemberModel::find(1);   
+               $inar=[
+                'data'=>"Feedback from Freemium User<br><br><b>".$feedbacktxt."</b><br><br>From : <b>".$name." ".$last_name."</b>",
+                'hid'=>""    
+                ];
+              $userx->notify(new EmailNotification($inar));
+                 
+         return response()->json(['message' => 'Thank you for your feedback!!!','feedback' => $feedbacktxt,"user"=>$user], 200);
+        }
+    catch(\Exception $e){
+        return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);
+    }
     }
 }

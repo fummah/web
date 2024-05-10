@@ -13,11 +13,10 @@ use Illuminate\Support\Facades\Hash;
 use App\Notifications\EmailNotification;
 use App\Models\MemberModel;
 use App\Models\TrailModel;
-use App\Models\ClaimModel;
 use App\Models\QueryModel;
 use App\Http\Controllers\Api\ClaimsController;
 use App\Models\SchemeModel;
-use App\Models\DocumentLineModel;
+use App\Models\LogsModel;
 use App\Models\QueryDocumentModel;
 use App\Models\FaqModel;
 use App\Models\BlogModel;
@@ -142,8 +141,8 @@ public function verifyEmail(Request $request)
             
             $doc_count = $this->getQueryDocument($authuser->id);
     $total_switch_claims = $c->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium.php",0,$authuser->email,$authuser->scheme_number,$authuser->id_number);
-    $trail = TrailModel::where('user_id','=',$authuser->id)->get();
     $benefit = $this->countBenefit($authuser->id,$total_switch_claims);
+    $trail = TrailModel::where('user_id','=',$authuser->id)->get();
     return response()->json(['message' => 'Records Return','total_query'=>$total_queries,
     'total_faq'=>$total_faq,'total_blog'=>$total_blog,'total_switch_claims'=>$total_switch_claims,'trail'=>$trail,'user'=>$authuser,'benefit'=>$benefit,'doc_count'=>$doc_count], 200);
        }
@@ -181,7 +180,7 @@ public function verifyEmail(Request $request)
         return response()->json(['message' => 'Internal Error',], 500);
     }
      }
-     private function countBenefit($user_id,$arr=[])
+       private function countBenefit($user_id,$arr=[])
      {
         
      $data['correct'] = 1;
@@ -199,7 +198,7 @@ public function verifyEmail(Request $request)
         $data = $request->validated();    
         $user = $request->user(); 
         //$user = MemberModel::find($authuser->id);
-     
+     /*
          $user->update([
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
@@ -207,7 +206,16 @@ public function verifyEmail(Request $request)
                 'scheme_name' => $data['scheme_name'],
                 'scheme_number' => $data['scheme_number'],
             ]);
-        return response()->json(['message' => 'Successfully Updated','user'=>$user], 200);
+            */
+            LogsModel::create([
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'id_number' => $data['id_number'],
+                'email'=>$user->email,
+                'scheme_name' => $data['scheme_name'],
+                'scheme_number' => $data['scheme_number'],
+            ]);
+        return response()->json(['message' => 'Record successfully saved waiting for verification','user'=>$user], 200);
         }
     catch(\Exception $e){
         return response()->json(['message' => 'Internal Error',], 500);

@@ -28,8 +28,8 @@ Route::middleware('guest:sanctum')->group(function(){
     Route::post('/login', [MemberController::class,'login'])->name('login');
     Route::post('/verify-email', [MemberController::class,'verifyEmail'])->name('verify_email');
     Route::post('/updateplan', [MemberController::class,'updatePlan'])->name('update_plan');
-    Route::post('/forgot-password', [MemberController::class,'forgotPassword'])->name('forgot_password');
-    Route::post('/reset-password', [MemberController::class,'resetPassword'])->name('reset_password');
+     Route::post('/forgot-password', [MemberController::class,'forgotPassword'])->name('forgot_password');
+     Route::post('/reset-password', [MemberController::class,'resetPassword'])->name('reset_password');
 });
 
 Route::middleware('auth:sanctum')->group(function(){
@@ -46,5 +46,6 @@ Route::post('/adddocument', [QueryController::class,'addDocument'])->name('add_d
 Route::get('/getdocuments', [QueryController::class,'getDocuments'])->name('get_documents');
 Route::get('/getfaqs', [QueryController::class,'getFaq'])->name('get_faq');
 Route::get('/getblogs', [QueryController::class,'getBlog'])->name('get_blog');
+Route::post('/feedback', [QueryController::class,'addFeedback'])->name('add_feedback');
   });
   

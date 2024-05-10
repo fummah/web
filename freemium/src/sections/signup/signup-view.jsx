@@ -184,7 +184,7 @@ export default function SignUpView() {
                 />
               </Grid>
                  <Grid item xs={12} sm={6}>
-                 <FormControl sx={{ m: 1, minWidth: 240 }}>
+                 <FormControl sx={{ m: 1, minWidth: 360 }}>
                   <InputLabel id="demo-select-small-label">Medical Scheme</InputLabel>
                    <Select
         labelId="demo-select-small-label"
@@ -304,7 +304,7 @@ export default function SignUpView() {
           sx={{
             p: 5,
             width: 1,
-            maxWidth: 600,
+            maxWidth: 850,
           }}
         >
          <Logo

@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 define("access",true);
 include ("classes/controls.php");
 include ("templates/claim_templates.php");
@@ -153,11 +153,14 @@ $control=new controls();
             foreach ($control->viewActiveUsers() as $row)
             {
                 $username=$row["username"];
+            
                 $mydate=date( 'Y-m' );
 
-                $claims_value=$control->viewClaimValue($mydate,"username=:username",$username);
+                $claims_value=(double)$control->viewClaimValue($mydate,"username=:username",$username);
+                
                 $savings=$control->viewMonthlySavings($mydate,"username=:username",$username);
                 $perc=$claims_value>0?(int)round(($savings/$claims_value)*100):0;
+               $perc=$perc>100?100:$perc;
                 $alignperc=$perc*10;
                 $nummove=$alignperc+100;
                 $horsemove="margin-left:".$alignperc."px;";

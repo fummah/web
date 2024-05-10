@@ -17,6 +17,7 @@ class ClaimsController extends Controller
      public function getClaims(Request $request)
    {
     try{
+        $user = $request->user();
      if($request->type == "internal")
     {
      $claims = ClaimModel::join('member','claim.member_id','=','member.member_id')
@@ -27,9 +28,11 @@ class ClaimsController extends Controller
 }
 else
 {
-    $user = $request->user();
-    return array("switch"=>$this->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium.php",0,$request->email,$request->scheme_number,$request->id_number),"user"=>$user);
-       }
+$user = $request->user();
+    return array("switch"=>$this->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium.php",0,$user->email,$user->scheme_number,$user->id_number),"user"=>$user);
+ 
+  
+}
 }
     catch(\Exception $e){
         return response()->json(['message' => 'Internal Error : '.$e->getMessage(),], 500);

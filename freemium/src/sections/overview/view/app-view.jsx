@@ -5,10 +5,13 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
+import { useRouter } from 'src/routes/hooks';
+
 import useAxiosFetch from 'src/hooks/use-axios';
 
 import Error from 'src/components/response/error';
 import Loader from 'src/components/response/loader';
+import Feedback from 'src/components/others/feedback';
 
 import AppNewsUpdate from '../app-news-update';
 import AppOrderTimeline from '../app-order-timeline';
@@ -19,6 +22,7 @@ import AppConversionRates from '../app-conversion-rates';
 // ----------------------------------------------------------------------
 
 export default function AppView() {
+  const router = useRouter();
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const ref3 = useRef(null);
@@ -39,8 +43,7 @@ useEffect(() => {
  
     if(dataDashboard && statusCodeDashboard===200)
     {
-      console.log("2024"); 
-      console.log(dataDashboard); 
+      
       setTotalqueries(dataDashboard.total_query);
       setPoscorrect(dataDashboard.total_switch_claims.original.graph.posscorrect); 
       setPosincorrect(dataDashboard.total_switch_claims.original.graph.possincorrect);
@@ -102,6 +105,9 @@ return newTrail;
         target: () => ref3.current,
       },
     ];
+    const handleRedirect = (url) =>{
+      router.push(`/${url}`);
+    }
   return (
        <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
@@ -116,6 +122,8 @@ return newTrail;
             title="My Queries"
             total={totalqueries}
             color="success"
+            style={{cursor:'pointer'}}
+            onClick={()=>handleRedirect('query')}
             icon={<img alt="icon" src="/assets/icons/glass/ic_query.png" />}
           />
          
@@ -127,6 +135,8 @@ return newTrail;
             title="Identified Claims"
             total={totalswitchclaims}
             color="info"
+            style={{cursor:'pointer'}}
+            onClick={()=>handleRedirect('switch-claims')}
             icon={<img alt="icon" src="/assets/icons/glass/ic_request.png" />}
           />
         </Grid>
@@ -136,6 +146,8 @@ return newTrail;
             title="Uploaded Files"
             total={totalDocs}
             color="warning"
+            style={{cursor:'pointer'}}
+            onClick={()=>handleRedirect('documents')}
             icon={<img alt="icon" src="/assets/icons/glass/ic_claim.png" />}
           />
           
@@ -146,6 +158,8 @@ return newTrail;
             title="Blog Posts"
             total={totalBlogs}
             color="error"
+            style={{cursor:'pointer'}}
+            onClick={()=>handleRedirect('blog')}
             icon={<img alt="icon" src="/assets/icons/glass/ic_tips.png" />}
           />
         </Grid>
@@ -193,6 +207,7 @@ return newTrail;
         </Grid>
        
       </Grid>
+      <Feedback/>
     </Container>
     
   );
