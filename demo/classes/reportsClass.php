@@ -769,7 +769,7 @@ INNER JOIN clients as c ON b.client_id=c.client_id WHERE a.date_entered >= :dat 
     {
         try {
             global $conn;
-            $stmt = $conn->prepare('SELECT DISTINCT a.username FROM claim as a INNER JOIN users_information as b ON a.username=b.username WHERE (b.status=1 OR b.email="wanda@medclaimassist.co.za") AND Open<>2 AND '.$condition);
+            $stmt = $conn->prepare('SELECT DISTINCT a.username FROM claim as a INNER JOIN users_information as b ON a.username=b.username WHERE (b.status=1 OR b.active=1) AND Open<>2 AND '.$condition);
             $stmt->bindParam(':username', $val, PDO::PARAM_STR);
             $stmt->execute();
             return $stmt->fetchAll();
@@ -837,8 +837,7 @@ INNER JOIN clients as c ON b.client_id=c.client_id WHERE a.date_entered >= :dat 
     {
         global $conn;
         $val=!empty($client)?"AND c.client_name='".$client."'":"AND 1";
-        $val=$val." AND ".$condition;
-         
+        $val=$val." AND ".$condition;         
             $dat2 = $this->nexDate($dat);
         try {
             $stmt =  $conn->prepare('SELECT SUM(scheme_paid) as total FROM claim as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE a.date_entered >= :dat AND a.date_entered < :dat2 AND Open<>2 '.$val);
@@ -1189,6 +1188,8 @@ COUNT(claim_id) as total_claim,SUM(charged_amnt-scheme_paid) as charged FROM cla
                 $claims=$row[3];
                 $charged=$row[4];
                 $perc=$charged>0?($total_savings/$charged)*100:0;
+
+
                 $totdis+=$discount;$totscheme+=$scheme;$tottot+=$total_savings;
                 $s=$conn->prepare("SELECT COUNT(a.claim_id) as total_claims FROM claim as a INNER JOIN member as b 
 ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE a.date_entered >= :dat AND a.date_entered < :dat2 AND client_name=:name AND a.Open<>2");
@@ -1226,6 +1227,7 @@ ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id
                 $newaverage=" / ".round($averagew);
                 }
 
+
                 $average=$claims>0?$days:0;
                 $average=is_nan($average)?0:$average;
                 $tot_claims+=$claims;$totcharged+=$charged;$totperc+=$perc;$totaver+=$average;
@@ -1238,7 +1240,6 @@ ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id
             return $arrMonth;
 
         } catch (Exception $e) {
-            //echo $e;
             return "There is an error.".$e;
         }
     }
@@ -2526,11 +2527,11 @@ FROM quality_assurance as a inner JOIN claim as b ON a.claim_id=b.claim_id INNER
         }
         return $arr;
     }
-    function getUser($status=" IN (1)")
+     function getUser($status=" IN (1)")
     {
         global $conn;
         $arr=[];
-        $stmt=$conn->prepare("SELECT username FROM `users_information` where status".$status);
+        $stmt=$conn->prepare("SELECT username FROM `users_information` where status".$status." ORDER BY status DESC");
         $stmt->execute();
         foreach($stmt->fetchAll() as $row)
         {
@@ -2774,6 +2775,26 @@ INNER JOIN clients as c ON b.client_id=c.client_id $op WHERE ".$all;
     $sql->execute();
     return $sql->fetchColumn();
 }
+    function getBrokerClaims($date,$broker)
+    {
+        global $conn; 
+        $date1 = $date."-01";
+        $date2 = $this->nexDate($date1);  
+        $addd =  $broker>0?" AND w.broker_id=".$broker:"";  
+        try {              
+                $stmt=$conn->prepare('SELECT a.claim_id,b.first_name,b.surname as last_name,a.claim_number,b.email,a.Open,a.date_entered,
+                w.broker_id FROM `claim` as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN web_clients as w 
+                ON b.email=w.email WHERE w.email<>"" AND a.date_entered >=:dat AND a.date_entered <:dat2'.$addd);
+                $stmt->bindParam(':dat', $date1, PDO::PARAM_STR);
+                $stmt->bindParam(':dat2', $date2, PDO::PARAM_STR);
+                $stmt->execute();              
+            
+                return $stmt->fetchAll();           
+
+        } catch (Exception $e) {
+            return "There is an error.".$e;
+        }
+    }
     function getAAATotalPerUser($username)
 {
     global $conn;
@@ -2864,6 +2885,16 @@ function eightDays($xdate)
            ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE 
            a.date_entered <= :dat AND a.Open=1 AND eightdays<>1 ORDER BY a.claim_id DESC LIMIT 200');
     $stmts->bindParam(':dat', $xdate, PDO::PARAM_STR);
+       $stmts->execute();    
+    return $stmts->fetchAll();
+}
+function getIndividualOpen()
+{
+    global $conn;
+    $stmts = $conn->prepare('SELECT a.claim_id,a.claim_number,b.first_name,b.surname,b.medical_scheme, 
+       b.policy_number,a.username,c.client_name,a.date_entered FROM claim as a inner join member as b 
+           ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE 
+           c.client_id=4 AND a.Open=1 ORDER BY a.claim_id');
        $stmts->execute();    
     return $stmts->fetchAll();
 }
@@ -3646,26 +3677,6 @@ function conGetF($r3,$users,$clients,$b4="count(a.username) as total")
             return "There is an error.".$e;
         }
     }
-    function getBrokerClaims($date,$broker)
-    {
-        global $conn; 
-        $date1 = $date."-01";
-        $date2 = $this->nexDate($date1);  
-        $addd =  $broker>0?" AND w.broker_id=".$broker:"";  
-        try {              
-                $stmt=$conn->prepare('SELECT a.claim_id,b.first_name,b.surname as last_name,a.claim_number,b.email,a.Open,a.date_entered,
-                w.broker_id FROM `claim` as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN web_clients as w 
-                ON b.email=w.email WHERE w.email<>"" AND a.date_entered >=:dat AND a.date_entered <:dat2'.$addd);
-                $stmt->bindParam(':dat', $date1, PDO::PARAM_STR);
-                $stmt->bindParam(':dat2', $date2, PDO::PARAM_STR);
-                $stmt->execute();              
-            
-                return $stmt->fetchAll();           
-
-        } catch (Exception $e) {
-            return "There is an error.".$e;
-        }
-    }
       
     function getBestDays($dates,$r3,$users,$clients)
     {
@@ -3775,7 +3786,7 @@ SELECT mca_claim_id, MIN(l.id) minID,a.claim_number,a.savings_scheme,a.savings_d
     function getIntervention($claim_id)
 {
     global $conn;
-$stmtx = $conn->prepare('Select claim_id,date_entered FROM intervention WHERE claim_id=:claim_id');
+$stmtx = $conn->prepare('Select claim_id,date_entered FROM intervention WHERE claim_id=:claim_id ORDER BY intervention_id ASC');
 $stmtx->bindParam(':claim_id', $claim_id, PDO::PARAM_STR);
 $stmtx->execute();
 return $stmtx->fetchAll();

@@ -56,6 +56,7 @@
 <li><a href="zero_amounts.php">Zero Amounts</a></li>
 <li><a href="reopened_claims.php">Reopened Cases</a></li>
 <li><a href="eightdays.php">More than 8 days</a></li>
+<li><a href="individual.php">Individual Claims</a></li>
 <li><a href="sla_progress.php">SLA</a></li>
 </ul>
 </li>

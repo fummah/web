@@ -476,13 +476,13 @@ $bank_charges=0;
         $amtid="amt".$location_id;
         $expid="exp".$location_id;
         $ovid="ov".$location_id;
-        $exid="exid".$location_id;
+        $exid="exid".$location_id; 
         $msg2.="<tr><td><span class='not_desktop'>Location : </span> <b>$location_name</b></td><td><span class='not_desktop'>Total Members : </span><span class='uk-badge'>$total</span></td><td><span class='not_desktop'>Total Marked : </span> <span class='uk-badge'>$total_paid</span></td>
 <td><span class='not_desktop'>Total Unmarked : </span> <span class='uk-badge'>$total_unpaid</span></td><td><span class='not_desktop'>Total Home : </span><span class='uk-badge'>$total_home</span></td><td><span class='not_desktop'>Expected Amount : </span> <b>R $amountxpected</b></td>
 <td><span class='not_desktop'>Advance Ticks : </span> <b>$advanceticks</b></td><td><span class='not_desktop'>Advance Amount : </span> <b>R $advancetotal</b></td>
 <td><span class='not_desktop'>Amount Received : </span> <input type='text' class='uk-input inp' id='$amtid' value='$actual_amount' data='$location_id'></td>
 <td><span class='not_desktop'>Expenses : </span><input type='text' id='$expid' class='uk-input inp' data='$location_id' value='$expenses'></td>
-<td class='$display'><span class='not_desktop'>Ex : </span> <input type='text' class='uk-input inp' id='$exid' value='$exticks' data='$location_id'></td>
+<td><span class='$display'><span class='not_desktop'>Ex : </span> <input type='text' class='uk-input inp' id='$exid' value='$exticks' data='$location_id'></span></td>
 <td><span class='not_desktop'>Net Amount : </span> <b><span style='color: red !important;' id='$ovid'>R $amountactual</span></b></td>
 <td><button class='uk-button uk-button-danger mybtn' data-abide='$funeral_id' data='$location_id'>Update</button></td></tr>";
 
