@@ -61,18 +61,30 @@ function sendMail($mymail,$name,$claim){
 
     }
 }
-function getUsername()
+function getUsername($email="",$id_number="")
 {
     global $conn;
     $details['username']="";
     $details['email']="";
 
+    $checkM=$conn->prepare('SELECT a.claim_id,a.claim_number,a.username,f.email FROM claim as a INNER JOIN users_information as f ON a.username=f.username INNER JOIN member as b ON a.member_id=b.member_id WHERE b.email=:email AND b.id_number=:id_number AND b.client_id=4 AND a.username IN(SELECT username FROM `users_information` WHERE active=1) ORDER BY a.claim_id DESC LIMIT 1');
+    $checkM->bindParam(':email', $email, \PDO::PARAM_STR);
+    $checkM->bindParam(':id_number', $id_number, \PDO::PARAM_STR);
+    $checkM->execute();
+    $dett = $checkM->fetch();
+    if($dett)
+    {
+        $details['username']=$dett['username'];
+        $details['email']=$dett['email'];
+    }
+    else
+    {
     $stmt=$conn->prepare('SELECT username,email FROM users_information WHERE status=1 ORDER BY datetime ASC LIMIT 1');
     $stmt->execute();
     $row=$stmt->fetch();
     $details['username']=$row['0'];
     $details['email']=$row['1'];
-
+    }
     return $details;
 }
 function checkScheme($medical_scheme)
@@ -487,7 +499,7 @@ if(isset($_SESSION['mca_logxged']) && !empty($_SESSION['mca_logxged']) && $_SESS
                         $finalG = substr($str, 1);
                         $claim_number = "MCA" . $finalG;
                         $policy_number = "-------------";
-                        $username = getUsername();
+                        $username = getUsername($member_email,$id_number);
                         $fullname = $name . " " . $surname;
                         $descr = filter_var($_POST['area1'], FILTER_SANITIZE_STRING);
                         $txt = $descr;

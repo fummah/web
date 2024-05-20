@@ -1278,6 +1278,34 @@ SELECT `dependency_id`, `member_id`, `first_name`, `surname`, `status`,:entered_
             return "There is an error : ".$e->getMessage();
         }
     }
+    function getAdvanceGroups()
+    {
+              try {
+            $stmt = $this->conn->prepare("SELECT COUNT(*) as total,SUM(m.account_balance) as total_amount,CONCAT('Group ',g.group_name) as groupn FROM 
+            members as m INNER JOIN locations as l ON m.location_id=l.location_id INNER JOIN groups as g ON l.group_id=g.group_id 
+            WHERE m.account_balance>0 GROUP BY g.group_name");           
+            $stmt->execute();
+        return $stmt->fetchAll();
+                  
+        }
+        catch (Exception $e)
+        {
+            echo "There is an error : ".$e->getMessage();
+        }
+    }
+    function getAdvanceGroupsG()
+    {
+              try {
+            $stmt = $this->conn->prepare("SELECT *FROM advance_payment_report");           
+            $stmt->execute();
+        return $stmt->fetchAll();
+                  
+        }
+        catch (Exception $e)
+        {
+            echo "There is an error : ".$e->getMessage();
+        }
+    }
     function getTransEx($funeral_id,$location_id)
     {
               try {

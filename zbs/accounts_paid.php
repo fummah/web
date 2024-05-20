@@ -90,10 +90,22 @@ require_once ("header.php");
            
         </div>
         <div class="col-md-2">
-            Total Balance : <span class="uk-badge" style="background-color: cadetblue !important;">R<?php echo $db->moneyformat($total_sum);?></span>
+        <a href="accounts_paid.php">Total Balance : </a><span class="uk-badge" style="background-color: cadetblue !important;"><?php echo $db->moneyformat($total_sum);?></span><hr>
+        <?php
+        if(in_array($db->myRole(),$db->eRoles()))
+        {
+foreach($db->getAdvanceGroups() as $d)
+{
+    $group = $d['groupn'];
+    $totaln = $d['total'];
+    $amountn = $db->moneyformat($d['total_amount']);
+    echo "<div>$group : <span class='uk-badge' style='background-color: purple !important;'>$amountn</span> | <span class='uk-badge' style='background-color: red !important;'>$totaln</span></div>";
+}
+        }
+        ?><br>
         </div>
         <div class="col-md-2">
-            Subscribing Members : <span class="uk-badge" style="background-color: cadetblue !important;"><?php echo $total_number;?></span>
+        <a href="advance_groups.php">Subscribing Members : </a>  <span class="uk-badge" style="background-color: cadetblue !important;"><?php echo $total_number;?></span>
         </div>
         <div class="col-md-3" >
       
@@ -109,7 +121,7 @@ require_once ("header.php");
                 </form>
             </div>
         </div>
-    </div>
+    </div><br>
     <div class="row">
         <div class="col-md-12">
 
@@ -145,7 +157,7 @@ require_once ("header.php");
                 </tbody>
             </table>
             <?php
-            $total_records=$db->subscribedMembers(1 ,10,$search_value,1,"paid");
+            $total_records=$db->subscribedMembers(1 ,10,$search_value,1);
             $total_pages = ceil($total_records / $limit);
             $pagLink = "<ul class='pagination'>";
             for ($i=1; $i<=$total_pages; $i++) {
@@ -186,9 +198,11 @@ const full_name = $(this).attr("full_name");
             $("#deposit_msg").empty();
 const member_id = $("#member_id").val();
 const deposit_amount = $("#deposit_amount").val();
+const remove_amount = $("#remove_amount").val();
 const obj = {
     member_id:member_id,
     deposit_amount:deposit_amount,
+    remove_amount:remove_amount,
     identity_number:30
 }
 $.ajax({
@@ -209,6 +223,7 @@ $.ajax({
     }
         }
         );
+
 
         $(document).on("click",".mtrans",function(){
 const member_id = $(this).attr("member_id");
@@ -280,6 +295,9 @@ include("footer.php");
                         <input  id="member_id" type="hidden"/>
                     <div class="uk-margin">
                                         Deposit Amount : <input class="uk-input" type="text" id="deposit_amount" placeholder="Deposit Amount">
+                                    </div>
+                                    <div class="uk-margin" style="background-color: red;">
+                                        Remove Amount : <input class="uk-input" type="text" id="remove_amount" placeholder="Remove Amount">
                                     </div>
                         <hr>
                     </div>

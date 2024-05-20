@@ -780,12 +780,15 @@ $xx=$db->insertDependencyLogs($dep_id,$db->loggedAs());
     {
         $member_id=(int)$_POST["member_id"];
         $deposit_amount=(double)$_POST["deposit_amount"];
+        $remove_amount=(double)$_POST["remove_amount"];
         $configs = $db->getConfig();
         $account_limit=(double)$configs["account_limit"];
         $deposit_limit=(double)$configs["deposit_limit"];
         $details =$db->getSingleMember($member_id);
         $current_balance = (double)$details["account_balance"];
         $expotoken = $details["expo_token"];
+        if($deposit_amount>0)
+        {
         if($current_balance>= $account_limit)
         {
             echo "<div class='uk-alert-danger' uk-alert><a href class='uk-alert-close'uk-close></a><p>The member acount has reached the limit.</p></div>";
@@ -815,6 +818,34 @@ $xx=$db->insertDependencyLogs($dep_id,$db->loggedAs());
             echo "<div class='uk-alert-success' uk-alert><a href class='uk-alert-close'uk-close></a><p>Deposit Successful</p></div>";
       
         }
+    }
+
+    elseif($remove_amount>0)
+    {
+        if($current_balance>=$remove_amount)
+        {
+            $total_amount =$current_balance-$remove_amount;
+            $db->editDiff("account_balance",$total_amount,"member_id",$member_id,"members");
+            $txtmsge = "Amount removed is R".$remove_amount.". Thank you.";
+            $title ="ZBS Amount Removed";  
+            if (strpos($expotoken, "Expo") !== false) {
+                $expo = array("to"=>[$expotoken],"title"=>$title,"body"=>$txtmsge);
+                $db->pushNotifications($expo);
+            }     
+            $db->insertNotification($member_id,$txtmsge,"System",$title);
+            $db->insertTranctions($member_id,$remove_amount,$db->loggedAs(),"Amount Removed",0);
+            echo "<div class='uk-alert-success' uk-alert><a href class='uk-alert-close'uk-close></a><p>Amount Successfully removed</p></div>";
+        }
+        else
+        {
+            echo "<div class='uk-alert-danger' uk-alert><a href class='uk-alert-close'uk-close></a><p>Invalid amount</p></div>"; 
+        }
+       
+    }
+    else
+    {
+        echo "<div class='uk-alert-danger' uk-alert><a href class='uk-alert-close'uk-close></a><p>Invalid Transaction</p></div>"; 
+    }
         
     }
     elseif($identity== 31)
