@@ -167,12 +167,13 @@ class leadClass
             return $e->getMessage();
         }
     }
-    function getMember($email)
+    function getMember($email,$id_number="")
     {
         try {
             global $conn;
-            $st=$conn->prepare('SELECT member_id FROM member WHERE email=:email AND client_id=4 AND (email is not null OR email<>"")');
+            $st=$conn->prepare('SELECT member_id FROM member WHERE email=:email AND id_number=:id_number AND client_id=4 AND (email is not null OR email<>"") AND (id_number is not null OR id_number<>"")');
             $st->bindParam(':email', $email, PDO::PARAM_STR);
+            $st->bindParam(':id_number', $id_number, PDO::PARAM_STR);
             $st->execute();
             return (int)$st->fetchColumn();
         }
@@ -186,7 +187,7 @@ class leadClass
     {
 
         global $conn;
-        $tempmember=$this->getMember($email);
+        $tempmember=$this->getMember($email,$id_number);
         //$tempmember=0;
         if($tempmember<1) {
             $entered_by = "System";
