@@ -164,17 +164,20 @@ class DBConnect extends Validate
         $limits = "";
         $fields = "COUNT(m.member_id)";
         $where=$paid=="paid"?"account_balance>0":1;
+        $memberId=$search_value;
         if ($count == 0) {
             $limits = "ORDER BY member_id DESC LIMIT $pageLimit , $setLimit";
             $fields = "m.member_id,m.first_name,m.last_name,l.location_name,m.account_balance";
         }
         if(strlen($search_value)>0)
         {
+          
             $search_value="%".$search_value."%";
-      $sql='SELECT '.$fields.' FROM `members` as m INNER JOIN locations as l ON m.location_id=l.location_id WHERE '.$where.' AND m.status="Active" AND (first_name LIKE :keyword OR last_name LIKE :keyword OR CONCAT(first_name," ", last_name) LIKE :keyword OR CONCAT(last_name," ", first_name)) '.$limits;        
+      $sql='SELECT '.$fields.' FROM `members` as m INNER JOIN locations as l ON m.location_id=l.location_id WHERE '.$where.' AND m.status="Active" AND (first_name LIKE :keyword OR last_name LIKE :keyword OR CONCAT(first_name," ", last_name) LIKE :keyword OR CONCAT(last_name," ", first_name) OR member_id=:member_id) '.$limits;        
    
       $stmt=$this->conn->prepare($sql);
         $stmt->bindParam(':keyword', $search_value, PDO::PARAM_STR);
+        $stmt->bindParam(':member_id', $memberId, PDO::PARAM_STR);
         }
         else
         {

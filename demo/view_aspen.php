@@ -33,7 +33,7 @@ $claim_number=$details['claim_number'];
 $first_name=$details['first_name'];
 $last_name=$details['surname'];
 $email=$details['email'];
-$contact_number=$details['contact_number'];
+$contact_number=$details['cell'];
 $medical_name=$details['medical_scheme'];
 $scheme_number=$details['scheme_number'];
 $scheme_option=$details['scheme_option'];
@@ -83,15 +83,7 @@ if($open==0)
     <title>MCA : Pre-Authorisation</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="bootstrap3/css/bootstrap.min.css">
-    <script src="jquery/jquery.min.js"></script>
-    <script src="bootstrap3/js/bootstrap.min.js"></script>
-    <link href="w3/w3.css" rel="stylesheet" />
-    <link rel="stylesheet" href="uikit/css/uikit.min.css" />
-    <script src="uikit/js/uikit.min.js"></script>
-    <script src="uikit/js/uikit-icons.min.js"></script>
-    <link rel="stylesheet" href="js/simplePagination.css" />
-    <script src="js/jquery.simplePagination.js"></script>
+
 
     <script>
         $(document).ready(function() {
@@ -378,10 +370,10 @@ if($open==0)
             background: url(images/Preloader_2.gif) center no-repeat #fff;
         }
     </style>
-</head>
+    </head>
 
 <body>
-<div class="se-pre-con"></div>
+<!-- <div class="se-pre-con"></div> -->
 <?php
 include("header.php");
 echo "<br><br><br>";

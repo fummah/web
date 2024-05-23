@@ -95,7 +95,7 @@ require_once("top_nav.php");
                 $fullname=$first_name." ".$surname;
                 $today=date("Y-m-d H:i:s");
                 $days=round($db->getWorkingDays($date_entered,$today,$holidays));
-                if($days>7) {                  
+                if($days>2) {                  
                   echo "<tr>";
                   echo "<td>";
                   echo "<input class=\"uk-checkbox\" onclick='updateme(\"$record_index\")' id='x$record_index' type=\"checkbox\">";
