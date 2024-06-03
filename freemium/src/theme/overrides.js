@@ -27,6 +27,12 @@ export function overrides(theme) {
           width: '100%',
           height: '100%',
         },
+        '.css-q3etex-MuiPaper-root-MuiCard-root':{
+          'overflow':'auto !important',
+                  },
+                  '.css-r7tbjo':{
+                    'overflow':'auto !important',
+                            },
         input: {
           '&[type=number]': {
             MozAppearance: 'textfield',

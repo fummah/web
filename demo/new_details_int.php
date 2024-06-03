@@ -1,51 +1,34 @@
 
+<?php
+session_start();
+define("access",true);
+include ("classes/controls.php");
+$control=new controls();
+
+include ("header.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Details</title>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<link rel="stylesheet" href="css/materialize.css">
-<link rel="stylesheet" href="css/materialize.min.css">
-<link rel="stylesheet" href="css/ghpages-materialize.css">
-<link href="css/bootstrap.min.css" rel="stylesheet" integrity="" crossorigin="anonymous">
-<script src="js/bootstrap.bundle.min.js" integrity="" crossorigin="anonymous"></script>
-<script src="js/bootstrap.min.js" integrity="" crossorigin="anonymous"></script>
-<link rel="stylesheet" type="text/css" href="css/datatables.min.css"/>
-<link rel="stylesheet" href="css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="css/dataTables.bootstrap4.css">
-<script type="text/javascript" src="js/datatables.min.js"></script>
-<script src="js/materialize.js"></script>
-<script src="js/materialize.min.js"></script>
 
-<script src="js/search.js"></script>
-<script src="js/init.js"></script>
-<link rel="stylesheet" href="css/uikit.min.css" />
-<script src="js/uikit.min.js"></script>
-<script src="js/uikit-icons.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* styles.css */
-
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f4f4f4;
+    line-height: 1.6;
+    color: #333;
+    background-color: white !important;
     margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
-
 .user-details {
     background-color: white;
-    padding: 10px;
+    padding: 13px 3px;
     border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    width: 99%;
+    width: 100%;
     max-width: 100%;
     text-align: left;
 }
@@ -61,20 +44,22 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    padding: 10px;
+    background-color: #f7f7f9;
 }
 
 .detail {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     flex: 1 1 23%;
     display: flex;
     justify-content: space-between;
-    padding: 6px;
-    border: 1px solid white;
+    padding: 10px;
     border-radius: 4px;
-    background-color: whitesmoke;
+    background-color: white;
     margin: 4px;
     box-sizing: border-box;
     transition: transform 0.5s ease, box-shadow 0.5s ease;
+
 }
 
 .detail label {
@@ -84,12 +69,17 @@ body {
 }
 
 .detail span {
-    font-weight: 400;
+    font-weight: 500;
     color: #555;
     flex: 1;
     text-align: right;
 }
-
+.uk-grid-small label{
+    font-weight: 500;
+    color: #555;
+    font-size: 0.3rem; 
+    color:#54bf99;
+}
 .detail label, .detail span {
     font-size: 0.9rem;
 }
@@ -105,11 +95,11 @@ body {
     flex-direction: column;
 }
 
-ul {
+.main ul {
     display: flex;
 }
 
-ul li {
+.main ul li {
     list-style: none;
     display: flex;
     flex-direction: column;
@@ -118,13 +108,13 @@ ul li {
     margin: 0 40px;
 }
 
-ul li .icons {
+.main ul li .icons {
     font-size: 25px;
     color: #54bc9c;
     margin: 0 60px;
 }
 
-ul li .label {
+.main ul li .label {
     font-family: sans-serif;
     letter-spacing: 1px;
     font-size: 14px;
@@ -132,7 +122,7 @@ ul li .label {
     color: #54bc9c;
 }
 
-ul li .step {
+.main ul li .step {
     height: 30px;
     width: 30px;
     border-radius: 50%;
@@ -159,31 +149,31 @@ ul li .step {
     height: 0;
 }
 
-ul li .step .awesome {
+.main ul li .step .awesome {
     display: none;
 }
 
-ul li .step p {
+.main ul li .step p {
     font-size: 18px;
 }
 
-ul li .active {
+.main ul li .active {
     background-color: #54bc9c;
 }
 
-li .active::after {
+.main ul li .active::after {
     background-color: #54bc9c;
 
 }
 
-ul li .active p {
+.main ul li .active p {
     display: none;
 }
 
-ul li .active .awesome {
+.main ul li .active .awesome {
     display: flex;
 }
-ul{
+.main ul{
     margin: 0 0 2px 0 !important;
 }
 
@@ -194,7 +184,7 @@ ul{
 
     
 .table-wrapper{
-    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
+    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0 );
 }
 
 .fl-table {
@@ -227,7 +217,7 @@ ul{
 
 .fl-table thead th:nth-child(odd) {
     color: #ffffff;
-    background: #324960;
+    background: #4FC3A1;
 }
 
 .fl-table tr:nth-child(even) {
@@ -299,32 +289,89 @@ ul{
         text-align: center;
     }
 }
+.checkbox-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.checkbox-list li {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.checkbox-list input[type="checkbox"] {
+  display: none; /* Hide the checkbox */
+}
+
+.checkbox-list input[type="checkbox"] + label {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.checkbox-list input[type="checkbox"]:checked + label {
+  text-decoration: line-through; /* Line-through text when checkbox is checked */
+  color: gray; /* Optional: Change text color when checked */
+}
+label .uk-badge{
+    background-color: #54bf99 !important;
+}
     </style>
 </head>
 <body>
 
     <div class="user-details">
-    <div class="main">
+<div class="mymain">
+<div style="width:40%; padding:10px; border-right:dashed #54bc9c 1px; border-radius:10px">
+<ul class="checkbox-list">
+    <li>
+      <input type="checkbox" id="item1">
+      <label for="item1" title="- Does the account reflect: Medical aid details. Provider practice number, service date, tariff codes, billed amounts, proof of payment (if applicable)
+"><span class="uk-badge">1</span> Was the detailed account received?</label>
+    </li>
+    <li>
+      <input type="checkbox" id="item2">
+      <label for="item2" title="- Take down / Note the reference number for the submission and the expected TAT for processing"><span class="uk-badge">2</span> If yes, then submit to the Medical Aid</label>
+    </li>
+
+    <li>
+      <input type="checkbox" id="item4">
+      <label for="item4"><span class="uk-badge">3</span> Follow up when the processing TAT has lapsed</label>
+    </li>
+    <li>
+      <input type="checkbox" id="item5">
+      <label for="item5"><span class="uk-badge">4</span> Request a copy of the medical statement / notification (if not received)</label>
+    </li>
+    <li>
+      <input type="checkbox" id="item6">
+      <label for="item6"><span class="uk-badge">5</span> Update the Member and share a copy of the medical statement with the Member.</label>
+    </li>
+  
+  </ul>
+        </div>
+
+        <div class="details-container tendai">
+        <div class="main">
 
 <ul>
     <li>
-        <i class="icons awesome fa-solid fa-user"></i>
+        <i class="icons awesome fa-solid fa-hourglass-start"></i>
         <div class="step first">
             <p>1</p>
             <i class="awesome fa-solid fa-check"></i>
         </div>
-        <p class="label">Initialisation</p>
+        <p class="label">Claim Submission</p>
     </li>
     <li>
-        <i class="icons awesome fa-solid fa-coins"></i>
+        <i class="icons awesome fa-solid fa-book"></i>
         <div class="step second">
             <p>2</p>
             <i class="awesome fa-solid fa-check"></i>
         </div>
-        <p class="label">Documentation</p>
+        <p class="label">Gap Submission</p>
     </li>
     <li>
-        <i class="icons awesome fa-solid fa-house"></i>
+        <i class="icons awesome fa-solid fa-certificate"></i>
         <div class="step third">
             <p>3</p>
             <i class="awesome fa-solid fa-check"></i>
@@ -332,7 +379,7 @@ ul{
         <p class="label">Validation</p>
     </li>
     <li>
-        <i class="icons awesome fa-regular fa-star-half-stroke"></i>
+        <i class="icons awesome fa-solid fa-person-circle-check"></i>
         <div class="step fourth">
             <p>4</p>
             <i class="awesome fa-solid fa-check"></i>
@@ -348,52 +395,42 @@ ul{
         <p class="label">Payment</p>
     </li>
     <li>
-        <i class="icons awesome fa-solid fa-close"></i>
+        <i class="icons awesome fa-solid fa-power-off"></i>
         <div class="step sixth">
             <p>6</p>
-            <i class="awesome fa-solid fa-close"></i>
+            <i class="awesome fa-solid fa-check"></i>
         </div>
         <p class="label">Finish</p>
     </li>
 </ul>
 </div>
-
-<div class="mymain">
-<div style="width:30%; padding:10px; border:dashed #54bc9c 1px; border-radius:10px">
-        <fieldset class="uk-fieldset">
-        <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-            <label><input class="uk-checkbox" type="checkbox" checked> <span>Checking 1233</span></label>
-        </div>
-        <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-        <label><input class="uk-checkbox" type="checkbox" checked> <span>Checking 1233</span></label>
-        </div>
-        <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-        <label><input class="uk-checkbox" type="checkbox" checked> <span>Checking 1233</span></label>
-        </div>
-        <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-        <label><input class="uk-checkbox" type="checkbox" checked> <span>Checking 1233</span></label>
-        </div>
-        </fieldset>
-        </div>
-
-        <div class="details-container tendai">
-   
         <div class="detail">
                 <label for="claim-number">Claim</label>
               <span id="claim-number">[S51.0] PMB, Non-Emergency</span>
             </div>
-            <div class="detail">
-                <label for="claim-number">Claim Number:</label>
-                <span id="claim-number">GAP3098397 / 1</span>
-            </div>
+         
             <div class="detail">
                 <label for="date-opened-closed">Date Opened/Closed:</label>
                 <span id="date-opened-closed">2023-12-12 08:20:09 / 2023-12-12 13:22:07</span>
             </div>
             <div class="detail">
+                <label for="incident-date">Incident Date:</label>
+                <span id="incident-date">From 2023-08-25 To 2023-08-25</span>
+            </div>
+
+            <div class="detail">
+                <label for="member-number">User</label>
+                <span id="member-number">Tendai Fuma</span>
+            </div>
+           <div class="detail">
+                <label for="claim-number">Claim Number:</label>
+                <span id="claim-number">GAP3098397 / 1</span>
+            </div>
+            <div class="detail">
                 <label for="policy-number">Policy Number:</label>
                 <span id="policy-number">GAP3098397</span>
             </div>
+
             <div class="detail">
                 <label for="client-name">Client Name:</label>
                 <span id="client-name">Zestlife</span>
@@ -415,19 +452,16 @@ ul{
                 <span id="email">mike@kirjo.co.za</span>
             </div>
             <div class="detail">
-                <label for="contact-numbers">Contact Number(s):</label>
+                <label for="contact-numbers">Contact:</label>
                 <span id="contact-numbers">0824136471 /</span>
             </div>
+          
             <div class="detail">
-                <label for="incident-date">Incident Date:</label>
-                <span id="incident-date">From 2023-08-25 To 2023-08-25</span>
-            </div>
-            <div class="detail">
-                <label for="patients">Patient(s):</label>
+                <label for="patients">Patient:</label>
                 <span id="patients">ROMAY ETHNE CLARICE REED [4902180019088]</span>
             </div>
             <div class="detail">
-                <label for="scheme-name">Scheme Name:</label>
+                <label for="scheme-name">Scheme:</label>
                 <span id="scheme-name">Discovery Health Medical Scheme</span>
             </div>
             <div class="detail">
@@ -438,95 +472,52 @@ ul{
                 <label for="member-number">Member Number:</label>
                 <span id="member-number">673327422</span>
             </div>
-            <div class="detail">
-                <label for="member-number">User</label>
-                <span id="member-number">Tendai Fuma</span>
-            </div>
+      
         </div>
     </div>
 
 <div class="table-wrapper">
     <table class="fl-table">
         <thead>
-        <tr>
-            <th>Header 1</th>
-            <th>Header 2</th>
-            <th>Header 3</th>
-            <th>Header 4</th>
-            <th>Header 5</th>
-        </tr>
+        <tr><th>No.</th><th>CPT4</th><th>Inv.Dat</th><th>Modifier</th><th>Res. Code</th><th>Treat.Date</th><th>PMB?</th><th>Tarif.C</th><th>ICD10</th><th>Chrgd Amt</th>
+                        <th>Sch. Amt</th><th>Memb.Port</th><th>GAP</th><th>Calc</th></tr>
         </thead>
         <tbody>
+        
         <tr>
-            <td>Content 1</td>
-            <td>Content 1</td>
-            <td>Content 1</td>
-            <td>Content 1</td>
-            <td>Content 1</td>
+        <td><span class="uk-badge">1</span></td>
+            <td></td>
+            <td></td>
+            <td>0000</td>
+            <td>9000</td>
+            <td>2003-09-09</td>
+            <td><span uk-icon="check"></span></td>
+            <td>1012</td>
+            <td>234.90</td>
+            <td>234.90</td>
+            <td>234.90</td>
+            <td>234.90</td>
+            <td>234.90</td>
+            <td>234.90</td>
         </tr>
         <tr>
-            <td>Content 2</td>
-            <td>Content 2</td>
-            <td>Content 2</td>
-            <td>Content 2</td>
-            <td>Content 2</td>
+        <td><span class="uk-badge">2</span></td>
+            <td></td>
+            <td></td>
+            <td>0000</td>
+            <td>9000</td>
+            <td>2003-09-09</td>
+            <td><span uk-icon="check"></span></td>
+            <td>1012</td>
+            <td>234.90</td>
+            <td>234.90</td>
+            <td>234.90</td>
+            <td>234.90</td>
+            <td>234.90</td>
+            <td>234.90</td>
         </tr>
-        <tr>
-            <td>Content 3</td>
-            <td>Content 3</td>
-            <td>Content 3</td>
-            <td>Content 3</td>
-            <td>Content 3</td>
-        </tr>
-        <tr>
-            <td>Content 4</td>
-            <td>Content 4</td>
-            <td>Content 4</td>
-            <td>Content 4</td>
-            <td>Content 4</td>
-        </tr>
-        <tr>
-            <td>Content 5</td>
-            <td>Content 5</td>
-            <td>Content 5</td>
-            <td>Content 5</td>
-            <td>Content 5</td>
-        </tr>
-        <tr>
-            <td>Content 6</td>
-            <td>Content 6</td>
-            <td>Content 6</td>
-            <td>Content 6</td>
-            <td>Content 6</td>
-        </tr>
-        <tr>
-            <td>Content 7</td>
-            <td>Content 7</td>
-            <td>Content 7</td>
-            <td>Content 7</td>
-            <td>Content 7</td>
-        </tr>
-        <tr>
-            <td>Content 8</td>
-            <td>Content 8</td>
-            <td>Content 8</td>
-            <td>Content 8</td>
-            <td>Content 8</td>
-        </tr>
-        <tr>
-            <td>Content 9</td>
-            <td>Content 9</td>
-            <td>Content 9</td>
-            <td>Content 9</td>
-            <td>Content 9</td>
-        </tr>
-        <tr>
-            <td>Content 10</td>
-            <td>Content 10</td>
-            <td>Content 10</td>
-            <td>Content 10</td>
-            <td>Content 10</td>
-        </tr>
+       
+     
         <tbody>
     </table>
 </div>
