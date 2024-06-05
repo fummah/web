@@ -1,26 +1,40 @@
-<?php
-function replaceUnicodeCharacter($str) {
-    $unicodeCharacters = [
-        "\u202f", "\U202F", "\u00e2", "\u20ac", "\u00af", 'â€¯'
-    ];
-    foreach ($unicodeCharacters as $unicode) {
-        $str = str_replace($unicode, ' ', $str);
-    }
-
-    $str = str_replace('\"', '"', $str);
-
-    return $str;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticky Side Button</title>
+   <style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-// Test the function
-$input = "FW: GAP3841197 \/ 3 - Member wanting call back from MCA\nExternal\nInbox\n\nKatherine Lafleur\nMay 21, 2024, 11:30\u202fAM (19 hours ago)\nto me, Karen, Shirley\n\nDear Keasha,\n\nPlease contact the client and let me have feedback.\n\nKind Regards,\nKatherine\n\n";
-$myarr=array("str"=>$input,"status"=>"date_entered");
-$sendobj=json_encode($myarr);
+.sticky-button {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
 
-$cleaned = replaceUnicodeCharacter($input);
+.sticky-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
 
-echo "Original: " . $input . "\n"; // Show hidden characters in hex
-echo "<hr>";
-echo "Cleaned: $cleaned\n";
-
-?>
+   </style>
+</head>
+<body>
+    <button class="sticky-button">Contact Us</button>
+</body>
+</html>

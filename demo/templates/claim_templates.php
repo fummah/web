@@ -599,7 +599,7 @@ function claimtabs($control,$clinical_number=0)
             echo "<li class=\"tab\" onclick=\"openTab('clinical_tab')\"><a class='clinical_tab' style=\"color: #0b8278;\">Clinical Review</a></li>";
         }
         if($control->validate8days && $control->isInternal()) {
-            echo "<li class=\"tab\" onclick=\"openTab('days8_tab')\"><a class='days8_tab' style=\"color: #0b8278;\">8 Days</a></li>";
+            echo "<li class=\"tab\" onclick=\"openTab('days8_tab')\"><a class='days8_tab' style=\"color: #0b8278;\">8 Days / Indv</a></li>";
         }
     }
     echo " </ul>";

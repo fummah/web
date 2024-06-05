@@ -241,7 +241,7 @@ echo"</div>";
         clinicalReview($control, $username);
         echo "</div>";
     }
-    if($control->validate8days && $control->isInternal()) {
+    if($control->validate8days && $control->isInternal() || $control->client_name=="Individual") {
         echo "<div id=\"days8_tab\" class=\"col s12 uk-animation-fade detab\" style=\"display:none\">";
         my8days($control);
         echo "</div>";
