@@ -11,6 +11,8 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
+import { useRouter } from 'src/routes/hooks';
+
 import useAxiosFetch from 'src/hooks/use-axios';
 
 import Iconify from 'src/components/iconify';
@@ -31,7 +33,7 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 
 export default function DocumentsPage() {
 
-  const [dataSource, setDataSource] = useState([]);
+  const router = useRouter();
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -41,6 +43,7 @@ export default function DocumentsPage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
   const [open_doc, setOpenDoc] = useState(false);
+  const [user,setUser] =  useState({});
 
 
   const { isLoading: isLoadingQueries, isError: isErrorQueries, data: dataQueries,statusCode:statusCodeQueries } = useAxiosFetch('getdocuments','GET', {});
@@ -49,7 +52,8 @@ export default function DocumentsPage() {
     if(dataQueries && statusCodeQueries===200)
     {
       setIndoc(dataQueries.docs);   
-    
+      setUser(dataQueries.user);
+      console.log(dataQueries);
     }   
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataQueries]); 
@@ -88,12 +92,15 @@ export default function DocumentsPage() {
     }
      setSelected(newSelected);
   };
-
+/*
   const handleViewClick = (e,lines) =>{
     setDataSource(lines);
     setOpen(true); 
   }
-
+*/
+const handleViewClick = (e,id) =>{
+  router.push(`/query-details/${id}`);
+}
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -213,10 +220,12 @@ export default function DocumentsPage() {
                       documents={row.actual_documents}
                       description={row.doc_description}                      
                       date_entered={row.date_entered}  
-                      doc_id={row.doc_id}                   
+                      doc_id={row.doc_id}  
+                      query_id={row.query_id}
+                      plan={user?.plan}                 
                       selected={selected.indexOf(row.doc_id) !== -1}
                       handleClick={(e) => handleClick(e, row.doc_id)}
-                      handleViewClick={(e) => handleViewClick(e, row.lines)}
+                      handleViewClick={(e) => handleViewClick(e, row.query_id)}
                     />
                   ))}
 
@@ -263,7 +272,7 @@ export default function DocumentsPage() {
         components={components}
         rowClassName={() => 'editable-row'}
         bordered
-        dataSource={dataSource}
+        dataSource={{}}
         columns={columns}
       />
        

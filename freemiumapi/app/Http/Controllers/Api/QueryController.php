@@ -36,19 +36,24 @@ class QueryController extends Controller
             'claim_id' => 'required',
             'category' => 'required|string|min:2',
             'description' => 'required|string|min:4',
+            'query_from' => '',
             ]);
-            $user = $request->user();           
+            $user = $request->user();    
+            $zdoc_id = $data['query_from']=="doc"?$data['claim_id']:0;  
+            $zswitch_claim_id= $data['query_from']!="doc"?$data['claim_id']:0;     
 
         $query = QueryModel::create([
             'user_id' => $user->id, 
-            'switch_claim_id' => $data['claim_id'],
+            'switch_claim_id' => $zswitch_claim_id,
             'category' => $data['category'],
             'description' => $data['description'],
+            'doc_id' => $zdoc_id,
             'entered_by' => $user->id,          
         ]);
+       
         $charged_amnt=0;$scheme_paid=0;$gap=0;$service_date="";
         $dd=null;  
-        if((int)$data['claim_id']>0)
+        if((int)$data['claim_id']>0 && $data['query_from'] != "doc")
         {
             $c = new ClaimsController();  
         $dd = $c->seamLessAPI("https://medclaimassist.co.za/admin/seamless_api_freemium2.php",$data['claim_id']);     
@@ -385,11 +390,14 @@ array_push($mainarr,array("id"=>$id,"user_id"=>$user_id,"description"=>$descript
             $doc_id = $doc["id"];
             $doc_description = $doc["description"];
             $date_entered = $doc["date_entered"];
+            $isquery= QueryModel::where('doc_id','=',$doc_id)->select('id')->first();
+            $query_id = $isquery ? $isquery->id : 0;
             $actual_documents = FreemiumDocumentsModel::where('associated_id','=',$doc_id)->where('_type','=','doc')->get();
-            $lines = DocumentLineModel::where('doc_query_id','=',$doc_id)->get();
-            $in_arr = array("doc_id"=>$doc_id,"doc_description"=>$doc_description,'date_entered'=>$date_entered,"actual_documents"=>$actual_documents,"lines"=>$lines);
+            //$lines = DocumentLineModel::where('doc_query_id','=',$doc_id)->get();
+            $in_arr = array("doc_id"=>$doc_id,"doc_description"=>$doc_description,'date_entered'=>$date_entered,"actual_documents"=>$actual_documents,'query_id'=>$query_id);
             array_push($arr,$in_arr);
         }
+        
          return response()->json(['message' => 'Records Successfully Retrieved','docs' => $arr,"user"=>$user], 200);
         }
     catch(\Exception $e){

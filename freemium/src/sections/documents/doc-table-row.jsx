@@ -7,9 +7,11 @@ import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
-import InfoIcon from '@mui/icons-material/Info';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+
+import QueryDrawer from 'src/drawers/add_query';
 
 import Iconify from 'src/components/iconify';
 
@@ -23,6 +25,8 @@ export default function UserTableRow({
   doc_id,
   handleClick,
   handleViewClick,
+  query_id,
+  plan,
 }) {
   const [open, setOpen] = useState(null);
 
@@ -67,10 +71,14 @@ export default function UserTableRow({
         </TableCell>         
         <TableCell>{date_entered}</TableCell>     
 
-        <TableCell align="right" onClick={handleViewClick}>
-          <Button variant="outlined" color="success">
-       <InfoIcon/> View Lines
-      </Button>
+        <TableCell align="right">
+          {
+            query_id>0?
+            <Button variant="contained" color="success" startIcon={<ContactSupportIcon icon="eva:plus-fill" />} onClick={handleViewClick}>View Query</Button> 
+            :
+            <QueryDrawer myvariant="outlined" mycolor="success" mytext="Get Help" plan={plan} claim_id={doc_id} query_from="doc"/> 
+          }
+        
         </TableCell>
 
       </TableRow>
@@ -105,6 +113,8 @@ UserTableRow.propTypes = {
   doc_id: PropTypes.any,
   handleClick: PropTypes.func,
   handleViewClick: PropTypes.func,
+  query_id: PropTypes.any,
   date_entered: PropTypes.any,
   selected: PropTypes.any,
+  plan: PropTypes.any,
 };

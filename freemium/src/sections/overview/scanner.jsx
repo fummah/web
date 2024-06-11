@@ -6,6 +6,8 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import { useRouter } from 'src/routes/hooks';
+
 import useAxiosFetch from 'src/hooks/use-axios';
 
 import Error from 'src/components/response/error';
@@ -93,6 +95,7 @@ const EditableCell = ({
 };
 
 const Scanner = ({lines,document_name,mymodal}) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [postData, setPostData] = useState({});
   const [fetchBtnClicked, setFetchBtnClicked] = useState(false);
@@ -101,14 +104,13 @@ const Scanner = ({lines,document_name,mymodal}) => {
   /* const [count, setCount] = useState(100); */
   const [documents, setDocument] = useState("");
 
-  const { isLoading, isError, data } = useAxiosFetch('adddocument','POST',postData,fetchBtnClicked);
+  const { isLoading, isError, data, statusCode } = useAxiosFetch('adddocument','POST',postData,fetchBtnClicked);
   useEffect(() => {
     if(fetchBtnClicked)
     {
       setDocument(document_name);
       setPostData(getFormValues());       
       setFetchBtnClicked(false);  
-      console.log(data);  
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchBtnClicked]); 
@@ -125,6 +127,16 @@ const Scanner = ({lines,document_name,mymodal}) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [mymodal]);
+        useEffect(() => {
+          if(data && statusCode===200)
+          {
+    setTimeout(()=>{
+      router.reload();
+    },2000);
+          }
+          
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [data]);
       
     const getFormValues = () =>{
       const obj = {

@@ -19,6 +19,7 @@ class QueryModel extends Model
             'entered_by',  
             'assigned_to', 
             'switch_claim_id',
+            'doc_id',
     ];
 
 }

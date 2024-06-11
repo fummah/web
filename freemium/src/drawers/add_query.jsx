@@ -13,7 +13,7 @@ import Iconify from 'src/components/iconify';
 
 import QueryForm from 'src/sections/forms/query_form';
 
-const SwipeableTemporaryDrawer = React.memo(({ myvariant, mycolor, mytext,plan,claim_id }) => {
+const SwipeableTemporaryDrawer = React.memo(({ myvariant, mycolor, mytext,plan,claim_id,query_from="" }) => {
   const [state, setState] = React.useState({
     top: false,
     left: false,
@@ -45,7 +45,7 @@ const SwipeableTemporaryDrawer = React.memo(({ myvariant, mycolor, mytext,plan,c
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : "100%" }}
       role="presentation"
     >
-    <QueryForm claim_id={claim_id}/>
+    <QueryForm claim_id={claim_id} query_from={query_from}/>
 
     </Box>
   );
@@ -94,5 +94,6 @@ SwipeableTemporaryDrawer.propTypes = {
   mytext: PropTypes.any,
   plan: PropTypes.any,
   claim_id: PropTypes.any,
+  query_from: PropTypes.any,
 };
 export default SwipeableTemporaryDrawer;

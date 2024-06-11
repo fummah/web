@@ -67,7 +67,7 @@ setTitle("Identified Claims | Possibly Incorrect");
       
       setUser(dataClaims.user);
       const xclaim = localStorage.getItem('EXTERNALCLAIM');
-      if(xclaim!==null)
+      if(xclaim!==null && xclaim>0)
       {
         const urll = `/claim-details/${xclaim}/external`;
         router.push(urll);

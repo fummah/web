@@ -45,7 +45,7 @@ const onFinish = (values) => {
 };
 
 
-const AddQueryForm = React.memo(({claim_id}) => {
+const AddQueryForm = React.memo(({claim_id,query_from}) => {
   const router = useRouter();
   const [category, setCategory] = useState('');
   const [postData, setPostData] = useState({});
@@ -95,8 +95,10 @@ const AddQueryForm = React.memo(({claim_id}) => {
         "document":document_name,
         "category":category,
         "description":valueDescription.current.value,
+        "query_from":query_from,
         "lines":JSON.stringify([])
       };
+      console.log(obj);
       return obj;
     }
     const normFile = (e) => {
@@ -238,4 +240,5 @@ const AddQueryForm = React.memo(({claim_id}) => {
 export default AddQueryForm;
 AddQueryForm.propTypes = {
   claim_id: PropTypes.any,
+  query_from: PropTypes.any,
 };

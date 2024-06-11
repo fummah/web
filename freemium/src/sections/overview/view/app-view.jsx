@@ -1,4 +1,5 @@
 import { Tour } from 'antd';
+import Cookies from 'js-cookie';
 import { useRef,useState, useEffect } from 'react';
 
 import Container from '@mui/material/Container';
@@ -55,11 +56,10 @@ useEffect(() => {
       setTotalDocs(dataDashboard.doc_count);
       const ccsGrouperDescArray = dataDashboard.total_switch_claims.original.qq.flatMap(item => item.claim_lines.map(line => line.ccs_grouper_desc));
       setGraph2(getGraph2(ccsGrouperDescArray)); 
-      // Set cookie for the subdomain
-     document.cookie = `first_name=${dataDashboard.user.first_name}; Domain=.freemium.meclaimassist.co.za; path=/`;
-     document.cookie = `last_name=${dataDashboard.user.last_name}; Domain=.freemium.meclaimassist.co.za; path=/`;
-     document.cookie = `email=${dataDashboard.user.email}; Domain=.freemium.meclaimassist.co.za; path=/`;    
-      
+      // Set cookie for the subdomain   
+     Cookies.set('first_name', dataDashboard.user.first_name, { domain: '.medclaimassist.co.za', path: '/' });     
+     Cookies.set('last_name', dataDashboard.user.last_name, { domain: '.medclaimassist.co.za', path: '/' }); 
+     Cookies.set('email', dataDashboard.user.email, { domain: '.medclaimassist.co.za', path: '/' });  
     }   
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataDashboard]); 

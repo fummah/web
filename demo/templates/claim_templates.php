@@ -153,7 +153,7 @@ function claim_header($data,$control,$username)
                     <div class=\"col-md-4\">
                         <b>$icd10_status</b>
                     </div> <div class=\"col-md-4\">
-                        Claim Number : <b<b uk-tooltip=\"title: $category_type; pos: top-right\" style='color: #00b3ee'>$control->claim_number</b> $qa_status
+                        Claim Number : <b uk-tooltip=\"title: $category_type; pos: top-right\" style='color: #00b3ee'>$control->claim_number</b> $qa_status
                     </div>
                     <div class=\"col-md-4\">
                         Date Opened/Closed : <b style=\"color: red\">$current_status $date_reopened_status</b>
