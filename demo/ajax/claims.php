@@ -1329,4 +1329,37 @@ else if($identity==48)
     }
 
 }
+else if($identity==49)
+{
+    $claim_id=(int)$_POST["claim_id"];
+   $flow_id = 1;
+   $main = [];
+   $claim = $control->viewClaimStage($claim_id);
+   $claim_stage = (int)$claim["claim_stage"]-1;
+   $process = $control->viewProcessFlow($flow_id);
+   $stages = $process["stages"];
+   $stage_array = json_decode($stages, true);
+   $actual_claim_stage =  $stage_array[$claim_stage]; 
+   foreach($stage_array as $stage)
+   {
+    $stage_det = $control->viewStage($stage);
+    array_push($main,$stage_det);
+   }  
+   if(!$control->viewClaimProcess($claim_id))
+   {
+    $control->loadProcessActivities($claim_id);
+   }
+   $activities = $control->viewProcessActivies($actual_claim_stage,$claim_id);
+
+   $main_arr = array("stages"=>$main,"active_stage"=>$actual_claim_stage,"stage_activities"=>$activities);
+   echo json_encode($main_arr,true);
+
+}
+else if($identity==50)
+{
+    $claim_id=(int)$_POST["claim_id"];
+    $stage_id=(int)$_POST["stage_id"];
+    $activities = $control->viewProcessActivies($stage_id,$claim_id);
+    echo json_encode($activities,true);
+}
 ?>

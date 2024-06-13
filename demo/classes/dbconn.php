@@ -9,10 +9,10 @@ if(!isset($_SESSION['start_db']))
 
 }
 if(strpos($_SESSION["admin_main"], "testing") !== false) {
-    include("../../../mca/link2.php");
+    include("../../../mca/link3.php");
 }
 else{
-    include("../../../mca/link2.php");
+    include("../../../mca/link3.php");
 }
 function my_utf8_decode($string)
 {

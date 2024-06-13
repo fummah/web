@@ -1932,4 +1932,47 @@ return $all;
     {
         return date('Y-m-d', strtotime('+1 month', strtotime($dat)));
     }
+
+    function getProcessFlow($flow_id)
+    {
+        $stmt =$this->conn->prepare("SELECT id, stages FROM `process_flow` WHERE id=:id");
+        $stmt->bindParam(':id', $flow_id, \PDO::PARAM_STR);     
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+    function getClaimStage($claim_id)
+    {
+        $stmt =$this->conn->prepare("SELECT claim_stage FROM `claim` WHERE claim_id=:claim_id");
+        $stmt->bindParam(':claim_id', $claim_id, \PDO::PARAM_STR);     
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+    function getStage($stage_id)
+    {
+        $stmt =$this->conn->prepare("SELECT id,stage_name,stage_icon FROM `process_header` WHERE id=:id");
+        $stmt->bindParam(':id', $stage_id, \PDO::PARAM_STR);     
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+    function loadProcessActivities($claim_id)
+    {
+        $stmt =$this->conn->prepare("INSERT INTO `process_claim`(`claim_id`, `process_activity_id`) SELECT '".$claim_id."',id FROM process_activities");
+        return $stmt->execute();
+    }
+    function getClaimProcess($claim_id)
+    {
+        $stmt =$this->conn->prepare("SELECT claim_id FROM process_claim WHERE claim_id=:claim_id");
+        $stmt->bindParam(':claim_id', $claim_id, \PDO::PARAM_STR); 
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    function getProcessActivies($stage_id,$claim_id)
+    {
+        $stmt =$this->conn->prepare("SELECT p.id as pr_id,p.process_activity_id,pa.process_header_id,pa.desctiption,pa.title_hover,p.status FROM process_claim as p INNER JOIN `process_activities` as pa ON p.process_activity_id=pa.id 
+        WHERE pa.process_header_id=:id AND p.claim_id=:claim_id");
+        $stmt->bindParam(':id', $stage_id, \PDO::PARAM_STR); 
+        $stmt->bindParam(':claim_id', $claim_id, \PDO::PARAM_STR);    
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }

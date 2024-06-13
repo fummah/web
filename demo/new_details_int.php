@@ -153,7 +153,7 @@ body {
     right: 30px;
 }
 
-.first::after {
+.s1::after {
     width: 0;
     height: 0;
 }
@@ -365,6 +365,9 @@ td .uk-badge{
     width: 26px !important;
     height: 26px !important;
 }
+.user{
+    color: #54bf99 !important;
+}
     </style>
 </head>
 <body>
@@ -372,91 +375,18 @@ td .uk-badge{
     <div class="user-details">
 <div class="mymain">
 <div style="width:50%; padding:10px; border-right:dashed #54bc9c 1px; border-radius:10px" class="process">
-<ul class="checkbox-list">
-    <li style="display:block">
-      <input type="checkbox" id="item1">
-      <label for="item1" title="- Does the account reflect: Medical aid details. Provider practice number, service date, tariff codes, billed amounts, proof of payment (if applicable)
-"><span><span class="uk-icon-button" uk-icon="check"></span></span> Was the detailed account received?</label>
-<div>
-            <label><input class="uk-radio" type="radio" name="radio2"> <span>Yes</span></label>
-            <label><input class="uk-radio" type="radio" name="radio2"> <span>No</span></label>
-        </div>
-    </li>
-    <li>
-      <input type="checkbox" id="item2">
-      <label for="item2" title="- Take down / Note the reference number for the submission and the expected TAT for processing">
-      <span><span class="uk-icon-button" uk-icon="check"></span></span> If yes, then submit to the Medical Aid</label>
-    </li>
-
-    <li>
-      <input type="checkbox" id="item4">
-      <label for="item4"><span><span class="uk-icon-button" uk-icon="check"></span></span> Follow up when the processing TAT has lapsed</label>
-    </li>
-    <li>
-      <input type="checkbox" id="item5">
-      <label for="item5"><span><span class="uk-icon-button" uk-icon="check"></span></span> Request a copy of the medical statement / notification (if not received)</label>
-    </li>
-    <li>
-      <input type="checkbox" id="item6">
-      <label for="item6"><span><span class="uk-icon-button" uk-icon="check"></span></span> Update the Member and share a copy of the medical statement with the Member.</label>
-    </li>
-  
+<ul class="checkbox-list" id="actv">
+      
   </ul>
         </div>
 
         <div class="details-container">
         <div class="main process">
 
-<ul>
-    <li>
-        <i class="icons awesome fa-solid fa-hourglass-start"></i>
-        <div class="step first">
-            <p>1</p>
-            <i class="awesome fa-solid fa-check"></i>
-        </div>
-        <p class="label">Claim Submission</p>
-    </li>
-    <li>
-        <i class="icons awesome fa-solid fa-book"></i>
-        <div class="step second">
-            <p>2</p>
-            <i class="awesome fa-solid fa-check"></i>
-        </div>
-        <p class="label">Gap Submission</p>
-    </li>
-    <li>
-        <i class="icons awesome fa-solid fa-certificate"></i>
-        <div class="step third">
-            <p>3</p>
-            <i class="awesome fa-solid fa-check"></i>
-        </div>
-        <p class="label">Validation</p>
-    </li>
-    <li>
-        <i class="icons awesome fa-solid fa-person-circle-check"></i>
-        <div class="step fourth">
-            <p>4</p>
-            <i class="awesome fa-solid fa-check"></i>
-        </div>
-        <p class="label">Approval</p>
-    </li>
-    <li>
-        <i class="icons awesome fa-solid fa-thumbs-up"></i>
-        <div class="step fifth">
-            <p>5</p>
-            <i class="awesome fa-solid fa-check"></i>
-        </div>
-        <p class="label">Payment</p>
-    </li>
-    <li>
-        <i class="icons awesome fa-solid fa-power-off"></i>
-        <div class="step sixth">
-            <p>6</p>
-            <i class="awesome fa-solid fa-check"></i>
-        </div>
-        <p class="label">Finish</p>
-    </li>
+<ul id="mainstep">
+
 </ul>
+<input type="hidden" id="tvt" value="0"/>
 </div>
         <div class="detail">
                 <label for="claim-number">Claim</label>
@@ -473,8 +403,8 @@ td .uk-badge{
             </div>
 
             <div class="detail">
-                <label for="member-number">User</label>
-                <span id="member-number">Tendai Fuma</span>
+                <i for="member-number" title="MCA Claims Specialist"><span class="user">User</span></i>
+                <span id="member-number">Tendai Fuma <br>tendai@medclaimassist.co.za</span>
             </div>
            <div class="detail">
                 <label for="claim-number">Claim Number:</label>
@@ -580,7 +510,7 @@ td .uk-badge{
 <tr><th></th><th colspan="8"></th><th>0.00</th><th>0.00</th><th>0.00</th><th>0.00</th><th>0.00</th><th></th></tr>
 <tr class="text-info"><th></th>
 <th colspan="7"></th><th>[0.00]</th><th>[0.00]</th><th></th><th>[0.00]</th><th>
-    <a style="display:block" claim_id="95351" practice_number="5806860" gap="0.00" charged="0.00" scheme="0.00" class="uk-margin-small-right text-success gapr uk-icon" uk-icon="pencil">
+    <a style="display:block" claim_id="89363" practice_number="5806860" gap="0.00" charged="0.00" scheme="0.00" class="uk-margin-small-right text-success gapr uk-icon" uk-icon="pencil">
     
 </a></th>
             <th>
@@ -601,16 +531,16 @@ td .uk-badge{
 <hr class="uk-divider-icon">
 <section id="notes_section"><div class="row"><div class="col-md-8"><ul class="tabs" style="color: #0b8278 !important; border-bottom: 1px solid #0b8278 !important">
                 <li class="tab" onclick="openTab('notes_tab')"><a class="notes_tab inaction active" style="color: #0b8278;">Notes</a></li>
-                <li class="tab" onclick="openTab('feedback_tab')"><a class="feedback_tab" style="color: #0b8278;">Feedback</a></li><li class="tab" onclick="openTab('validations_tab')"><a class="validations_tab" style="color: #0b8278;">Validations</a></li> <li class="indicator" style="left: 0px; right: 542px;"></li></ul></div><div class="col-md-4" style="border-bottom: 1px dashed grey !important;\"><label><label title="QA Box"><input type="checkbox" class="uk-checkbox qa_tick" id="yes_95351"><span>QA?</span><label> 
-<label title="Send for Clinical Review" style="padding-left: 20px !important;"><input type="checkbox" id="no_95351" class="uk-checkbox clinical_review"><span>Clinical Review?</span><label></label></label></label></label></label></div><div id="notes_tab" class="col s12 uk-animation-fade detab" style="display: block;"><div class="row"><div class="col-md-7" style="overflow-y: scroll; height:500px;">  <div class="uk-comment-body" style="background-color: whitesmoke; padding: 10px; border-radius: 10px; color: red">
+                <li class="tab" onclick="openTab('feedback_tab')"><a class="feedback_tab" style="color: #0b8278;">Feedback</a></li><li class="tab" onclick="openTab('validations_tab')"><a class="validations_tab" style="color: #0b8278;">Validations</a></li> <li class="indicator" style="left: 0px; right: 542px;"></li></ul></div><div class="col-md-4" style="border-bottom: 1px dashed grey !important;\"><label><label title="QA Box"><input type="checkbox" class="uk-checkbox qa_tick" id="yes_89363"><span>QA?</span><label> 
+<label title="Send for Clinical Review" style="padding-left: 20px !important;"><input type="checkbox" id="no_89363" class="uk-checkbox clinical_review"><span>Clinical Review?</span><label></label></label></label></label></label></div><div id="notes_tab" class="col s12 uk-animation-fade detab" style="display: block;"><div class="row"><div class="col-md-7" style="overflow-y: scroll; height:500px;">  <div class="uk-comment-body" style="background-color: whitesmoke; padding: 10px; border-radius: 10px; color: red">
                                     <span class="nothing">No Client Feedback</span>
                                 </div><hr><span id="t01"></span>  <div class="uk-comment-body" style="background-color: whitesmoke; padding: 10px; border-radius: 10px; color: red">
                                     <span class="nothing">No Notes</span>
-                                </div></div> <div class="col-md-5" style="border: 1px solid whitesmoke"><div><span class="uk-text-meta purple-text"> No Files </span><form style="display: inline; padding: 5px" action="edit_case.php" id="vv" method="post"><input type="hidden" name="claim_id" value="95351"><button class="uk-button uk-button-primary uk-button-small" style="background-color: #54bf99;"><span uk-icon="pencil" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="#000" d="M17.25,6.01 L7.12,16.1 L3.82,17.2 L5.02,13.9 L15.12,3.88 C15.71,3.29 16.66,3.29 17.25,3.88 C17.83,4.47 17.83,5.42 17.25,6.01 L17.25,6.01 Z"></path><path fill="none" stroke="#000" d="M15.98,7.268 L13.851,5.148"></path></svg></span> Edit Claim</button></form><span onclick="sendConsent(&quot;95351&quot;,&quot;&quot;)" title=""><button class="uk-button uk-button-primary uk-button-small" style="background-color: #54bf99;"><span id="consentID">Send Consent</span></button></span>
+                                </div></div> <div class="col-md-5" style="border: 1px solid whitesmoke"><div><span class="uk-text-meta purple-text"> No Files </span><form style="display: inline; padding: 5px" action="edit_case.php" id="vv" method="post"><input type="hidden" id="claim_id" name="claim_id" value="89363"><button class="uk-button uk-button-primary uk-button-small" style="background-color: #54bf99;"><span uk-icon="pencil" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="#000" d="M17.25,6.01 L7.12,16.1 L3.82,17.2 L5.02,13.9 L15.12,3.88 C15.71,3.29 16.66,3.29 17.25,3.88 C17.83,4.47 17.83,5.42 17.25,6.01 L17.25,6.01 Z"></path><path fill="none" stroke="#000" d="M15.98,7.268 L13.851,5.148"></path></svg></span> Edit Claim</button></form><span onclick="sendConsent(&quot;89363&quot;,&quot;&quot;)" title=""><button class="uk-button uk-button-primary uk-button-small" style="background-color: #54bf99;"><span id="consentID">Send Consent</span></button></span>
                           <div class="uk-inline" style="padding-right: 8px;"><span tabindex="0" aria-haspopup="true" aria-expanded="false"> <button class="uk-button uk-button-default uk-button-small" style="border: 1px solid #54bf99;">View Consent</button></span>
                           <button class="uk-button uk-button-default uk-button-small">Msg</button>
                           <div uk-dropdown="" class="uk-dropdown"><a href="consent_forms.php" onclick="window.open('consent_forms.php','popup','width=1100,height=700'); return false;" title="Click to view Consent Forms"><button class="uk-button uk-button-default uk-button-small" style="border: 1px solid #54bf99;"> Consent Forms</button></a>
-                          <div><p></p></div><a href="mymessage.php?claim_id=95351" class="uk-button uk-button-default uk-button-small" style="border: 1px solid #54bf99;" onclick="window.open('mymessage.php?claim_id=95351','popup','width=800,height=600'); return false;" title="Click to view">View Message</a></div></div>    <div class="input-field col s12">
+                          <div><p></p></div><a href="mymessage.php?claim_id=89363" class="uk-button uk-button-default uk-button-small" style="border: 1px solid #54bf99;" onclick="window.open('mymessage.php?claim_id=89363','popup','width=800,height=600'); return false;" title="Click to view">View Message</a></div></div>    <div class="input-field col s12">
 
         <textarea class="materialize-textarea" data-length="10000" id="intervention_desc" name="intervention_desc" placeholder="Type your note here" onkeyup="valid()"></textarea>
 
@@ -668,7 +598,7 @@ admission. This was a voluntary use of a non-designated service provider.</optio
                                         <input type="radio" id="open" name="Open" value="1" checked="">
                                         <span>No</span>
                                     </label>
-                                </p><p><label><input type="radio" id="close" name="Open" value="0"><span>Yes</span></label></p><button class="uk-button uk-button-primary uk-button-small" style="background-color: #54bf99;" id="addNotes" onclick="addNotes('95351;','0')" disabled="true"><span uk-icon="check" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#000" stroke-width="1.1" points="4,10 8,15 17,4"></polyline></svg></span> Add Note</button>
+                                </p><p><label><input type="radio" id="close" name="Open" value="0"><span>Yes</span></label></p><button class="uk-button uk-button-primary uk-button-small" style="background-color: #54bf99;" id="addNotes" onclick="addNotes('89363;','0')" disabled="true"><span uk-icon="check" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#000" stroke-width="1.1" points="4,10 8,15 17,4"></polyline></svg></span> Add Note</button>
                             <div style="display: none; padding: 12px" id="meshow">Please wait...</div>
                             </div></div></div></div></div><div id="feedback_tab" class="col s12 uk-animation-fade detab" style="display: none;"><p><u>Feedback</u></p><div class="row"><div class="col-md-8"><span id="t02"></span>  <div class="uk-comment-body" style="background-color: whitesmoke; padding: 10px; border-radius: 10px; color: red">
                                     <span class="nothing">No Client Feedback</span>
@@ -680,12 +610,12 @@ admission. This was a voluntary use of a non-designated service provider.</optio
                             <option value="Wrong Doctor mentioned in note">Wrong Doctor mentioned in note</option>
                             <option value="Gap value in case doesn't match ours">Gap value in case doesn't match ours</option>
                             <option value="Doctor Disputing discount">Doctor Disputing discount</option>
-                        </select></div><label for="fxd"> Select Reason</label><p><textarea rows="8" placeholder="add feedback here..." style="border-color: #0b8278; border-radius: 5px" cols="80" id="feedback_desc" name="feedback_desc" onkeyup="valid1()"></textarea></p><button class="uk-button uk-button-primary uk-button-small" onclick="addFeedback('95351')" id="addFeedback"><span><span uk-icon="mail" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#000" points="1.4,6.5 10,11 18.6,6.5"></polyline><path d="M 1,4 1,16 19,16 19,4 1,4 Z M 18,15 2,15 2,5 18,5 18,15 Z"></path></svg></span> Send Feedback</span> </button>
+                        </select></div><label for="fxd"> Select Reason</label><p><textarea rows="8" placeholder="add feedback here..." style="border-color: #0b8278; border-radius: 5px" cols="80" id="feedback_desc" name="feedback_desc" onkeyup="valid1()"></textarea></p><button class="uk-button uk-button-primary uk-button-small" onclick="addFeedback('89363')" id="addFeedback"><span><span uk-icon="mail" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#000" points="1.4,6.5 10,11 18.6,6.5"></polyline><path d="M 1,4 1,16 19,16 19,4 1,4 Z M 18,15 2,15 2,5 18,5 18,15 Z"></path></svg></span> Send Feedback</span> </button>
                         <span style="color: green;font-weight: bolder; display: none" id="feedbackShow">Sending, please wait...</span>
                         <div id="alert1" class="alert" style="display: none; width: 60%;"></div></div></div></div><div id="validations_tab" class="col s12 uk-animation-fade detab" style="display: none;"><p align="center">Validations</p><div id="validations"><table class="uk-table uk-table-divider"><thead><tr><th style="width: 20%">Number</th><th style="width: 20%">Rules</th><th>Description</th><th>Confirm</th></tr></thead> <tbody>        <tr><td><span class="uk-icon-button uk-margin-small-right uk-icon" uk-icon="check"><svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#000" stroke-width="1.1" points="4,10 8,15 17,4"></polyline></svg></span></td>
             <td><div class="uk-text-danger uk-card uk-card-default uk-card-body"> The provider may not have applied modifier 0005 properly. <br>On Practice Number :<br>
                     <ul><li>2806835</li></ul>                </div></td><td> <div class="uk-card uk-card-default uk-card-body">
-                    Modifier 0005 decreases the price chargeable for the second and subsequent procedures performed under the same anaesthetic                </div></td><td><label><input id="provider_zf" class="uk-checkbox" type="checkbox" onclick="showhide('provider_zf','membspan2')"> <span>Confirm?</span></label><span id="membspan2" style="display: none"> <textarea class="uk-textarea" id="memtxt2"></textarea><button class="uk-button uk-button-primary uk-button-small" onclick="provider_zf('95351')">Update</button></span><ul id="myspan2"><ul></ul></ul></td></tr>
+                    Modifier 0005 decreases the price chargeable for the second and subsequent procedures performed under the same anaesthetic                </div></td><td><label><input id="provider_zf" class="uk-checkbox" type="checkbox" onclick="showhide('provider_zf','membspan2')"> <span>Confirm?</span></label><span id="membspan2" style="display: none"> <textarea class="uk-textarea" id="memtxt2"></textarea><button class="uk-button uk-button-primary uk-button-small" onclick="provider_zf('89363')">Update</button></span><ul id="myspan2"><ul></ul></ul></td></tr>
            <tr>
    <td><span class="uk-badge">4</span> <span class="uk-badge">5</span> <span class="uk-badge">6</span> <span class="uk-badge">7</span> </td>
                         <td><div class="uk-text-danger uk-card uk-card-default uk-card-body"> <ul><li>Mismatch on Tariff and ICD10 codes</li></ul></div></td>
@@ -695,40 +625,120 @@ admission. This was a voluntary use of a non-designated service provider.</optio
 
                              
                             </div></td>
-                        <td><label><input id="codingcptcodingcpt" style="opacity: 200 !important; position: relative !important;" class="uk-checkbox" type="checkbox" onclick="showhide(&quot;codingcptcodingcpt&quot;,&quot;membspan4&quot;)"> Confirm?</label><span id="membspan4" style="display: none"> <textarea class="uk-textarea" id="memtxt4"></textarea><button class="uk-button uk-button-primary uk-button-small" onclick="updateCoding(&quot;95351&quot;)">Update</button></span><ul id="myspan4"></ul></td>
+                        <td><label><input id="codingcptcodingcpt" style="opacity: 200 !important; position: relative !important;" class="uk-checkbox" type="checkbox" onclick="showhide(&quot;codingcptcodingcpt&quot;,&quot;membspan4&quot;)"> Confirm?</label><span id="membspan4" style="display: none"> <textarea class="uk-textarea" id="memtxt4"></textarea><button class="uk-button uk-button-primary uk-button-small" onclick="updateCoding(&quot;89363&quot;)">Update</button></span><ul id="myspan4"></ul></td>
                     </tr></tbody></table><input type="hidden" id="xjson" value="provider_zf,coding_checked"></div></div></div></section>
     </div>
     <script>
-    const first = document.querySelector(".first");
-const second = document.querySelector(".second");
-const third = document.querySelector(".third");
-const fourth = document.querySelector(".fourth");
-const fifth = document.querySelector(".fifth");
-const sixth = document.querySelector(".sixth");
-const steps = [first, second, third, fourth, fifth,sixth];
 
-function nextStep(currentStep) {
-    steps.forEach(step => step.classList.remove("active"));
-
-    steps.forEach((step, index) => {
-        if (index <= currentStep) {
-            step.classList.add("active");
-        } else {
-            step.classList.remove("active");
+$(document).on('click','.sticky-button',function(){  
+    
+   let xval= $("#tvt").val();
+   if(xval==0)
+   {
+    let claim_id = $("#claim_id").val();
+   const obj={identity_number:49,claim_id:claim_id};
+        $.ajax({
+            url:"ajax/claims.php",
+            type:"POST",
+            data:obj,
+            success:function(data){
+               const json=JSON.parse(data);  
+                    let stages = json["stages"];
+                    let activities = json["stage_activities"];
+                    let inid = json["active_stage"];
+                    runStages(stages);
+                    runActivities(activities);
+                    activate(inid);
+                    
+            },
+            error:function(jqXHR, exception)
+            {
+                console.log(jqXHR);
+            },
+            complete: function(xhr, status) {
+              $("#tvt").val(1);
+              $('.process').slideToggle();
         }
-    });
+           
+        });
+   }
+   else{
+    $('.process').slideToggle();
+   }
+   
+ 
+});
+
+const runStages = (stages) =>{
+    let coonc =1;
+    let txtpro = "";
+    $("#mainstep").empty();
+                    for(let k in stages)
+                    {
+                        let stage = stages[k]["stage_name"];
+                        let icon = stages[k]["stage_icon"];
+                        let id = stages[k]["id"];
+                        txtpro += `<li><i class='icons awesome fa-solid ${icon}'></i><div id='${coonc}' rid='${id}' class='step s${id}'><p>${coonc}</p> 
+                        <i class='awesome fa-solid fa-check'></i></div><p class='label'>${stage}</p></li>`;
+                        coonc++;
+                    }
+                    $("#mainstep").html(txtpro);
+}
+const runActivities = (activities) =>{
+    let coonc =1;
+    $("#actv").empty();
+    let txtpro = "";
+                    for(let k in activities)
+                    {
+                        let activity = activities[k]["desctiption"];
+                        let status = activities[k]["status"];
+                        let hover = activities[k]["title_hover"];
+                        let id = activities[k]["process_activity_id"];
+                        status = status=="0"?"":"checked";
+                        txtpro += `<li><input type="checkbox" id="item${coonc}" ${status}> <label for="item${coonc}" title="${hover}">
+      <span><span class="uk-icon-button" uk-icon="check"></span></span>${activity}</label></li>`;
+                        coonc++;
+                    }
+                    $("#actv").html(txtpro);
 }
 
-steps.forEach((step, index) => {
-    step.addEventListener("click", () => {
-        nextStep(index);
-    });
-});
-$(document).on('click','.sticky-button',function(){
-    console.log('testing...');
-    $('.process').slideToggle();
+$(document).on('click','.step',function(){
+let inid = $(this).attr("id");
+let stage_id = $(this).attr("rid");
+let claim_id = $("#claim_id").val();
+mProcess(stage_id,claim_id)
+activate(inid);
 });
 
+const activate = (inid) =>{
+    $('.step').removeClass("active");
+    for(let i = 1; i<=inid;i++)
+{
+    $(".s"+i).addClass("active");
+}
+}
+
+const mProcess = (stage_id,claim_id) =>{
+    const obj={identity_number:50,claim_id:claim_id,stage_id:stage_id};
+        $.ajax({
+            url:"ajax/claims.php",
+            type:"POST",
+            data:obj,
+            success:function(data){
+               const json=JSON.parse(data);  
+               runActivities(json);
+                    
+            },
+            error:function(jqXHR, exception)
+            {
+                console.log(jqXHR);
+            },
+            complete: function(xhr, status) {
+           
+        }
+           
+        });
+}
 </script>
 </body>
 </html>

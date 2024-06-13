@@ -14,7 +14,7 @@ class Validate
     }
     function allRoles()
     {
-        return ["admin","controller","claims_specialist","gap_cover"];
+        return ["admin","controller","claims_specialist","gap_cover","web"];
     }
     function isLogged()
     {
@@ -109,7 +109,6 @@ Class controls extends Validate
     public $validate8days;
     public $qa_disabled;
     public $clinical_disabled;
-    public $broker;
     public function __construct()   {
         parent::__construct();
         global $db;
@@ -260,18 +259,6 @@ b.policy_number like :search OR c.client_name like :search OR a.username like :s
     public function viewOpenClaims($condition=":username",$val="1")
     {
         return $this->db_action->getOpenClaims($condition,$val);
-    }
-    public function viewQueries($condition=":username",$val="1")
-    {
-        return $this->db_action->getQueries($condition,$val);
-    }
-    public function viewQuery($query_id)
-    {
-        return $this->db_action->getQuery($query_id);
-    }
-    public function viewQueryDocs($query_id,$type="query")
-    {
-        return $this->db_action->getQueryDocs($query_id,$type);
     }
     public function viewLeads($condition=":username",$val=1)
     {
@@ -521,6 +508,42 @@ public function viewAvailableQAFeedback($dat,$claim_id)
     {
         return $this->db_action->getAvailableQAFeedback($dat,$claim_id);
     }
+    public function viewQueries($condition=":username",$val="1")
+    {
+        return $this->db_action->getQueries($condition,$val);
+    }
+    public function viewQuery($query_id)
+    {
+        return $this->db_action->getQuery($query_id);
+    }
+    public function viewProcessFlow($flow_id=1)
+    {
+        return $this->db_action->getProcessFlow($flow_id);
+    } 
+    public function viewStage($stage_id)
+    {
+        return $this->db_action->getStage($stage_id);
+    }
+    public function viewProcessActivies($stage_id,$claim_id)
+    {
+        return $this->db_action->getProcessActivies($stage_id,$claim_id);
+    }
+    public function loadProcessActivities($claim_id)
+    {
+        return $this->db_action->loadProcessActivities($claim_id);
+    }
+    public function viewClaimProcess($claim_id)
+    {
+        return $this->db_action->getClaimProcess($claim_id);
+    }
+    public function viewClaimStage($claim_id)
+    {
+        return $this->db_action->getClaimStage($claim_id);
+    }
+    public function viewQueryDocs($query_id,$type="query")
+    {
+        return $this->db_action->getQueryDocs($query_id,$type);
+    }
     public function validateClaim($claim_number,$client_id)
     {
         return (int)$this->db_action->getClaimNumber($claim_number,$client_id);
@@ -757,6 +780,10 @@ public function viewAvailableQAFeedback($dat,$claim_id)
         $client_gap=$data["gap_aamount_line"];
         $c=$this->db_action->updateAmounts($claim_id,$charged_amnt,$scheme_paid,$gap,$client_gap);
     }
+     function callFreemiumNotes($query_id,$description)
+    {
+        return $this->db_action->insertFreemiumNotes($query_id,$description,$this->loggedAs());
+    }
     function viewAmountsClaimLine($claim_id)
     {
         $data["charged_amnt"]=0;
@@ -917,10 +944,6 @@ public function callSFTPNegative()
     {
         return $this->db_action->updateQAKey($claim_id,$key,$value);
     }
-    function viewBrokerCodes($scheme,$broker)
-    {
-        return $this->db_action->getBrokerCodes($scheme,$broker);
-    }
     function viewDisciplinecodes()
     {
         return $this->db_action->getDisciplinecodes();
@@ -950,11 +973,12 @@ public function callSFTPNegative()
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-'Authorization: Bearer ' . $auth_key,
+                'Authorization: Bearer ' . $auth_key,
                 'authKey:e15c4c44-2ea3-4bc7-bc5d-5b7555bb9c63',
                 'Content-Type", "application/raw',
                 'Content-Type: application/json')
         );
+        
         $result = curl_exec($ch);
         $err = curl_error($ch);
         curl_close($ch);
@@ -966,7 +990,7 @@ public function callSFTPNegative()
             $pos8 = strpos($result, "success");
             $pos9 = strpos($result, "Claimline ID");
             $pos10 = strpos($result, "Status");
-                $pos11 = strpos($result, "accepted for processing");
+            $pos11 = strpos($result, "accepted for processing");
             $jres=false;
             if($pos8 > 0 || ($pos9 > 0 && $pos10 > 0) || $pos11>0)
             {
@@ -1018,35 +1042,6 @@ public function callSFTPNegative()
         $qDecoded=openssl_decrypt($password,"AES-128-ECB",$cryptKey);
         return( $qDecoded );
     }
-        function getWorkingHours($startDate, $endDate) {
-        $startWorkingHour = 8;
-        $endWorkingHour = 16;
-        $startDate = strtotime($startDate);
-        $endDate = strtotime($endDate);
-        $workingDays = 0;
-        $currentDate = $startDate;
-        while ($currentDate <= $endDate+86400) {
-            $dayOfWeek = date('N', $currentDate);
-            if ($dayOfWeek >= 1 && $dayOfWeek <= 5) {
-                $currentDateFormatted = date('Y-m-d', $currentDate);
-                if (!in_array($currentDateFormatted, $this->holidays())) {           
-                    $startTime = strtotime(date('Y-m-d', $currentDate) . " $startWorkingHour:00:00");
-                    $endTime = strtotime(date('Y-m-d', $currentDate) . " $endWorkingHour:00:00");
-                    $startTime = $startTime<$startDate? $startDate : $startTime;
-                    if((int)date('H', $startTime)<$endWorkingHour){
-                    $endTime = $endTime>$endDate? $endDate : $endTime;
-                    if($startTime<$endTime){
-                      //$workingHours = floor(($endTime - $startTime) / 3600); 
-                      $workingHours = ($endTime - $startTime) / 3600; 
-                      $workingDays += $workingHours;
-                    }              
-                 }
-                }          
-            }      
-            $currentDate = strtotime('+1 day', $currentDate);
-        }
-        return $workingDays;
-      }
     function getWorkingDays($startDate,$endDate,$holidays){
         // do strtotime calculations just once
         $endDate = strtotime($endDate);
@@ -1101,7 +1096,8 @@ public function callSFTPNegative()
 
         //We subtract the holidays
         foreach($holidays as $holiday){
-            $time_stamp=strtotime($holiday);
+            $myholiday=date("Y")."-";
+            $time_stamp=strtotime($myholiday.$holiday);
             //If the holiday doesn't fall in weekend
             if ($startDate <= $time_stamp && $time_stamp <= $endDate && date("N",$time_stamp) != 6 && date("N",$time_stamp) != 7)
                 $workingDays--;
@@ -1109,6 +1105,42 @@ public function callSFTPNegative()
 
         return $workingDays;
     }
+    function getWorkingHours($startDate, $endDate, $holidays) {
+        $startWorkingHour = 8;
+        $endWorkingHour = 16;
+        $startDate = strtotime($startDate);
+        $endDate = strtotime($endDate);
+        $workingDays = 0;
+        $currentDate = $startDate;
+        while ($currentDate <= $endDate+86400) {
+            $dayOfWeek = date('N', $currentDate);
+            if ($dayOfWeek >= 1 && $dayOfWeek <= 5) {
+                $currentDateFormatted = date('Y-m-d', $currentDate);
+                if (!in_array($currentDateFormatted, $holidays)) {           
+                    $startTime = strtotime(date('Y-m-d', $currentDate) . " $startWorkingHour:00:00");
+                    $endTime = strtotime(date('Y-m-d', $currentDate) . " $endWorkingHour:00:00");
+                    $startTime = $startTime<$startDate? $startDate : $startTime;
+                    if((int)date('H', $startTime)<$endWorkingHour){
+                    $endTime = $endTime>$endDate? $endDate : $endTime;
+                    if($startTime<$endTime){
+                      //$workingHours = floor(($endTime - $startTime) / 3600); 
+                      $workingHours = ($endTime - $startTime) / 3600; 
+                      $workingDays += $workingHours;
+                    }              
+                 }
+                }          
+            }      
+            $currentDate = strtotime('+1 day', $currentDate);
+        }
+        return $workingDays;
+      }
+
+      function arrDesc($arr)
+      {
+        usort($arr, function($a, $b) {
+            return $b["hours"] - $a["hours"]; // Compare hours in descending order
+        });
+      }
     function checkDisciplineCodes($discipline_id)
     {
         global $conn;
@@ -1139,7 +1171,7 @@ public function callSFTPNegative()
 
     function holidays()
     {
-        return array("2024-01-01","2024-03-21","2024-03-29","2024-04-01","2024-04-27","2024-05-01","2024-06-17","2024-08-09","2024-09-24","2024-12-16","2024-12-25","2024-12-26");
+        return array("01-01","03-21","03-29","04-01","04-27","05-01","06-17","08-09","09-24","12-16","12-25","12-26");
     }
     function rearrageArray($arr)
 
@@ -1230,7 +1262,7 @@ public function callSFTPNegative()
         }
     }
 
-    function generalSendAPI($url,$data_string,$claim_number,$status,$auth_key="")
+    function generalSendAPI($url,$data_string,$claim_number,$status)
     {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// where to post
@@ -1238,7 +1270,6 @@ public function callSFTPNegative()
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-'Authorization: Bearer ' . $auth_key,
                 'authKey:e15c4c44-2ea3-4bc7-bc5d-5b7555bb9c63',
                 'Content-Type", "application/raw',
                 'Content-Type: application/json')
@@ -1252,8 +1283,7 @@ public function callSFTPNegative()
         } else {
 
             $pos8 = strpos($result, "success");
- $pos11 = strpos($result, "accepted for processing");
-            if ($pos8 === false && $pos11 === false) {
+            if ($pos8 === false) {
                 $messg="Failed";
             } else {
                 $ffailed=4;
@@ -1325,10 +1355,6 @@ public function callSFTPNegative()
     {
         return $this->db_action->getFeedbackQA($dat,$username);
     }
-    function callFreemiumNotes($query_id,$description)
-    {
-        return $this->db_action->insertFreemiumNotes($query_id,$description,$this->loggedAs());
-    }
    function callupdateFeedbackQA($id,$action_plan,$comment)
     {
         return $this->db_action->updateFeedbackQA($id,$action_plan,$comment);
@@ -1342,11 +1368,11 @@ function generateRandomString()
         $rand=rand(0,200000);
         return $rand;
     }
-    function sendIcr($target_file,$pagerange)
+    function sendIcr($target_file,$pagerange="allpages")
 {
-         $license_code = "B05AFD65-80EF-411C-BA5D-4A20BFF2A0F4";
-        $username =  "JOMBO";
-        $url = 'http://www.ocrwebservice.com/restservices/processDocument?gettext=true&outputformat=txt&newline=1';
+          $license_code = "3CB7D91C-7313-492F-889A-C5BD5667589B";
+        $username =  "TUMULA";
+        $url = 'http://www.ocrwebservice.com/restservices/processDocument?gettext=true&outputformat=txt&newline=1&pagerange='.$pagerange;
         $filePath = $target_file;  
         $fp = fopen($filePath, 'r');
         $session = curl_init();
@@ -1522,6 +1548,29 @@ $jim=0;
 $practice_number="";
 }
 }
+}
+function freemiumOcr($file_name)
+{
+ $doc=file_get_contents($file_name);
+$line=explode("\n",$doc);
+$arrz =[];
+$counter=0;
+foreach($line as $newline){
+    $newline=$this->strip_hidden_chars($newline); 
+    $arr=explode(" ", $newline); 
+    $arrcount = count($arr);
+    $treatment_date = $arr[0];    
+    if($this->isValidDate($treatment_date,'Y-m-d'))
+    {
+    $amount_charged = $arr[3];
+    $amount_paid = $arr[$arrcount-1];
+    $paid_from = $arr[$arrcount-3];
+$counter++;
+       array_push($arrz,array("key"=>$counter,"treatment_date"=>$treatment_date,"amount_charged"=>$amount_charged,"amount_paid"=>$amount_paid,"paid_from"=>$paid_from));
+    }
+ 
+}
+return $arrz;
 }
 function gapriskOcr($file_name)
 {

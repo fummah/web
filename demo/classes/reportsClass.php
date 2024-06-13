@@ -2531,7 +2531,7 @@ FROM quality_assurance as a inner JOIN claim as b ON a.claim_id=b.claim_id INNER
     {
         global $conn;
         $arr=[];
-        $stmt=$conn->prepare("SELECT username FROM `users_information` where status".$status." ORDER BY status DESC");
+        $stmt=$conn->prepare("SELECT username FROM `users_information` where status".$status." OR r_status=1 ORDER BY status DESC");
         $stmt->execute();
         foreach($stmt->fetchAll() as $row)
         {

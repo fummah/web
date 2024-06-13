@@ -22,12 +22,11 @@ $mail = new PHPMailer(true);
     $claim_id=(int)$_POST['claim_id'];
      $claim_data=$control->viewSingleClaim($claim_id);
         $sys_username = $claim_data["username"];
-     $claim_number=$claim_data["claim_number"];    
-     $client_name=$claim_data["client_name"];
+     $claim_number=$claim_data["claim_number"];
+      $client_name=$claim_data["client_name"];
      $client_email=$client_name=="Cinagi"?"admin@cinagi.co.za":$claim_data["client_email"];
-
      $user_data = $control->viewUser($sys_username);
-    $role="claims_specialist";
+    $role=$control->myRole();
     $sentoemail=$claim_data["email"];
     $date = date("Y-m-d H:i:s");
     $feedback=$_POST['feedback'];
@@ -47,8 +46,9 @@ $mail = new PHPMailer(true);
     $from_email=$email_date['notification_email'];
     $from_password=$email_date['notification_password'];
     $copy_email=$email_date['cc1'];
+    $body="Hi<br><br>Feedback on claim : <br><br><b>$feedback</b><br><br>Regards,<br>Medclaim Assist Team";
     $subject="Feedback from " . $username."(".$claim_number.")";
-    if($control->sendEmail($mail,$from_email,"Med Claim Assist Feedback Mailer",$from_password,$sentoemail,"MedClaim Assist System User",$subject,$feedback,0,"",$copy_email))
+    if($control->sendEmail($mail,$from_email,"Med Claim Assist Feedback Mailer",$from_password,$sentoemail,"MedClaim Assist System User",$subject,$body,0,"",$copy_email))
                         {
                             echo "Your feedback have been added to the system";
                             }
