@@ -1359,7 +1359,22 @@ else if($identity==50)
 {
     $claim_id=(int)$_POST["claim_id"];
     $stage_id=(int)$_POST["stage_id"];
+    $inid=(int)$_POST["inid"];
+    $truerun=(int)$_POST["truerun"];
     $activities = $control->viewProcessActivies($stage_id,$claim_id);
+    if($truerun==1)
+    {
+        $control->callUpdateClaimKey($claim_id,"claim_stage",$inid);
+    }
+   
     echo json_encode($activities,true);
+}
+else if($identity==51)
+{
+    $claim_id=(int)$_POST["claim_id"];
+    $activity_id=(int)$_POST["activity_id"];
+    $status=(int)$_POST["status"];
+    $added = $control->callClaimActivity($activity_id,$claim_id,$status);
+    echo (int)$added;
 }
 ?>

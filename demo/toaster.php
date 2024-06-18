@@ -14,7 +14,7 @@
 }
 
 .toast {
-    background-color: red;
+    background-color: #54bc9c;
     color: #fff;
     padding: 16px;
     margin-bottom: 10px;

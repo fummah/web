@@ -3,18 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toaster Notification</title>
-   <style>
-   #toaster-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 300px;
-    z-index: 1000;
-}
-
-.toast {
-    background-color: red;
+    <title>Confirmation Alert</title>
+  <style>
+   .toast { 
+    background-color: #53C099 !important;   
     color: #fff;
     padding: 16px;
     margin-bottom: 10px;
@@ -24,6 +16,12 @@
     transition: opacity 0.3s, transform 0.3s;
     transform: translateY(-20px);
     position: relative;
+}
+.toast-success{
+    background-color: #53C099 !important;
+}
+.toast-error{
+    background-color: red !important;
 }
 
 .toast.show {
@@ -47,7 +45,7 @@
     cursor: pointer;
 }
 
-.toast .progress {
+.toast .progressx {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -56,22 +54,30 @@
     width: 100%;
     transition: width 3s linear;
 }
-</style>
+
+    </style>
 </head>
 <body>
 
+<button onclick="showToast('This is a toaster notification!')">Show Toast</button>
 <div id="toaster-container"></div>
 
-<button onclick="showToast('This is a toaster notification!')">Show Toast</button>
-
 <script>
-    function showToast(message) {
+   const showToast = (message,status=0) => {
     const toasterContainer = document.getElementById('toaster-container');
 
     // Create a new toast element
     const toast = document.createElement('div');
     toast.className = 'toast';
-
+    /*
+    if(status==1)
+    {
+        toast.className = 'toast-error'; 
+    }
+    else{
+        toast.className = 'toast-success'; 
+    }
+*/
     // Add icon to the toast
     const icon = document.createElement('span');
     icon.className = 'icon';
@@ -94,16 +100,16 @@
 
     // Add progress bar to the toast
     const progressBar = document.createElement('div');
-    progressBar.className = 'progress';
+    progressBar.className = 'progressx';
     toast.appendChild(progressBar);
 
     // Append the toast to the container
     toasterContainer.appendChild(toast);
-
     // Trigger reflow for animation
     setTimeout(() => {
         toast.classList.add('show');
         progressBar.style.width = '0%'; // Start the progress bar animation
+        console.log("tesing");
     }, 10);
 
     // Remove the toast after 3 seconds
@@ -116,7 +122,6 @@
         }, 300);
     }, 3000);
 }
-
 </script>
 </body>
 </html>

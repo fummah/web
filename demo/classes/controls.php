@@ -536,6 +536,10 @@ public function viewAvailableQAFeedback($dat,$claim_id)
     {
         return $this->db_action->getClaimProcess($claim_id);
     }
+    public function callClaimActivity($activity_id,$claim_id,$status)
+    {
+        return $this->db_action->updateClaimActivity($activity_id,$claim_id,$status);
+    }
     public function viewClaimStage($claim_id)
     {
         return $this->db_action->getClaimStage($claim_id);

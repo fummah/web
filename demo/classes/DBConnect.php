@@ -1932,7 +1932,14 @@ return $all;
     {
         return date('Y-m-d', strtotime('+1 month', strtotime($dat)));
     }
-
+    function updateClaimActivity($activity_id,$claim_id,$status)
+    {
+        $stmt =$this->conn->prepare("UPDATE process_claim SET status=:status WHERE claim_id=:claim_id AND process_activity_id=:process_activity_id");
+        $stmt->bindParam(':status', $status, \PDO::PARAM_STR); 
+        $stmt->bindParam(':claim_id', $claim_id, \PDO::PARAM_STR);
+        $stmt->bindParam(':process_activity_id', $activity_id, \PDO::PARAM_STR);    
+        return $stmt->execute();
+    }
     function getProcessFlow($flow_id)
     {
         $stmt =$this->conn->prepare("SELECT id, stages FROM `process_flow` WHERE id=:id");

@@ -310,7 +310,7 @@ body {
 }
 
 .checkbox-list input[type="checkbox"] {
-  display: none; /* Hide the checkbox */
+ display: none;
 }
 
 .checkbox-list input[type="checkbox"] + label {
@@ -368,9 +368,106 @@ td .uk-badge{
 .user{
     color: #54bf99 !important;
 }
+.confirm-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    position: absolute;
+    top: 10px; /* Position it below the button */
+    left: 30%;
+    z-index: 100000;
+}
+
+.hidden {
+    display: none;
+}
+
+.confirm-btn {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#confirmYes {
+    background: #54bc9c;
+    color: #fff;
+}
+
+#confirmNo {
+    background: #f44336;
+    color: #fff;
+}
+#toaster-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    z-index: 1000;
+}
+
+.toastx {   
+    color: #fff;
+    padding: 16px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    transform: translateY(-20px);
+    position: relative;
+}
+.toastx-success{
+    background-color: #53C099 !important;
+}
+.toastx-error{
+    background-color: red !important;
+}
+
+.toastx.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toastx .icon {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.toastx .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.toastx .progressx {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background-color: #ff9800;
+    width: 100%;
+    transition: width 3s linear;
+}
     </style>
 </head>
 <body>
+<div id="toaster-container"></div>
+<div id="confirmBox" class="confirm-box hidden">
+    <p>Are you sure you want to save?</p>
+    <button id="confirmYes" class="confirm-btn"></button>
+    <button id="confirmNo" class="confirm-btn"></button>
+</div>
 <span class="sticky-button"><span uk-icon="more-vertical"></span></span>
     <div class="user-details">
 <div class="mymain">
@@ -536,7 +633,7 @@ td .uk-badge{
                                     <span class="nothing">No Client Feedback</span>
                                 </div><hr><span id="t01"></span>  <div class="uk-comment-body" style="background-color: whitesmoke; padding: 10px; border-radius: 10px; color: red">
                                     <span class="nothing">No Notes</span>
-                                </div></div> <div class="col-md-5" style="border: 1px solid whitesmoke"><div><span class="uk-text-meta purple-text"> No Files </span><form style="display: inline; padding: 5px" action="edit_case.php" id="vv" method="post"><input type="hidden" id="claim_id" name="claim_id" value="89363"><button class="uk-button uk-button-primary uk-button-small" style="background-color: #54bf99;"><span uk-icon="pencil" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="#000" d="M17.25,6.01 L7.12,16.1 L3.82,17.2 L5.02,13.9 L15.12,3.88 C15.71,3.29 16.66,3.29 17.25,3.88 C17.83,4.47 17.83,5.42 17.25,6.01 L17.25,6.01 Z"></path><path fill="none" stroke="#000" d="M15.98,7.268 L13.851,5.148"></path></svg></span> Edit Claim</button></form><span onclick="sendConsent(&quot;89363&quot;,&quot;&quot;)" title=""><button class="uk-button uk-button-primary uk-button-small" style="background-color: #54bf99;"><span id="consentID">Send Consent</span></button></span>
+                                </div></div> <div class="col-md-5" style="border: 1px solid whitesmoke"><div><span class="uk-text-meta purple-text"> No Files </span><form style="display: inline; padding: 5px" action="edit_case.php" id="vv" method="post"><input type="hidden" id="claim_id" name="claim_id" value="89363"><button class="uk-button uk-button-primary uk-button-small" style="background-color: #54bf99;"><span uk-icon="pencil" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="#000" d="M17.25,6.01 L7.12,16.1 L3.82,17.2 L5.02,13.9 L15.12,3.88 C15.71,3.29 16.66,3.29 17.25,3.88 C17.83,4.47 17.83,5.42 17.25,6.01 L17.25,6.01 Z"></path><path fill="none" stroke="#000" d="M15.98,7.268 L13.851,5.148"></path></svg></span> Edit Claim</button></form><span onclick="sendConsent()" title=""><button class="uk-button uk-button-primary uk-button-small" style="background-color: #54bf99;"><span id="consentID">Send Consent</span></button></span>
                           <div class="uk-inline" style="padding-right: 8px;"><span tabindex="0" aria-haspopup="true" aria-expanded="false"> <button class="uk-button uk-button-default uk-button-small" style="border: 1px solid #54bf99;">View Consent</button></span>
                           <button class="uk-button uk-button-default uk-button-small">Msg</button>
                           <div uk-dropdown="" class="uk-dropdown"><a href="consent_forms.php" onclick="window.open('consent_forms.php','popup','width=1100,height=700'); return false;" title="Click to view Consent Forms"><button class="uk-button uk-button-default uk-button-small" style="border: 1px solid #54bf99;"> Consent Forms</button></a>
@@ -625,11 +722,10 @@ admission. This was a voluntary use of a non-designated service provider.</optio
 
                              
                             </div></td>
-                        <td><label><input id="codingcptcodingcpt" style="opacity: 200 !important; position: relative !important;" class="uk-checkbox" type="checkbox" onclick="showhide(&quot;codingcptcodingcpt&quot;,&quot;membspan4&quot;)"> Confirm?</label><span id="membspan4" style="display: none"> <textarea class="uk-textarea" id="memtxt4"></textarea><button class="uk-button uk-button-primary uk-button-small" onclick="updateCoding(&quot;89363&quot;)">Update</button></span><ul id="myspan4"></ul></td>
+                        <td><label><input id="codingcptcodingcpt" style="opacity: 200 !important; position: relative !important;" class="uk-checkbox" type="checkbox" onclick="showhide()"> Confirm?</label><span id="membspan4" style="display: none"> <textarea class="uk-textarea" id="memtxt4"></textarea><button class="uk-button uk-button-primary uk-button-small" onclick="updateCoding()">Update</button></span><ul id="myspan4"></ul></td>
                     </tr></tbody></table><input type="hidden" id="xjson" value="provider_zf,coding_checked"></div></div></div></section>
     </div>
     <script>
-
 $(document).on('click','.sticky-button',function(){  
     
    let xval= $("#tvt").val();
@@ -695,19 +791,64 @@ const runActivities = (activities) =>{
                         let hover = activities[k]["title_hover"];
                         let id = activities[k]["process_activity_id"];
                         status = status=="0"?"":"checked";
-                        txtpro += `<li><input type="checkbox" id="item${coonc}" ${status}> <label for="item${coonc}" title="${hover}">
+                        txtpro += `<li><input type="checkbox" class="activity" activity_id="${id}" id="item${coonc}" ${status}> <label for="item${coonc}" title="${hover}">
       <span><span class="uk-icon-button" uk-icon="check"></span></span>${activity}</label></li>`;
                         coonc++;
                     }
                     $("#actv").html(txtpro);
 }
 
+$(document).on('change','.activity',async function(){      
+let status = $(this).is(':checked');
+let claim_id = $("#claim_id").val(); 
+let activity_id = $(this).attr("activity_id");
+let xid = $(this).attr("id");
+let y = !status;
+$(this).prop("checked", y);
+$("#confirmYes").text("Yes");
+$("#confirmNo").text("No");
+$("#confirmBox").removeClass("hidden");
+
+$('#confirmYes').off('click').on('click', async function() {  
+let z = await mActivity(activity_id,claim_id,status);
+if(z=="1")
+{
+    $("#"+xid).prop("checked", status);
+    showToast("You have successfully updated the Activity");  
+  
+}
+else{
+    showToast("Failed to update",1);
+}
+    $("#confirmBox").addClass("hidden");
+});
+$('#confirmNo').off('click').on('click', function() {
+    $("#confirmBox").addClass("hidden");
+});
+
+
+});
+
 $(document).on('click','.step',function(){
 let inid = $(this).attr("id");
 let stage_id = $(this).attr("rid");
 let claim_id = $("#claim_id").val();
-mProcess(stage_id,claim_id)
-activate(inid);
+$("#confirmYes").text("Yes");
+$("#confirmNo").text("No, view details only");
+$("#confirmBox").removeClass("hidden");
+
+$('#confirmYes').off('click').on('click', async function() {
+mProcess(stage_id,claim_id,inid)
+activate(stage_id);
+    $("#confirmBox").addClass("hidden");
+});
+$('#confirmNo').off('click').on('click', async function() {
+    mProcess(stage_id,claim_id,inid,0)
+    activate(inid);
+    $("#confirmBox").addClass("hidden");
+});
+
+
 });
 
 const activate = (inid) =>{
@@ -718,8 +859,8 @@ const activate = (inid) =>{
 }
 }
 
-const mProcess = (stage_id,claim_id) =>{
-    const obj={identity_number:50,claim_id:claim_id,stage_id:stage_id};
+const mProcess = (stage_id,claim_id,inid,truerun=1) =>{
+    const obj={identity_number:50,claim_id:claim_id,stage_id:stage_id,inid:inid,truerun:truerun};
         $.ajax({
             url:"ajax/claims.php",
             type:"POST",
@@ -727,7 +868,11 @@ const mProcess = (stage_id,claim_id) =>{
             success:function(data){
                const json=JSON.parse(data);  
                runActivities(json);
-                    
+               if(truerun==1)
+               {
+                showToast("You have successfully updated the Stage");
+               }
+               
             },
             error:function(jqXHR, exception)
             {
@@ -738,6 +883,83 @@ const mProcess = (stage_id,claim_id) =>{
         }
            
         });
+}
+
+const mActivity = async (activity_id,claim_id,status) =>{
+    status = status?1:0;
+    return new Promise((resolve,reject)=>{
+    const obj={identity_number:51,claim_id:claim_id,activity_id:activity_id,status:status};
+        $.ajax({
+            url:"ajax/claims.php",
+            type:"POST",
+            data:obj,
+            success:function(data){
+                resolve(data);
+            },
+            error:function(jqXHR, exception)
+            {
+                resolve(0)
+            }           
+        });
+    });
+}
+
+const showToast = (message,status=0) => {
+ 
+    const toasterContainer = document.getElementById('toaster-container');
+
+    // Create a new toast element
+    const toastx = document.createElement('div');
+    toastx.className = 'toastx';
+    // Add icon to the toast
+    const icon = document.createElement('span');
+    icon.className = 'icon';
+    icon.innerHTML = '🔔'; // You can use any icon here
+    toastx.appendChild(icon);
+
+    // Add message to the toast
+    const text = document.createElement('span');
+    text.textContent = message;
+    toastx.appendChild(text);
+
+    // Add close button to the toast
+    const closeButton = document.createElement('button');
+    closeButton.className = 'close';
+    closeButton.innerHTML = '&times;'; // Close icon (×)
+    closeButton.onclick = () => {
+        toasterContainer.removeChild(toastx);
+    };
+    toastx.appendChild(closeButton);
+
+    // Add progress bar to the toast
+    const progressBar = document.createElement('div');
+    progressBar.className = 'progressx';
+    toastx.appendChild(progressBar);
+
+    // Append the toast to the container
+    toasterContainer.appendChild(toastx);
+    // Trigger reflow for animation
+    setTimeout(() => {
+        toastx.classList.add('show');
+        progressBar.style.width = '0%'; // Start the progress bar animation
+    }, 10);
+
+    // Remove the toast after 3 seconds
+    setTimeout(() => {
+        toastx.classList.remove('show');
+        setTimeout(() => {
+            if (toasterContainer.contains(toastx)) {
+                toasterContainer.removeChild(toastx);
+            }
+        }, 500);
+    }, 5000);
+    if(status==1)
+    {
+        $(".toastx").addClass('toastx-error'); 
+    }
+    else{
+        $(".toastx").addClass('toastx-success'); 
+    }
 }
 </script>
 </body>
