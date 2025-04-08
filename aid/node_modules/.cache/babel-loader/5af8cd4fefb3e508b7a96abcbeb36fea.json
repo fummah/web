@@ -1,0 +1,1 @@
+{"ast":null,"code":"var classof = require('./_classof');\nvar ITERATOR = require('./_wks')('iterator');\nvar Iterators = require('./_iterators');\nmodule.exports = require('./_core').getIteratorMethod = function (it) {\n  if (it != undefined) return it[ITERATOR] || it['@@iterator'] || Iterators[classof(it)];\n};","map":null,"metadata":{},"sourceType":"script"}

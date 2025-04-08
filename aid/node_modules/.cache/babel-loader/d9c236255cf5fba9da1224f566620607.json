@@ -1,0 +1,1 @@
+{"ast":null,"code":"// check on default Array iterator\nvar Iterators = require('./_iterators');\nvar ITERATOR = require('./_wks')('iterator');\nvar ArrayProto = Array.prototype;\nmodule.exports = function (it) {\n  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);\n};","map":null,"metadata":{},"sourceType":"script"}
