@@ -76,7 +76,7 @@ $isreason=$_POST['isreason'];
     {
 if($isreason=="yes" && $reason_id==0)
 {
-    die("Please select decline reason.");
+    die("Please select decline reason. try again");
 }
     }
     else{
