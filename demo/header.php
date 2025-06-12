@@ -1,6 +1,7 @@
 <?php
+error_reporting(0);
 if(!defined('access')) {
-    die('Access not permited');
+    //die('Access not permited');
 }
 ?>
 <link rel="shortcut icon" href="images/favicon.ico"/>
@@ -323,6 +324,7 @@ else if($script=="switch_claims.php"){$script_switch="activex";}
         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
 
         <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="index.php">Home</a></li>
             <?php
             if($control->isGapCover())
             {
@@ -341,7 +343,7 @@ else if($script=="switch_claims.php"){$script_switch="activex";}
                 <?php
             }
             ?>
-            <li class="<?php echo $script_icd10;?>"><a href="icd10_lookup.php">ICD10 Lookup</a></li>
+            <li class=""><a href="icd10_lookup.php">ICD10 Lookup</a></li>
             <li class="<?php echo $script_search;?>"><a class="#">Search <i class="material-icons right">arrow_drop_down</i></a>
                 <div uk-dropdown>
                     <ul class="uk-nav uk-dropdown-nav">
@@ -401,6 +403,7 @@ else if($script=="switch_claims.php"){$script_switch="activex";}
                 }
                 ?>
                 <li class="<?php echo $script_openclaims;?>"><a href="open_claims.php">Open Claims <span class="uk-badge sub_badge" id="open_claims"> 0</span></a></li>
+                <li class="<?php echo $script_openclaims;?>"><a href="otheremails.php">Unasigned Emails <span class="uk-badge sub_badge" id="otheremails"> 0</span></a></li>
                 <li class="hidde">New Claims <span class="uk-badge sub_badge" style="background-color: #84c4dc !important;" id="new_case"> 0</span></li>
                 <?php
 

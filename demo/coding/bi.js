@@ -698,13 +698,17 @@ console.log(data);
             ty+="<th style='text-align: center;' colspan='3'>Total</th>";
             ty+="</tr></thead>";
             ty+="<tr><th>Benefit</th>";
+            console.log(products);
             for(let x=0;x<products.length;x++)
             {
                 ty+="<th>Count</th><th>Value</th><th>Avg/Cost</th>";
             }
             ty+="<th>Grand Count</th><th>Grand Value</th><th>Avg/Cost</th></tr>";
+            console.log("Yesssdd");
+            console.log(content);
             for(key in content)
             {
+                console.log(content);
                 let grantcount=0;
                 let grantvalue=0;
                 let claiminsureditem_benefittiers=content[key]["claiminsureditem_benefittiers"];

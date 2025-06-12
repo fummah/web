@@ -1,53 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkbox List with Line-through Text</title>
-  <style>
-    /* styles.css */
-.checkbox-list {
-  list-style-type: none;
-  padding: 0;
-}
+<?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-.checkbox-list li {
-  display: flex;
-  align-items: center;
-  margin: 5px 0;
-}
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
 
-.checkbox-list input[type="checkbox"] {
-  display: none; /* Hide the checkbox */
-}
+$mail = new PHPMailer();
+     
+      $mail->isSMTP();    
+      $mail->SMTPDebug = 2;                                  // Set mailer to use SMTP
+      $mail->Host = 'smtp0001.neo.space';  // Specify main and backup SMTP servers
+      $mail->SMTPAuth = true;                               // Enable SMTP authentication
+      $mail->Username = "marketing@islandpros.net";                 // SMTP username
+      $mail->Password = "qazwsxedc1!";                           // SMTP password
+      $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+      $mail->Port = 587;                                    // TCP port to connect to
+      $mail->setFrom("marketing@islandpros.net", "Test Fuma");
+      $mail->addAddress("fummah3@gmail.com", "Dziva");     // Add a recipient
+      
+      $mail->isHTML(true);                                  // Set email format to HTML
+      $mail->Subject = "Test from Island prs";
+      $mail->Body = "Receive and forget";
+      
 
-.checkbox-list input[type="checkbox"] + label {
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.checkbox-list input[type="checkbox"]:checked + label {
-  text-decoration: line-through; /* Line-through text when checkbox is checked */
-  color: gray; /* Optional: Change text color when checked */
-}
-
-  </style>
-</head>
-<body>
-  <ul class="checkbox-list">
-    <li>
-      <input type="checkbox" id="item1">
-      <label for="item1">Item 1</label>
-    </li>
-    <li>
-      <input type="checkbox" id="item2">
-      <label for="item2">Item 2</label>
-    </li>
-    <li>
-      <input type="checkbox" id="item3">
-      <label for="item3">Item 3</label>
-    </li>
-    <!-- Add more items as needed -->
-  </ul>
-</body>
-</html>
+      if (!$mail->send()) {
+          echo "Send!!";
+      }
+      else {
+          echo "Failed";
+      }
+?>

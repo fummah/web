@@ -1471,9 +1471,10 @@ group by DATE_FORMAT(date_entered, \"%Y-%m-01\")");
         }
     }
 
-    function selectData($dat,$client,$status)
+    function selectData($dat,$client,$status,$j=0)
     {
-        $opp=$status=="a.date_entered"?"(1,3,4,5)":"(0)";
+        $j = $j == 2?"(0,1,3,4,5)":"(1,3,4,5)";
+        $opp=$status=="a.date_entered"?$j:"(0)";
         try {
             global $conn;
             $dat=$dat."%";
@@ -1707,6 +1708,16 @@ AND (c.client_name=:client_name OR c.client_name=:client1) AND a.Open IN $opp");
             return $e->getMessage();
         }
     }
+    function getIndividualOpen()
+{
+    global $conn;
+    $stmts = $conn->prepare('SELECT a.claim_id,a.claim_number,b.first_name,b.surname,b.medical_scheme, 
+       b.policy_number,a.username,c.client_name,a.date_entered FROM claim as a inner join member as b 
+           ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE 
+           c.client_id=4 AND a.Open=1 ORDER BY a.claim_id');
+       $stmts->execute();    
+    return $stmts->fetchAll();
+}
     function getAspenIcd10Value($status,$value,$patient_gender,$scheme,$date,$icd10)
     {
         try {
@@ -2205,6 +2216,26 @@ INNER JOIN clients as c ON b.client_id=c.client_id WHERE $all AND a.username=:us
             return "There is an error : ".$e->getMessage();
         }
     }
+    function web_brokersDeactivated($broker_name)
+    {
+        global $conn;
+        try {
+            if(strlen($broker_name)>1)
+            {
+                $stmt = $conn->prepare("select select a.name,a.surname,b.name as broker_name,a.email,a.contact_number,a.medical_scheme,b.date_deactivated from web_clients_deactivated as a LEFT JOIN web_clients as b ON a.broker_id=b.client_id WHERE b.name = :broker_name");
+                $stmt->bindParam(':broker_name', $broker_name, PDO::PARAM_STR);
+            }
+            else
+            {
+                $stmt = $conn->prepare("select select a.name,a.surname,b.name as broker_name,a.email,a.contact_number,a.medical_scheme,b.date_deactivated from web_clients_deactivated as a LEFT JOIN web_clients as b ON a.broker_id=b.client_id");
+            }
+            $stmt->execute();
+            return $stmt->fetchAll();
+
+        } catch (Exception $e) {
+            return "There is an error : ".$e->getMessage();
+        }
+    }
     function webClients($role,$broker_id="",$count=1)
     {
         global $conn;
@@ -2280,7 +2311,7 @@ INNER JOIN clients as c ON b.client_id=c.client_id WHERE $all AND a.username=:us
         $month=$month."-28";
 
         try {
-            $fields=$stat==0?"COUNT(*)":"*";
+            $fields=$stat==0?"COUNT(DISTINCT PolicyNumber)":"*";
             $stmt = $conn3->prepare("SELECT $fields FROM `chf` WHERE date_entered < :month AND (ProductName=:ProductName OR ProductName=:ProductName1 
             OR ProductName=:ProductName2 OR ProductName=:ProductName3 OR ProductName=:ProductName4 OR ProductName=:ProductName5) AND (policy_cancellationdate>:policy_cancellationdate OR policy_cancellationdate is null OR policy_cancellationdate = '')");
             $stmt->bindParam(':ProductName', $client, PDO::PARAM_STR);
@@ -2443,13 +2474,13 @@ INNER JOIN clients as c ON b.client_id=c.client_id WHERE $all AND a.username=:us
 
         try {
 
-            $sql="SELECT data1,data2,data3,data4,data5,sla17,sla19,sla16,sla18,sla20,sla21,sla22,calls1,calls2,calls3,calls4,calls5,calls6,calls7,calls8,calls9,calls10,sla1,sla2,sla3,sla4,sla5,sla6,sla7,sla8,sla9,sla10,sla11,sla12,sla13,sla14,emails1,emails2,emails3,emails4,emails5,emails6,emails7,emails8,emails9
-FROM quality_assurance as a inner JOIN claim as b ON a.claim_id=b.claim_id INNER JOIN member as c ON b.member_id=c.member_id INNER JOIN clients as d ON c.client_id=d.client_id WHERE a.id IN (SELECT MAX(id) AS id FROM quality_assurance WHERE ".$dat." GROUP BY claim_id DESC) AND d.client_name=:username11";
+            $sql="SELECT data1,data2,data3,data4,data5,sla17,sla19,sla16,sla18,sla20,sla21,sla22,calls1,calls2,calls3,calls4,calls5,calls6,calls7,calls8,calls9,calls10,sla1,sla2,sla3,sla4,sla5,sla6,sla7,sla8,sla9,sla10,sla11,emails1,emails2,emails3,emails4,emails5,emails6,emails7,emails8,emails9
+FROM quality_assurance as a inner JOIN claim as b ON a.claim_id=b.claim_id INNER JOIN member as c ON b.member_id=c.member_id INNER JOIN clients as d ON c.client_id=d.client_id WHERE a.id IN (SELECT MAX(id) AS id FROM quality_assurance WHERE ".$dat." GROUP BY claim_id DESC) AND d.client_name=:username11 AND ".$condition;
 
             if($val=="users")
             {
-                $sql="SELECT data1,data2,data3,data4,data5,sla17,sla19,sla16,sla18,sla20,sla21,sla22,calls1,calls2,calls3,calls4,calls5,calls6,calls7,calls8,calls9,calls10,sla1,sla2,sla3,sla4,sla5,sla6,sla7,sla8,sla9,sla10,sla11,sla12,sla13,sla14,emails1,emails2,emails3,emails4,emails5,emails6,emails7,emails8,emails9
-FROM quality_assurance as a inner JOIN claim as b ON a.claim_id=b.claim_id INNER JOIN member as c ON b.member_id=c.member_id INNER JOIN clients as d ON c.client_id=d.client_id WHERE a.id IN (SELECT MAX(id) AS id FROM quality_assurance WHERE ".$dat." GROUP BY claim_id DESC) AND b.username=:username11";
+                $sql="SELECT data1,data2,data3,data4,data5,sla17,sla19,sla16,sla18,sla20,sla21,sla22,calls1,calls2,calls3,calls4,calls5,calls6,calls7,calls8,calls9,calls10,sla1,sla2,sla3,sla4,sla5,sla6,sla7,sla8,sla9,sla10,emails1,emails2,emails3,emails4,emails5,emails6,emails7,emails8,emails9
+FROM quality_assurance as a inner JOIN claim as b ON a.claim_id=b.claim_id INNER JOIN member as c ON b.member_id=c.member_id INNER JOIN clients as d ON c.client_id=d.client_id WHERE a.id IN (SELECT MAX(id) AS id FROM quality_assurance WHERE ".$dat." GROUP BY claim_id DESC) AND b.username=:username11 AND ".$condition;
 
                 $users_array=strlen($users_array[0])>1?$users_array:$this->getUser();
                 $arrz=$this->calcFA($users_array,$sql,$val1);
@@ -2477,6 +2508,20 @@ FROM quality_assurance as a inner JOIN claim as b ON a.claim_id=b.claim_id INNER
         return $stmt->fetchColumn();
         //qa_descriptions
     }
+    function eightDays1()
+{
+    global $conn;
+    $stmts = $conn->prepare('SELECT a.Open, i.intervention_id, a.claim_id, b.first_name, b.surname, 
+       b.policy_number, a.claim_number, b.medical_scheme, c.client_name, i.consent_destination, SUBSTRING_INDEX(i.consent_destination, \' - \', 1) AS destination, 
+       a.username, SUBSTRING_INDEX(i.consent_destination, \' - \', -1) AS sub_destination, DATEDIFF(NOW(), a.date_entered) AS days_difference, 
+       a.date_entered, a.date_closed, a.date_reopened FROM intervention AS i INNER JOIN claim AS a ON i.claim_id = a.claim_id
+INNER JOIN member AS b ON a.member_id = b.member_id INNER JOIN clients AS c ON b.client_id = c.client_id INNER JOIN (
+    SELECT claim_id, MAX(intervention_id) AS latest_intervention_id FROM intervention GROUP BY claim_id) AS latest_intervention ON i.claim_id = latest_intervention.claim_id 
+AND i.intervention_id = latest_intervention.latest_intervention_id WHERE a.Open = 1 AND a.eightdays <> 1 AND (a.date_closed IS NULL OR a.date_closed = "") 
+  AND DATEDIFF(NOW(), a.date_entered) > 7');   
+       $stmts->execute();    
+    return $stmts->fetchAll();
+}
 
     function calcFA($array=array(),$sql="",$val1="",$arrz=array())
     {
@@ -2484,10 +2529,14 @@ FROM quality_assurance as a inner JOIN claim as b ON a.claim_id=b.claim_id INNER
 
         for($i=0;$i<count($array);$i++)
         {
+            
             $username=$array[$i];
             $usercv=array();
+            if($val1==$username || $val1=="1")
+            {
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':username11', $username, PDO::PARAM_STR);
+            $stmt->bindParam(':username', $val1, PDO::PARAM_STR);
             $stmt->execute();
 
             foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row)
@@ -2509,9 +2558,10 @@ FROM quality_assurance as a inner JOIN claim as b ON a.claim_id=b.claim_id INNER
             }
             $tot= array_column($realarr1, 'total');
             array_multisort($tot, SORT_DESC, $realarr1);
-            $realarr=array("username"=>$username,"data"=>$realarr1);
+            $realarr=array("username"=>$username,"data"=>$realarr1);       
 
             array_push($arrz,$realarr);
+        }
         }
         return $arrz;
     }
@@ -2881,20 +2931,10 @@ function eightDays($xdate)
 {
     global $conn;
     $stmts = $conn->prepare('SELECT a.claim_id,a.claim_number,b.first_name,b.surname,b.medical_scheme, 
-       b.policy_number,a.username,c.client_name,a.date_entered FROM claim as a inner join member as b 
+       b.policy_number,a.username,c.client_name,a.date_entered,a.date_closed,a.date_reopened FROM claim as a inner join member as b 
            ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE 
            a.date_entered <= :dat AND a.Open=1 AND eightdays<>1 ORDER BY a.claim_id DESC LIMIT 200');
     $stmts->bindParam(':dat', $xdate, PDO::PARAM_STR);
-       $stmts->execute();    
-    return $stmts->fetchAll();
-}
-function getIndividualOpen()
-{
-    global $conn;
-    $stmts = $conn->prepare('SELECT a.claim_id,a.claim_number,b.first_name,b.surname,b.medical_scheme, 
-       b.policy_number,a.username,c.client_name,a.date_entered FROM claim as a inner join member as b 
-           ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE 
-           c.client_id=4 AND a.Open=1 ORDER BY a.claim_id');
        $stmts->execute();    
     return $stmts->fetchAll();
 }
@@ -3833,5 +3873,106 @@ return $stmtx->fetch();
             $currentDate = strtotime('+1 day', $currentDate);
         }
         return $workingDays;
+      }
+      function finalReopenClaims($q,$month,$username="",$client="",$currrent_month=1)
+      {
+          global $conn;
+          $act_date = $month."-01";
+          $end_date = $this->nexDate($act_date); 
+          try {
+          $all = !empty($username)?"a.username IN ('".$username."') AND ":"";
+          $all .= !empty($client)?"c.client_name IN ('".$client."') AND ":"";
+          
+          $fields=$q==1?"SUM(u.scheme_savings + u.discount_savings) AS total_previous_savings":"u.id, w.claim_number, u.gap AS previous_gap,
+          u.scheme_savings + u.discount_savings AS previous_savings_achieved, u.date_closed AS previous_date_closed,u.date_entered,w.username";
+         
+          if($currrent_month==0)
+          {
+           $ooth = "(SELECT s.claim_id FROM closed_cases_snap AS s 
+            INNER JOIN claim AS a ON s.claim_id = a.claim_id INNER JOIN member AS b ON a.member_id = b.member_id INNER JOIN clients AS c 
+            ON b.client_id = c.client_id WHERE ".$all." s.date_closed >='".$act_date."' AND s.date_closed<'".$end_date."')";
+          }
+          else
+          {
+            $ooth ="(SELECT a.claim_id FROM claim AS a INNER JOIN member AS b ON a.member_id = b.member_id INNER JOIN clients AS c ON 
+            b.client_id = c.client_id WHERE ".$all." a.date_closed >='".$act_date."' AND a.date_closed<'".$end_date."' AND Open=0)";
+          }
+            $stmt =  $conn->prepare("WITH MaxIDPerClaim AS (SELECT w.claim_number,MAX(u.id) AS max_id FROM closed_cases_snap AS u 
+            INNER JOIN claim AS w ON u.claim_id = w.claim_id WHERE u.claim_id IN ".$ooth." AND u.date_closed < :dat2 
+            GROUP BY w.claim_number) SELECT ".$fields." FROM closed_cases_snap AS u INNER JOIN claim AS w ON u.claim_id = w.claim_id 
+            INNER JOIN MaxIDPerClaim AS maxid ON u.id = maxid.max_id ORDER BY w.claim_number"); 
+            $stmt->bindParam(":dat2",$act_date,PDO::PARAM_STR);
+            $stmt->execute();
+            return  $q==1?$stmt->fetchColumn():$stmt->fetchAll();
+  
+          } catch (Exception $e) {
+            echo "Error.".$e;
+              return "There is an error.".$e;
+          }
+      }
+      function getClientsWithSnapSavings($date)
+      {
+        
+          try {
+              global $conn;
+              $dat = $date."-01";
+              $dat2 = $this->nexDate($dat);
+              $stmt = $conn->prepare("SELECT SUM(s.scheme_savings + s.discount_savings) as savings,b.client_id,c.client_name,c.base_fee,
+              c.threshold,c.threshold1 FROM closed_cases_snap as s INNER JOIN `claim` as a ON s.claim_id = a.claim_id 
+              INNER JOIN member as b on a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE 
+              s.date_closed >= :dat AND s.date_closed < :dat2 GROUP BY c.client_name ORDER BY savings DESC");
+              $stmt->bindParam(":dat",$dat,PDO::PARAM_STR);
+              $stmt->bindParam(":dat2",$dat2,PDO::PARAM_STR);
+              $stmt->execute();
+              return $stmt->fetchAll();
+          }
+          catch (Exception $e)
+          {
+              return $e->getMessage();
+          }
+      }
+
+      function getNotesTrail($claim_id)
+      {
+        
+          try {
+              global $conn;
+              $stmt = $conn->prepare("SELECT intervention_desc, consent_destination, date_entered FROM `intervention` WHERE claim_id=:claim_id AND consent_destination<>'' ORDER BY intervention_id DESC");             
+              $stmt->bindParam(":claim_id",$claim_id,PDO::PARAM_STR);
+              $stmt->execute();
+              return $stmt->fetchAll();
+          }
+          catch (Exception $e)
+          {
+              return $e->getMessage();
+          }
+      }
+
+      function archive8days($start_date="",$end_date="")
+      {
+        if(!empty($start_date))
+        {
+            $date = new DateTime($end_date);
+            $date->modify('+1 day');
+            $end_date=$date->format('Y-m-d');
+        }
+        else{
+            $start_date = date("Y-m-01");
+            $end_date = date("Y-m-d");
+        }
+
+        $dat = " AND a.date_closed >='".$start_date."' AND a.date_closed<'".$end_date."' ";
+        
+          try {
+              global $conn;
+              $stmt = $conn->prepare("SELECT a.Open, i.intervention_id, a.claim_id, b.first_name, b.surname, b.policy_number, a.claim_number, b.medical_scheme, c.client_name, i.consent_destination, SUBSTRING_INDEX(i.consent_destination, ' - ', 1) AS destination, a.username, SUBSTRING_INDEX(i.consent_destination, ' - ', -1) AS sub_destination, DATEDIFF(a.date_closed, a.date_entered) AS days_difference, a.date_entered, a.date_closed, a.date_reopened FROM intervention AS i INNER JOIN claim AS a ON i.claim_id = a.claim_id INNER JOIN member AS b ON a.member_id = b.member_id INNER JOIN clients AS c ON b.client_id = c.client_id INNER JOIN ( SELECT claim_id, MAX(intervention_id) AS latest_intervention_id FROM intervention GROUP BY claim_id) AS latest_intervention ON i.claim_id = latest_intervention.claim_id AND i.intervention_id = latest_intervention.latest_intervention_id WHERE a.Open = 0 AND DATEDIFF(a.date_closed, a.date_entered) >7 $dat AND a.claim_id NOT IN (SELECT claim_id FROM reopened_claims)");             
+         
+              $stmt->execute();
+              return $stmt->fetchAll();
+          }
+          catch (Exception $e)
+          {
+              return $e->getMessage();
+          }
       }
 }

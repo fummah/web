@@ -1,5 +1,5 @@
 <?php
-//error_reporting(0);
+error_reporting(0);
 define("access",true);
 session_start();
 include ("../classes/reportsClass.php");
@@ -1029,4 +1029,78 @@ echo json_encode($mainarr,true);
         echo $e;
     }
 }
+
+elseif($identity==48)
+{
+    $claim_id = (int)$_GET['claim_id'];
+    $trails = $results->getNotesTrail($claim_id);
+   
+    $txt = "<table style='padding:5px'>";
+    $dat = "";
+    foreach($trails as $trail)
+    {
+        $days = "-";
+        $intervention_desc = nl2br($trail['intervention_desc']);
+        $consent_destination = $trail['consent_destination'];
+        $date_entered = $trail['date_entered'];
+        if($dat != "")
+        {
+            $date1 = new DateTime($dat);
+            $date2 = new DateTime($date_entered);
+            
+            $interval = $date1->diff($date2);
+            $days = $interval->days;
+        }
+        $dat = $date_entered;
+        $txt .= "<tr><td><hr><h4>$consent_destination</h4><p>$date_entered <span class='badge bg-success'>$days</span></p> <br>$intervention_desc</td></tr>";
+    }
+    $txt .="</table>";
+
+    echo $txt;
+
+}
+elseif($identity==49)
+{
+  
+    $start_date = $_GET['start_date'];
+    $end_date = $_GET['end_date'];
+    $archives = $results->archive8days($start_date,$end_date);
+    date_default_timezone_set('Africa/Johannesburg');
+    $holidays=$results->getHolidays();
+        $txt = "";   
+      
+      foreach ($archives as $row) {
+        $record_index = $row["claim_id"];
+        $claim_number = $row["claim_number"];
+        $first_name = $row["first_name"];
+        $surname = $row["surname"];
+        $medical_scheme = $row["medical_scheme"];
+        $policy_number=$row["policy_number"];
+        $username = $row["username"];
+        $client=$row["client_name"];
+        $date_entered=$row["date_entered"];
+        $date_closed=$row["date_closed"];
+        $destination=$row["destination"];
+        $sub_destination=$row["sub_destination"];
+        $fullname=$first_name." ".$surname;
+        $days=round($results->getWorkingDays($date_entered,$date_closed,$holidays));
+        if($days>7) {                  
+          $txt .= "<tr><td>$fullname</td><td>$claim_number</td><td title='$date_closed'>$days</td><td>$medical_scheme</td><td>$client</td>";
+          $txt .= "<td>$username</td><td>$destination</td><td>$sub_destination</td>";      
+                        
+          $txt .= "<td><button title='View Trail' name='btn' onclick='openDrawer($record_index)' class=\"btn ti-comment\"></button>";
+
+          $txt .= "<form action='../case_details.php' method='post' target=\"print_popup\" onsubmit=\"window.open('#','print_popup','width=1000,height=800');\"/>";
+          $txt .= "<input type=\"hidden\" name=\"claim_id\" value=\"$record_index\" />";
+          $txt .= "<button title='View Claim' name='btn' class=\"btn ti-arrow-circle-right\"></button></form>";
+
+          $txt .= "</td>";
+          $txt .= "</tr>";        
+
+}
+      }
+
+      echo $txt;
+      
+    }
 ?>

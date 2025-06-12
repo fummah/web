@@ -56,8 +56,8 @@ try{
         $subject="Clinical Notes for Claim Number ($claim_number)";
         $body="Hi<br><br>".$txtclinicalnote."<br><br>MCA Mailer";
         $email_data=$control->viewEmailCredentils();
-        $from_email=$email_data["notification_email"];
-        $from_password=$email_data["notification_password"];      
+        $from_email=$email_data["correspondence_email"];
+        $from_password=$email_data["correspondence_password"];      
         $control->sendEmail($mail,$from_email,"MCA",$from_password,$owner_email,"MCA System User",$subject,$body);
         echo "Your note have been added to the system";
 

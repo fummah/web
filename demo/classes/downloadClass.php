@@ -1112,7 +1112,7 @@ elseif (isset($_POST["switchdwn"]))
     $objWriter->save('php://output');
     ve('kpi.xlsx');
 }
-elseif (isset($_POST["web_clients"]))
+elseif (isset($_POST["web_clients"]) || isset($_POST["deactivated_clients"]))
 {
     include ("../classes/reportsClass.php");
     $results=new reportsClass();
@@ -1148,9 +1148,15 @@ elseif (isset($_POST["web_clients"]))
     $objPHPExcel->getActiveSheet()->getStyle("$from:$to")->getFont()->setBold(true);
     $rowCount = 2;
     $broker_name=$_POST['broker_name'];
-//print_r($results->web_brokers($broker_name));
+if(isset($_POST["deactivated_clients"]))
+{
+    $mrows = $results->web_brokersDeactivated($broker_name);
+}
+else{
+    $mrows = $results->web_brokers($broker_name);
+}
     try {
-        foreach ($results->web_brokers($broker_name) as $row)
+        foreach ($mrows as $row)
         {
             $first_name=$row[0];
             $surname=$row[1];

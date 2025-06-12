@@ -8,8 +8,8 @@ if(!isset($_POST["identity_number"]))
     die("Invalid access");
 }
 $identity=(int)$_POST["identity_number"];
-$start_date=isset($_POST["start_date"])?$_POST["start_date"]:"";
-$end_date=isset($_POST["end_date"])?$_POST["end_date"]:"";
+$start_date=$_POST["start_date"];
+$end_date=$_POST["end_date"];
 $medical_scheme=isset($_POST["medical_scheme"])?$_POST["medical_scheme"]:"";
 $txtup=isset($_POST["txtup"])?$_POST["txtup"]:"";
 $txtstatus=isset($_POST["txtstatus"])?$_POST["txtstatus"]:"";

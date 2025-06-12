@@ -100,8 +100,11 @@ require_once("top_nav.php");
                 <input type="hidden" name="broker_name" value="">
                 <p align="center">
                     <button class="btn btn-primary" name="web_clients" type="submit"><i class="ti-arrow-circle-down"></i> Download</button>
+                    <button class="btn btn-primary" name="deactivated_clients" type="submit"><i class="ti-arrow-circle-down"></i> Download Deactivated Members</button>
                 </p>
             </form>
+
+          
 </div>
 </div>
 </div>

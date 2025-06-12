@@ -96,10 +96,10 @@ a.Open, a.claim_id, a.username, a.savings_discount, b.scheme_number,a.sla,c.clie
         $stmt->execute();
         return $stmt->fetch();
     }
-  public function getClaimDoctors($claim_id)
+    public function getClaimDoctors($claim_id)
     {
-        $stmt = $this->conn->prepare("SELECT practice_number,savings_scheme,savings_discount,doc_name,doc_charged_amount,doc_scheme_amount,doc_gap,pay_doctor,cpt_code, 
-        display,claimedline_id,treatement_date,provider_invoicenumber,value_added_savings,d.decline_reason_id,r.description,isreason FROM doctors as d INNER JOIN decline_reasons as r ON d.decline_reason_id=r.id WHERE claim_id=:claim_id");
+        $stmt = $this->conn->prepare("SELECT d.practice_number,savings_scheme,savings_discount,doc_name,doc_charged_amount,doc_scheme_amount,doc_gap,pay_doctor,cpt_code, 
+        display,claimedline_id,treatement_date,provider_invoicenumber,value_added_savings,d.decline_reason_id,r.description,isreason,dd.name_initials,dd.surname FROM doctors as d INNER JOIN doctor_details as dd ON d.practice_number=dd.practice_number INNER JOIN decline_reasons as r ON d.decline_reason_id=r.id WHERE claim_id=:claim_id");
         $stmt->bindParam(':claim_id', $claim_id, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -128,7 +128,7 @@ a.Open, a.claim_id, a.username, a.savings_discount, b.scheme_number,a.sla,c.clie
     }
     function getEmailCredentils()
     {
-        $stmt = $this->conn->prepare("SELECT notification_email,notification_password,cc,cc1 FROM email_configs");
+        $stmt = $this->conn->prepare("SELECT * FROM email_configs");
         $stmt->execute();
         return $stmt->fetch();
     }
@@ -151,28 +151,6 @@ a.Open, a.claim_id, a.username, a.savings_discount, b.scheme_number,a.sla,c.clie
         $stmt->bindParam(':username', $val, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchColumn();
-    }
-    function getQueryDocs($query_id,$type)
-    {
-        $stmt = $this->conn->prepare("SELECT * FROM `freemium_documents` WHERE associated_id=:associated_id AND _type=:typ");
-        $stmt->bindParam(':associated_id', $query_id, PDO::PARAM_STR);
-        $stmt->bindParam(':typ', $type, PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-    function getQueries($condition,$val)
-    {
-        $stmt = $this->conn->prepare("SELECT q.id,m.first_name,m.last_name,m.email,q.date_entered,q.assigned_to,q.category FROM `freemium_queries` as q INNER JOIN freemium_members as m ON q.user_id=m.id  WHERE $condition");
-        $stmt->bindParam(':username', $val, PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-    function getQuery($query_id)
-    {
-        $stmt = $this->conn->prepare("SELECT *FROM `freemium_queries` as q INNER JOIN freemium_members as m ON q.user_id=m.id  WHERE q.id=:query_id");
-        $stmt->bindParam(':query_id', $query_id, PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetch();
     }
     function getQA($condition,$val1,$rolex)
     {
@@ -262,20 +240,18 @@ GROUP BY k.claim_id");
     function getSavings($date,$condition,$val)
     {
         try {
-            $arr=$this->reopenedCases($date,$condition,$val);
+            $arr=$this->finalReopenClaims($date,$condition,$val);
             $dat = $date."-01";
             $dat2 = $this->nexDate($dat);
-            $stmt = $this->conn->prepare("SELECT SUM(a.savings_scheme + a.savings_discount) as sav,a.charged_amnt,a.scheme_paid,SUM(a.savings_scheme) as scheme_savings,SUM(a.savings_discount) as discount_savings FROM `claim` as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE a.Open=0 AND a.date_closed >= :dat AND a.date_closed < :dat2 AND $condition");
+            $stmt = $this->conn->prepare("SELECT SUM(a.savings_scheme) as scheme_savings,SUM(a.savings_discount) as discount_savings FROM `claim` as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id WHERE a.Open=0 AND a.date_closed >= :dat AND a.date_closed < :dat2 AND $condition");
             $stmt->bindParam(":dat",$dat,PDO::PARAM_STR);
             $stmt->bindParam(":dat2",$dat2,PDO::PARAM_STR);
             $stmt->bindParam(':username', $val, PDO::PARAM_STR);
             $stmt->execute();
             $res= $stmt->fetch();
-            $data["scheme_savings"]=(double)$res["scheme_savings"]-(double)$arr["last_scheme_savings1"];
-            $data["discount_savings"]=(double)$res["discount_savings"]-(double)$arr["last_discount_savings1"];
+            $data["scheme_savings"]=(double)$res["scheme_savings"]-(double)$arr["last_scheme_savings"];
+            $data["discount_savings"]=(double)$res["discount_savings"]-(double)$arr["last_discount_savings"];
             $data["sav"]=$data["scheme_savings"]+$data["discount_savings"];
-            $data["charged_amnt"]=$res["scheme_paid"];
-            $data["scheme_paid"]=$res["scheme_paid"];
             return $data;
         }
         catch (Exception $e)
@@ -293,6 +269,16 @@ GROUP BY k.claim_id");
         $stmt->bindParam(':username', $val, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchColumn();
+    }
+    public function updateEmailStatus($email_id,$archived_by,$email_source="Archived")
+    {
+        $date_modified = date("Y-m-d H:i:s");
+        $stmt = $this->conn->prepare('UPDATE emails SET email_source = :email_source, archived_by=:archived_by, date_modified = :date_modified WHERE id=:id');
+        $stmt->bindParam(':id', $email_id, PDO::PARAM_STR);
+        $stmt->bindParam(':email_source', $email_source, PDO::PARAM_STR);
+        $stmt->bindParam(':archived_by', $archived_by, PDO::PARAM_STR);
+        $stmt->bindParam(':date_modified', $date_modified, PDO::PARAM_STR);
+        return $stmt->execute();
     }
     function getEnteredthisClaims($date,$condition,$val)
     {
@@ -421,7 +407,7 @@ where (clmnline_charged_amnt="0.00" OR clmline_scheme_paid_amnt="0.00") AND (LEN
     }
     function get4DaysMembers($condition=":username",$val="1")
     {
-        $stmt = $this->conn->prepare('SELECT a.claim_number,a.claim_id,a.member_contacted,TIMESTAMPDIFF(day,a.date_entered,NOW()) as period FROM claim as a INNER JOIN  member as b ON a.member_id=b.member_id WHERE a.Open=1 AND '.$condition.' GROUP BY a.claim_id having period>=8 AND (a.member_contacted<>1 OR a.member_contacted IS NULL)');
+        $stmt = $this->conn->prepare('SELECT a.claim_number,a.claim_id,a.member_contacted,TIMESTAMPDIFF(day,a.date_entered,NOW()) as period FROM claim as a INNER JOIN  member as b ON a.member_id=b.member_id WHERE a.Open=1 AND '.$condition.' GROUP BY a.claim_id having period>=8 AND (a.member_contacted<>1 OR a.member_contacted IS NULL) AND a.claim_id NOT IN (SELECT claim_id FROM `closed_cases_logs`)');
         $stmt->bindParam(':username', $val, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -525,6 +511,15 @@ where (clmnline_charged_amnt="0.00" OR clmline_scheme_paid_amnt="0.00") AND (LEN
         $stmt->execute();
         return $stmt->fetchAll();
     }
+      function insertFreemiumNotes($query_id,$description,$entered_by)
+    {
+        $stmt=$this->conn->prepare("INSERT INTO freemium_query_notes(query_id,description,entered_by) VALUES(:query_id,:description,:entered_by)");
+        $stmt->bindParam(':query_id', $query_id, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $description, PDO::PARAM_STR);
+        $stmt->bindParam(':entered_by', $entered_by, PDO::PARAM_STR);
+        return (int)$stmt->execute();
+
+    }
     public function getTRCP($trcp,$cpt_code)
     {
         $stmt = $this->conn2->prepare('SELECT *FROM ClinicalXref WHERE clinical_code=:xref AND xref_type=:typ');
@@ -535,7 +530,7 @@ where (clmnline_charged_amnt="0.00" OR clmline_scheme_paid_amnt="0.00") AND (LEN
     }
     public function getClaimDocuments($claim_id)
     {
-        $stmt = $this->conn->prepare("SELECT doc_id,randomNum,doc_description,additional_doc,doc_type,doc_size,date FROM documents WHERE claim_id=:claim_id");
+        $stmt = $this->conn->prepare("SELECT doc_id,randomNum,doc_description,additional_doc,doc_type,doc_size,date,email_id FROM documents WHERE claim_id=:claim_id");
         $stmt->bindParam(':claim_id', $claim_id, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -661,6 +656,21 @@ where (clmnline_charged_amnt="0.00" OR clmline_scheme_paid_amnt="0.00") AND (LEN
         $stmt->execute();
         return $stmt->fetchAll();
     }
+    public function getExtraEmails()
+    {
+        $typ = "External";
+        $stmt = $this->conn->prepare('SELECT * FROM `emails` WHERE claim_id=0 AND email_source = :typ ORDER BY id DESC');
+        $stmt->bindParam(':typ', $typ, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    function getEmailAmounts($condition=":username",$val="1")
+    {
+        $stmt = $this->conn->prepare('SELECT DISTINCT a.claim_number,a.claim_id FROM `emails` as e INNER JOIN claim as a ON e.claim_id=a.claim_id WHERE e.status=1 AND a.Open=0 AND '.$condition);
+        $stmt->bindParam(':username', $val, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
     public function getConfirmOptions($claim_id)
     {
         $stmt=$this->conn->prepare("SELECT option_id,notes FROM confirm_options WHERE claim_id=:claim_id");
@@ -749,6 +759,49 @@ where (clmnline_charged_amnt="0.00" OR clmline_scheme_paid_amnt="0.00") AND (LEN
         $stmt->bindParam(':open', $open, PDO::PARAM_STR);
         return $stmt->execute();
     }
+     public function checkClaimLine($primaryICDCode,$tariffCode,$treatmentDate,$claim_id,$practice_number,$clmnlineChargedAmnt,$clmlineSchemePaidAmnt){
+        $selectClaimline = $this->conn->prepare('SELECT mca_claim_id FROM claim_line WHERE primaryICDCode=:icd AND tariff_code=:tariff_code AND treatmentDate=:treatmentDate AND clmnline_charged_amnt=:clmnline_charged_amnt AND clmline_scheme_paid_amnt=:clmline_scheme_paid_amnt AND mca_claim_id=:mca_claim_id AND practice_number=:practice_number');
+                                    $selectClaimline->bindParam(':icd', $primaryICDCode, PDO::PARAM_STR);
+                                    $selectClaimline->bindParam(':tariff_code', $tariffCode, PDO::PARAM_STR);
+                                    $selectClaimline->bindParam(':treatmentDate', $treatmentDate, PDO::PARAM_STR);
+                                    $selectClaimline->bindParam(':mca_claim_id', $claim_id, PDO::PARAM_STR);
+                                    $selectClaimline->bindParam(':practice_number', $practice_number, PDO::PARAM_STR);
+                                    $selectClaimline->bindParam(':clmnline_charged_amnt', $clmnlineChargedAmnt, PDO::PARAM_STR);
+                                    $selectClaimline->bindParam(':clmline_scheme_paid_amnt', $clmlineSchemePaidAmnt, PDO::PARAM_STR);
+                                    $selectClaimline->execute();
+                                   return $selectClaimline->fetch();
+                             
+    }
+       public function getClaimNumberAPI($claim_number,$client_id)
+    {
+        $stmt = $this->conn->prepare('SElECT a.claim_id, a.claim_number FROM claim as a inner join member as b on a.member_id=b.member_id WHERE b.client_id=:client_id AND a.claim_number=:claim_number');
+        $stmt->bindParam(':client_id', $client_id, PDO::PARAM_STR);
+        $stmt->bindParam(':claim_number', $claim_number, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+        function insertEmail($email_to,$email_from,$subject,$body,$email_source,$claim_id,$message_id="",$typm="")
+    {
+      
+        try {
+            $stmt = $this->conn->prepare("INSERT INTO emails(email_to,email_from,subject,body,email_source,claim_id,message_id,typm) VALUES (:email_to,:email_from,:subject,:body,:email_source,:claim_id,:message_id,:typm)");
+            $stmt->bindParam(':email_to', $email_to, PDO::PARAM_STR);
+            $stmt->bindParam(':email_from', $email_from, PDO::PARAM_STR);
+            $stmt->bindParam(':subject', $subject, PDO::PARAM_STR);
+            $stmt->bindParam(':body', $body, PDO::PARAM_STR);
+            $stmt->bindParam(':email_source', $email_source, PDO::PARAM_STR);
+            $stmt->bindParam(':claim_id', $claim_id, PDO::PARAM_STR);
+            $stmt->bindParam(':message_id', $message_id, PDO::PARAM_STR);
+            $stmt->bindParam(':typm', $typm, PDO::PARAM_STR);
+            return $stmt->execute();
+
+        }
+        catch(Exception $e)
+        {
+            return 0;
+        }
+
+    }
     function insertDoctorClaimLogs($claim_id,$practice_number,$type,$charged_amount,$scheme_amount,$gap_amount,$entered_by)
     {
         $stmt = $this->conn->prepare('INSERT INTO `doctor_logs`(`claim_id`,`practice_number`,`type`,`charged_amount`,`scheme_amount`,`gap_amount`,`entered_by`) VALUES(:claim_id,:practice_number,:type,:charged_amount,:scheme_amount,:gap_amount,:entered_by)');
@@ -803,6 +856,27 @@ VALUES (:member_id,:claim_number, :Service_Date,:icd10,:pmb, :charged_amnt, :sch
         $stmt->bindParam(':entered_by',$username,PDO::PARAM_STR);
         return $stmt->execute();
 
+    }
+   
+    function getEmailCredentilsUser($username)
+    {
+        $stmt = $this->conn->prepare("SELECT user_oauth,user_keys FROM `users_information` WHERE `username` = :username");
+        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+      function updateEmailCredentils($oauth,$oauth_type)
+    {
+        $stmt = $this->conn->prepare("UPDATE email_configs SET ".$oauth_type."=:oauth");
+        $stmt->bindParam(':oauth', $oauth, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+    function updateEmailCredentilsUser($oauth,$username)
+    {
+        $stmt = $this->conn->prepare("UPDATE users_information SET user_keys=:user_keys WHERE username=:username");
+        $stmt->bindParam(':user_keys', $oauth, PDO::PARAM_STR);
+        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+        return $stmt->execute();
     }
     public function insertClaimDoctor($practice_number,$claim_id,$entered_by)
     {
@@ -906,6 +980,43 @@ sub_disciplinecode_description,disciplinecode_id,email,dr_value,days_number,sign
         $stmt->execute();
         return $stmt->fetchColumn();
     }
+       public function getClaimDocumentName($claim_id,$doc_name)
+    {
+        $stmt = $this->conn->prepare("SELECT doc_id FROM documents WHERE claim_id=:claim_id AND doc_description = :doc_name");
+        $stmt->bindParam(':claim_id', $claim_id, PDO::PARAM_STR);
+        $stmt->bindParam(':doc_name', $doc_name, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+    function gapRiskFeedback($dat, $client_id)
+    {
+        $stmt =$this->conn->prepare("SELECT a.claim_number, b.policy_number, b.first_name, b.surname as last_name, a.savings_scheme, 
+        a.savings_discount, i.practice_number, d.name_initials, d.surname, CASE WHEN a.Open = 0 THEN 'Closed' ELSE 'Open' END AS claim_status, 
+         i.intervention_desc, DATE_FORMAT(i.date_entered, '%Y%m%d') AS dat, n.pay_doctor FROM intervention AS i 
+         INNER JOIN claim AS a ON i.claim_id = a.claim_id INNER JOIN member AS b ON a.member_id = b.member_id LEFT JOIN doctor_details AS d ON i.practice_number = d.practice_number 
+         LEFT JOIN doctors AS n ON i.practice_number = n.practice_number AND i.claim_id = n.claim_id   WHERE i.date_entered LIKE :dat AND b.client_id = :client_id");
+        $stmt->bindParam(':dat', $dat, \PDO::PARAM_STR);
+        $stmt->bindParam(':client_id', $client_id, \PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+       public function insertSplitFiles($file_name, $total_claims=1,$total_loaded=1,$entered_by="System",$total_actclaims=1)
+    {
+        $stmt = $this->conn->prepare('INSERT INTO `split_files`(`file_name`, `total_claims`, `total_loaded`, `entered_by`,`total_actclaims`) VALUES (:file_name, :total_claims,:total_loaded,:entered_by,:total_actclaims)');
+        $stmt->bindParam(':file_name', $file_name, PDO::PARAM_STR);
+        $stmt->bindParam(':total_claims', $total_claims, PDO::PARAM_STR);
+        $stmt->bindParam(':total_loaded', $total_loaded, PDO::PARAM_STR);
+        $stmt->bindParam(':entered_by', $entered_by, PDO::PARAM_STR);
+        $stmt->bindParam(':total_actclaims', $total_actclaims, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+      function externalSchemes($duplicate_name)
+    {
+        $stmt =$this->conn->prepare("SELECT original_name FROM schemes_owl WHERE duplicate_name=:duplicate_name");
+        $stmt->bindParam(':duplicate_name', $duplicate_name, \PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
     public function insertNotes($claim_id,$intervention_desc,$username,$reminder_time,$reminder_status,$claim_id1,$current_practice_number,$doc_name,$consent_dest,$status=1)
     {
         $clamm="--";
@@ -959,6 +1070,14 @@ function getAPIURL($sender_id)
         $stmt->bindParam(':entered_by', $username, PDO::PARAM_STR);
         return (int)$stmt->execute();
     }
+     function getBrokerCodes($scheme,$broker)
+    {
+        $fbStmt = $this->conn->prepare("SELECT code_name FROM `broker_codes` WHERE `scheme`=:scheme AND `client`=:client");
+        $fbStmt->bindParam(':scheme', $scheme, PDO::PARAM_STR);
+        $fbStmt->bindParam(':client', $broker, PDO::PARAM_STR);
+        $fbStmt->execute();
+        return $fbStmt->fetchAll();        
+    }
     public function insertVisitLogs($user,$url)
     {
         $stmt = $this->conn1->prepare('INSERT INTO user_visit_logs(username, url) VALUES (:username,:url)');
@@ -998,14 +1117,6 @@ function getAPIURL($sender_id)
         else{
             return "";
         }
-    }
-    function getBrokerCodes($scheme,$broker)
-    {
-        $fbStmt = $this->conn->prepare("SELECT code_name FROM `broker_codes` WHERE `scheme`=:scheme AND `client`=:client");
-        $fbStmt->bindParam(':scheme', $scheme, PDO::PARAM_STR);
-        $fbStmt->bindParam(':client', $broker, PDO::PARAM_STR);
-        $fbStmt->execute();
-        return $fbStmt->fetchAll();        
     }
     function getIcd10Desc($icd10)
     {
@@ -1166,15 +1277,6 @@ group_disciplinecode, sub_disciplinecode_description, disciplinecode_id, email, 
         return (int)$stmt->execute();
 
     }
-    function insertFreemiumNotes($query_id,$description,$entered_by)
-    {
-        $stmt=$this->conn->prepare("INSERT INTO freemium_query_notes(query_id,description,entered_by) VALUES(:query_id,:description,:entered_by)");
-        $stmt->bindParam(':query_id', $query_id, PDO::PARAM_STR);
-        $stmt->bindParam(':description', $description, PDO::PARAM_STR);
-        $stmt->bindParam(':entered_by', $entered_by, PDO::PARAM_STR);
-        return (int)$stmt->execute();
-
-    }
     function updateNote($note_id,$desc)
     {
         $stmt1 = $this->conn->prepare('UPDATE intervention SET intervention_desc=:note WHERE intervention_id=:id');
@@ -1184,7 +1286,7 @@ group_disciplinecode, sub_disciplinecode_description, disciplinecode_id, email, 
     }
     function getNoNotesClaims($condition,$val)
     {
-        $stmt = $this->conn->prepare('SELECT a.date_entered,a.claim_id,"No_Notes" as status_type,a.username,c.client_name,a.date_closed,a.date_reopened,"" as descr,b.medical_scheme,a.date_entered as n_date FROM `claim` as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id where Open=1 AND a.claim_id not in (SELECT claim_id FROM intervention) AND '.$condition);
+        $stmt = $this->conn->prepare('SELECT a.date_entered,a.claim_id,"No_Notes" as status_type,a.username,c.client_name,a.date_closed,a.date_reopened,"" as descr,b.medical_scheme,a.date_entered as n_date, b.email FROM `claim` as a INNER JOIN member as b ON a.member_id=b.member_id INNER JOIN clients as c ON b.client_id=c.client_id where Open=1 AND a.claim_id not in (SELECT claim_id FROM intervention) AND '.$condition);
         $stmt->bindParam(':username', $val, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -1192,7 +1294,7 @@ group_disciplinecode, sub_disciplinecode_description, disciplinecode_id, email, 
     }
     function getNotesClaims($condition,$val)
     {
-        $sql='SELECT x.date_entered,x.claim_id,"With_Notes" as status_type,y.username,y.client_name,y.date_closed,y.date_reopened,x.intervention_desc as descr,y.medical_scheme,y.date_entered as n_date FROM intervention as x INNER JOIN (SELECT MAX(a.intervention_id) AS most_recent_claim,b.username,c.client_name,b.date_closed,b.date_reopened,b.date_entered,j.medical_scheme FROM intervention as a INNER JOIN claim as b ON a.claim_id=b.claim_id INNER JOIN member as j ON b.member_id=j.member_id INNER JOIN clients as c ON j.client_id=c.client_id WHERE b.Open=1 AND '.$condition.' GROUP BY a.claim_id) y ON y.most_recent_claim = x.intervention_id';
+        $sql='SELECT x.date_entered,x.claim_id,"With_Notes" as status_type,y.username,y.client_name,y.date_closed,y.date_reopened,x.intervention_desc as descr,y.medical_scheme,y.date_entered as n_date, y.email FROM intervention as x INNER JOIN (SELECT MAX(a.intervention_id) AS most_recent_claim,b.username,c.client_name,b.date_closed,b.date_reopened,j.medical_scheme,b.date_entered,j.email FROM intervention as a INNER JOIN claim as b ON a.claim_id=b.claim_id INNER JOIN member as j ON b.member_id=j.member_id INNER JOIN clients as c ON j.client_id=c.client_id WHERE b.Open=1 AND '.$condition.' GROUP BY a.claim_id) y ON y.most_recent_claim = x.intervention_id';
 
         //echo $sql;
         $stmt = $this->conn->prepare($sql);
@@ -1242,7 +1344,7 @@ group_disciplinecode, sub_disciplinecode_description, disciplinecode_id, email, 
     }
     function getActiveUsers()
     {
-        $stmt = $this->conn->prepare('SELECT username,email FROM users_information WHERE status=1 OR username="Shirley" ORDER BY username ASC');
+        $stmt = $this->conn->prepare('SELECT username,email FROM users_information WHERE status=1 OR username="Shirley" OR active=1 ORDER BY username ASC');
         $stmt->execute();
         return $stmt->fetchAll();
     }
@@ -1434,6 +1536,7 @@ group_disciplinecode, sub_disciplinecode_description, disciplinecode_id, email, 
         $stmt->execute();
         return $stmt->fetchAll();
     }
+   
 function getValidationsInd($id)
     {
         try
@@ -1928,58 +2031,39 @@ $all["totalRecordwithFilter"]=$totalRecordwithFilter;
 $all["data"]=$data;
 return $all;
     }
+    function finalReopenClaims($date,$condition,$val)
+    {
+        global $conn;
+        $act_date = $date."-01";
+        $end_date = $this->nexDate($act_date); 
+        try {       
+      
+          $stmt =  $conn->prepare("WITH MaxIDPerClaim AS (SELECT w.claim_number,MAX(u.id) AS max_id FROM closed_cases_snap AS u 
+          INNER JOIN claim AS w ON u.claim_id = w.claim_id WHERE u.claim_id IN (SELECT a.claim_id FROM claim AS a INNER JOIN member AS b ON a.member_id = b.member_id INNER JOIN clients AS c ON 
+          b.client_id = c.client_id WHERE a.date_closed >='".$act_date."' AND a.date_closed<'".$end_date."' AND Open=0 AND $condition) AND u.date_closed < :dat2 
+          GROUP BY w.claim_number) SELECT SUM(u.scheme_savings) as last_scheme_savings, SUM(u.discount_savings) as last_discount_savings FROM closed_cases_snap AS u INNER JOIN claim AS w ON u.claim_id = w.claim_id 
+          INNER JOIN MaxIDPerClaim AS maxid ON u.id = maxid.max_id ORDER BY w.claim_number"); 
+          $stmt->bindParam(":dat2",$act_date,PDO::PARAM_STR);
+          $stmt->bindParam(':username', $val, PDO::PARAM_STR);
+          $stmt->execute();
+          return  $stmt->fetch();
+
+        } catch (Exception $e) {
+        
+            return "There is an error.";
+        }
+    }
      function nexDate($dat)
     {
         return date('Y-m-d', strtotime('+1 month', strtotime($dat)));
     }
-    function updateClaimActivity($activity_id,$claim_id,$status)
+     function getTesst($tariff_code,$disciplinecode)
     {
-        $stmt =$this->conn->prepare("UPDATE process_claim SET status=:status WHERE claim_id=:claim_id AND process_activity_id=:process_activity_id");
-        $stmt->bindParam(':status', $status, \PDO::PARAM_STR); 
-        $stmt->bindParam(':claim_id', $claim_id, \PDO::PARAM_STR);
-        $stmt->bindParam(':process_activity_id', $activity_id, \PDO::PARAM_STR);    
-        return $stmt->execute();
-    }
-    function getProcessFlow($flow_id)
-    {
-        $stmt =$this->conn->prepare("SELECT id, stages FROM `process_flow` WHERE id=:id");
-        $stmt->bindParam(':id', $flow_id, \PDO::PARAM_STR);     
+        $stmt =$this->conn->prepare("SELECT d.disciplinecode, AVG(j.clmline_scheme_paid_amnt) AS Average_of_Scheme_Paid, COUNT(j.tariff_code) AS Count FROM `claim_line` AS j INNER JOIN claim AS a ON j.mca_claim_id = a.claim_id INNER JOIN member AS b ON a.member_id = b.member_id INNER JOIN clients AS c ON b.client_id = c.client_id INNER JOIN doctor_details as d ON j.practice_number=d.practice_number WHERE a.date_entered LIKE '2024%' AND j.tariff_code<>'' AND j.tariff_code is not null AND c.client_name IN ('Kaelo', 'Turnberry', 'Western') AND d.disciplinecode=:disciplinecode AND j.tariff_code=:tariff_code GROUP BY d.disciplinecode;");
+        $stmt->bindParam(':disciplinecode', $disciplinecode, \PDO::PARAM_STR);  
+        $stmt->bindParam(':tariff_code', $tariff_code, \PDO::PARAM_STR); 
         $stmt->execute();
         return $stmt->fetch();
     }
-    function getClaimStage($claim_id)
-    {
-        $stmt =$this->conn->prepare("SELECT claim_stage FROM `claim` WHERE claim_id=:claim_id");
-        $stmt->bindParam(':claim_id', $claim_id, \PDO::PARAM_STR);     
-        $stmt->execute();
-        return $stmt->fetch();
-    }
-    function getStage($stage_id)
-    {
-        $stmt =$this->conn->prepare("SELECT id,stage_name,stage_icon FROM `process_header` WHERE id=:id");
-        $stmt->bindParam(':id', $stage_id, \PDO::PARAM_STR);     
-        $stmt->execute();
-        return $stmt->fetch();
-    }
-    function loadProcessActivities($claim_id)
-    {
-        $stmt =$this->conn->prepare("INSERT INTO `process_claim`(`claim_id`, `process_activity_id`) SELECT '".$claim_id."',id FROM process_activities");
-        return $stmt->execute();
-    }
-    function getClaimProcess($claim_id)
-    {
-        $stmt =$this->conn->prepare("SELECT claim_id FROM process_claim WHERE claim_id=:claim_id");
-        $stmt->bindParam(':claim_id', $claim_id, \PDO::PARAM_STR); 
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-    function getProcessActivies($stage_id,$claim_id)
-    {
-        $stmt =$this->conn->prepare("SELECT p.id as pr_id,p.process_activity_id,pa.process_header_id,pa.desctiption,pa.title_hover,p.status FROM process_claim as p INNER JOIN `process_activities` as pa ON p.process_activity_id=pa.id 
-        WHERE pa.process_header_id=:id AND p.claim_id=:claim_id");
-        $stmt->bindParam(':id', $stage_id, \PDO::PARAM_STR); 
-        $stmt->bindParam(':claim_id', $claim_id, \PDO::PARAM_STR);    
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
+     
 }
