@@ -25,7 +25,7 @@ else{
 <script src="../js/uikit.min.js"></script>
 <script src="../js/uikit-icons.min.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script src="bi.js"></script>
+<script src="clinical.js"></script>
 <script src="dist/jquery-simple-tree-table.js"></script>
 <script src="jquery-sortable-min.js"></script>
 <script src="jquery.tablesorter.min.js"></script>
@@ -293,12 +293,25 @@ define("access",true);
                     <input type="hidden" id="dat2">
                     <p align="center" style="border-bottom: 1px solid mediumseagreen; text-align: center; color: white; font-weight: bolder;" class="text" id="datetxt"></p>
                     <hr>
+                      <div class="uk-margin">
+            <select class="uk-select" aria-label="Select">
+                <option>Select File</option>
+                <option value="Kaelo_Claims_Data_2025-06-15.csv">Kaelo_Claims_Data_2025-06-15.csv</option>
+                <option value="Kaelo_Claims_Data_2025-06-14.csv">Kaelo_Claims_Data_2025-06-14.csv</option>
+                <option value="Kaelo_Claims_Data_2025-06-13.csv">Kaelo_Claims_Data_2025-06-13.csv</option>
+                <option value="Kaelo_Claims_Data_2025-06-12.csv">Kaelo_Claims_Data_2025-06-12.csv</option>
+                <option value="Kaelo_Claims_Data_2025-06-11.csv">Kaelo_Claims_Data_2025-06-11.csv</option>
+            </select>
+        </div>
+        <!--
                     <div class="uk-margin">
                         <form class="uk-search uk-search-default">
+
                             <span class="uk-search-icon-flip" uk-search-icon></span>
-                            <input style="background-color: white !important; width:100% !important;" class="uk-search-input" type="search" id="myInput" placeholder="Search..." onkeyup="searchTable()" aria-label="Search">
+                             <input style="background-color: white !important; width:100% !important;" class="uk-search-input" type="search" id="myInput" placeholder="Search..." onkeyup="searchTable()" aria-label="Search">
                         </form>
                     </div>
+                    -->
                     <div class="upload-container">
         <div class="drag-area" id="drop-area">
         
@@ -314,7 +327,7 @@ define("access",true);
                         </ol>
 <button class="uk-button uk-button-danger">Generate Report</button><hr/>
 <button class="uk-button uk-button-danger">Analyse</button><hr/>
-<button class="uk-button uk-button-danger">Generate Report</button>
+<button class="uk-button uk-button-danger">Download</button>
                     </div>
 
                 </div>
@@ -323,10 +336,14 @@ define("access",true);
             </div>
         </div>
         <div class="col-sm-10 uk-placeholder">
-<h3 align="center" style="background-color: whitesmoke;color: #54bc9c;">Clinical</h3>
+
             <div class="row" style="width: 100% !important;">
                 <div class="col-sm-12" style="background-color: white; width: 100% !important;">
-  <table>
+                    <?php
+include("pivot.php");
+                    ?>
+                  <p align="center"><button class="uk-button uk-button-secondary">View Claims</button></p>  
+  <table style="display: none;">
     <thead>
       <tr>
         <th>Member Number</th>
